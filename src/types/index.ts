@@ -73,16 +73,99 @@ export interface Material {
 
 // ── Birth Plan ─────────────────────────────────────────────────────────────
 
-export interface BirthPlanSection {
-  id: string;
-  title: string;
-  content: string;
-  order: number;
+export interface BirthPlanPersonalInfo {
+  legalName: string;
+  preferredName: string;
+  dueDate: string;
+  currentMedications: string;
+  allergies: string;
+}
+
+export interface BirthPlanLabour {
+  birthPartner: string;
+  doula: string;
+  otherSupportPeople: string;
+  labourGoal: string;
+  atmosphereNotes: string;
+  comfortMeasures: {
+    walking: boolean;
+    labourBall: boolean;
+    tub: boolean;
+    shower: boolean;
+    heat: boolean;
+    ice: boolean;
+    massage: boolean;
+    tens: boolean;
+    other: string;
+  };
+  pushingPreferences: {
+    varietyOfPositions: boolean;
+    helpWithPushing: boolean;
+    selfDirected: boolean;
+    other: string;
+  };
+  painMedication: {
+    onlyIfAsked: boolean;
+    offerIfNotCoping: boolean;
+    offerAsSoonAsPossible: boolean;
+    nitrous: boolean;
+    morphineFentanyl: boolean;
+    epidural: boolean;
+    other: string;
+  };
+  photographyNotes: string;
+  personalTouches: string;
+  cordBloodBankDonation: boolean;
+  cordBloodTissueBankingNotes: string;
+  otherRequests: string;
+}
+
+export interface BirthPlanAfterBirth {
+  skinToSkin: boolean;
+  cordCuttingPerson: string;
+  feedingPlan: "breastfeed" | "formula" | "other";
+  feedingNotes: string;
+  newbornTreatments: {
+    antibioticEyeOintment: boolean;
+    vitaminKInjection: boolean;
+    other: string;
+  };
+  placentaPreferences: string;
+  circumcisionPreferences: string;
+  visitorsPreference: string;
+}
+
+export interface BirthPlanInterventions {
+  unexpectedEvents: {
+    includeInAllDecisions: boolean;
+    partnerIncluded: boolean;
+    other: string;
+  };
+  continuousMonitoring: {
+    preferMobile: boolean;
+    useShowerBath: boolean;
+  };
+  prolongedLabour: {
+    tryNaturalMethods: boolean;
+    offerMedication: boolean;
+  };
+  assistedBirthPreference: string;
+  caesarianWishes: string;
+  specialCareForBaby: {
+    skinToSkinIfPossible: boolean;
+    helpExpressing: boolean;
+    involvedInCare: boolean;
+    other: string;
+  };
 }
 
 export interface BirthPlan {
   updatedAt: string;
-  sections: BirthPlanSection[];
+  personalInfo: BirthPlanPersonalInfo;
+  labour: BirthPlanLabour;
+  afterBirth: BirthPlanAfterBirth;
+  interventions: BirthPlanInterventions;
+  notes: string;
 }
 
 // ── Notes / General Tracking ───────────────────────────────────────────────

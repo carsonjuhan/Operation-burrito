@@ -3,65 +3,98 @@
 import { useState, useEffect, useCallback } from "react";
 import { AppStore, BabyItem, BabyClass, Material, BirthPlan, Note } from "@/types";
 
-const DEFAULT_BIRTH_PLAN_SECTIONS = [
-  {
-    id: "1",
-    title: "Labor Environment",
-    content: "",
-    order: 1,
+const DEFAULT_BIRTH_PLAN: AppStore["birthPlan"] = {
+  updatedAt: new Date().toISOString(),
+  personalInfo: {
+    legalName: "",
+    preferredName: "",
+    dueDate: "",
+    currentMedications: "G6PD - please note reduced blood procedures if needed",
+    allergies: "",
   },
-  {
-    id: "2",
-    title: "Pain Management",
-    content: "",
-    order: 2,
+  labour: {
+    birthPartner: "Juhan",
+    doula: "",
+    otherSupportPeople: "",
+    labourGoal: "Natural birth",
+    atmosphereNotes: "",
+    comfortMeasures: {
+      walking: false,
+      labourBall: false,
+      tub: false,
+      shower: false,
+      heat: false,
+      ice: false,
+      massage: false,
+      tens: false,
+      other: "",
+    },
+    pushingPreferences: {
+      varietyOfPositions: false,
+      helpWithPushing: false,
+      selfDirected: false,
+      other: "",
+    },
+    painMedication: {
+      onlyIfAsked: false,
+      offerIfNotCoping: false,
+      offerAsSoonAsPossible: false,
+      nitrous: false,
+      morphineFentanyl: false,
+      epidural: false,
+      other: "",
+    },
+    photographyNotes: "",
+    personalTouches: "",
+    cordBloodBankDonation: false,
+    cordBloodTissueBankingNotes: "",
+    otherRequests: "",
   },
-  {
-    id: "3",
-    title: "Labor & Delivery Preferences",
-    content: "",
-    order: 3,
+  afterBirth: {
+    skinToSkin: false,
+    cordCuttingPerson: "",
+    feedingPlan: "breastfeed",
+    feedingNotes: "",
+    newbornTreatments: {
+      antibioticEyeOintment: false,
+      vitaminKInjection: false,
+      other: "",
+    },
+    placentaPreferences: "",
+    circumcisionPreferences: "",
+    visitorsPreference: "",
   },
-  {
-    id: "4",
-    title: "Immediately After Birth",
-    content: "",
-    order: 4,
+  interventions: {
+    unexpectedEvents: {
+      includeInAllDecisions: false,
+      partnerIncluded: false,
+      other: "",
+    },
+    continuousMonitoring: {
+      preferMobile: false,
+      useShowerBath: false,
+    },
+    prolongedLabour: {
+      tryNaturalMethods: false,
+      offerMedication: false,
+    },
+    assistedBirthPreference: "",
+    caesarianWishes: "",
+    specialCareForBaby: {
+      skinToSkinIfPossible: false,
+      helpExpressing: false,
+      involvedInCare: false,
+      other: "",
+    },
   },
-  {
-    id: "5",
-    title: "Newborn Care",
-    content: "",
-    order: 5,
-  },
-  {
-    id: "6",
-    title: "Feeding Preferences",
-    content: "",
-    order: 6,
-  },
-  {
-    id: "7",
-    title: "Support People",
-    content: "",
-    order: 7,
-  },
-  {
-    id: "8",
-    title: "Special Circumstances / Other Wishes",
-    content: "",
-    order: 8,
-  },
-];
+  notes: "",
+};
 
 const DEFAULT_STORE: AppStore = {
   items: [],
   classes: [],
   materials: [],
-  birthPlan: {
-    updatedAt: new Date().toISOString(),
-    sections: DEFAULT_BIRTH_PLAN_SECTIONS,
-  },
+  birthPlan: DEFAULT_BIRTH_PLAN,
   notes: [],
 };
 
@@ -73,11 +106,19 @@ function loadStore(): AppStore {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_STORE;
     const parsed = JSON.parse(raw) as Partial<AppStore>;
+    // Migrate old birth plan format (sections array) to new structured format
+    const storedPlan = parsed.birthPlan as unknown;
+    const birthPlan =
+      storedPlan &&
+      typeof storedPlan === "object" &&
+      !("sections" in (storedPlan as object))
+        ? (storedPlan as AppStore["birthPlan"])
+        : DEFAULT_STORE.birthPlan;
     return {
       items: parsed.items ?? [],
       classes: parsed.classes ?? [],
       materials: parsed.materials ?? [],
-      birthPlan: parsed.birthPlan ?? DEFAULT_STORE.birthPlan,
+      birthPlan,
       notes: parsed.notes ?? [],
     };
   } catch {

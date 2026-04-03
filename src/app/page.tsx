@@ -24,8 +24,27 @@ export default function DashboardPage() {
   const classesDone = classes.filter((c) => c.completed).length;
   const classesTotal = classes.length;
 
-  const birthPlanFilled = birthPlan.sections.filter((s) => s.content.trim().length > 0).length;
-  const birthPlanTotal = birthPlan.sections.length;
+  // Count filled fields across the structured birth plan (strings + booleans)
+  const countBirthPlanFilled = () => {
+    let n = 0;
+    const s = (v: string) => { if (v?.trim()) n++; };
+    const b = (v: boolean) => { if (v) n++; };
+    s(birthPlan.personalInfo?.legalName); s(birthPlan.personalInfo?.dueDate);
+    s(birthPlan.labour?.birthPartner); s(birthPlan.labour?.labourGoal);
+    s(birthPlan.labour?.atmosphereNotes); s(birthPlan.labour?.otherRequests);
+    const cm = birthPlan.labour?.comfortMeasures;
+    if (cm) [cm.walking, cm.labourBall, cm.tub, cm.shower, cm.heat, cm.ice, cm.massage, cm.tens].forEach(b);
+    const pm = birthPlan.labour?.painMedication;
+    if (pm) [pm.onlyIfAsked, pm.offerIfNotCoping, pm.epidural, pm.nitrous].forEach(b);
+    b(birthPlan.afterBirth?.skinToSkin);
+    if (birthPlan.afterBirth?.feedingPlan) n++;
+    s(birthPlan.afterBirth?.placentaPreferences);
+    b(birthPlan.interventions?.unexpectedEvents?.includeInAllDecisions);
+    s(birthPlan.interventions?.assistedBirthPreference);
+    return n;
+  };
+  const birthPlanFilled = countBirthPlanFilled();
+  const birthPlanTotal = 20; // approximate total checkable fields
 
   const mustHaveItems = items.filter((i) => i.priority === "Must Have" && !i.purchased);
 
