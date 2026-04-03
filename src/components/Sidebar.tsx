@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -9,8 +10,11 @@ import {
   BookOpen,
   Heart,
   StickyNote,
+  Settings,
+  Github,
 } from "lucide-react";
 import clsx from "clsx";
+import { getPAT, getGistId, getLastSynced } from "@/lib/gistSync";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -23,6 +27,17 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [syncState, setSyncState] = useState<{ connected: boolean; lastSynced: string }>({
+    connected: false,
+    lastSynced: "",
+  });
+
+  useEffect(() => {
+    setSyncState({
+      connected: !!(getPAT() && getGistId()),
+      lastSynced: getLastSynced(),
+    });
+  }, [pathname]); // refresh on navigation so Settings changes reflect immediately
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-stone-200 flex flex-col">
@@ -60,8 +75,39 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-stone-100">
-        <p className="text-xs text-stone-300">All data stored locally</p>
+      <div className="px-3 pb-4 border-t border-stone-100 pt-3 space-y-1">
+        {/* Settings link */}
+        <Link
+          href="/settings"
+          className={clsx(
+            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+            pathname === "/settings"
+              ? "bg-sage-100 text-sage-700"
+              : "text-stone-500 hover:bg-stone-50 hover:text-stone-700"
+          )}
+        >
+          <Settings size={18} />
+          Settings
+        </Link>
+
+        {/* Sync status */}
+        <div className="px-3 py-2 flex items-center gap-2">
+          <Github size={13} className={syncState.connected ? "text-emerald-500" : "text-stone-300"} />
+          {syncState.connected ? (
+            <div className="min-w-0">
+              <p className="text-xs text-emerald-600 font-medium">GitHub connected</p>
+              {syncState.lastSynced && (
+                <p className="text-xs text-stone-400 truncate">
+                  {new Date(syncState.lastSynced).toLocaleDateString(undefined, {
+                    month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+                  })}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-xs text-stone-300">Not synced to GitHub</p>
+          )}
+        </div>
       </div>
     </aside>
   );

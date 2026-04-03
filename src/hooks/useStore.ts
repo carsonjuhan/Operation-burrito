@@ -288,6 +288,13 @@ export function useStore() {
     [update]
   );
 
+  // ── External load (GitHub Gist pull) ─────────────────────────────────────
+
+  const loadFromExternal = useCallback((incoming: AppStore) => {
+    setStore(incoming);
+    saveStore(incoming);
+  }, []);
+
   return {
     store,
     loaded,
@@ -309,5 +316,7 @@ export function useStore() {
     addNote,
     updateNote,
     deleteNote,
+    // external sync
+    loadFromExternal,
   };
 }
