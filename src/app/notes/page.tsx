@@ -36,12 +36,8 @@ export default function NotesPage() {
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState<NoteCategory | "All">("All");
 
-  if (!loaded) return null;
-
-  const { notes } = store;
-
   const filtered = useMemo(() => {
-    return notes.filter((n) => {
+    return store.notes.filter((n) => {
       if (filterCategory !== "All" && n.category !== filterCategory) return false;
       if (search) {
         const q = search.toLowerCase();
@@ -49,7 +45,11 @@ export default function NotesPage() {
       }
       return true;
     });
-  }, [notes, search, filterCategory]);
+  }, [store.notes, search, filterCategory]);
+
+  if (!loaded) return null;
+
+  const { notes } = store;
 
   const pinned = filtered.filter((n) => n.pinned);
   const unpinned = filtered
