@@ -22,6 +22,7 @@ export interface BabyItem {
   notes: string;
   link?: string;
   estimatedCost?: number;
+  actualCost?: number;
   createdAt: string;
 }
 
@@ -188,6 +189,84 @@ export interface Note {
   updatedAt: string;
 }
 
+// ── Hospital Bag ───────────────────────────────────────────────────────────
+
+export type BagCategory =
+  | "Clothing — Mom"
+  | "Clothing — Baby"
+  | "Documents"
+  | "Toiletries"
+  | "Comfort & Labour"
+  | "Feeding"
+  | "Electronics"
+  | "Snacks"
+  | "Other";
+
+export interface BagItem {
+  id: string;
+  name: string;
+  category: BagCategory;
+  packed: boolean;
+  notes: string;
+  quantity?: number;
+}
+
+// ── Appointments ───────────────────────────────────────────────────────────
+
+export type AppointmentType =
+  | "OB / Midwife"
+  | "Ultrasound"
+  | "Blood Work"
+  | "Hospital Tour"
+  | "Dentist"
+  | "Specialist"
+  | "Other";
+
+export interface Appointment {
+  id: string;
+  title: string;
+  type: AppointmentType;
+  date: string;
+  time: string;
+  provider: string;
+  location: string;
+  notes: string;
+  completed: boolean;
+  createdAt: string;
+}
+
+// ── Contacts ───────────────────────────────────────────────────────────────
+
+export type ContactRole =
+  | "OB / Doctor"
+  | "Midwife"
+  | "Doula"
+  | "Hospital"
+  | "Pediatrician"
+  | "Partner"
+  | "Family"
+  | "Other";
+
+export interface Contact {
+  id: string;
+  name: string;
+  role: ContactRole;
+  phone: string;
+  email: string;
+  notes: string;
+  createdAt: string;
+}
+
+// ── Contraction Timer ──────────────────────────────────────────────────────
+
+export interface Contraction {
+  id: string;
+  startTime: string;
+  endTime: string;
+  duration: number;   // seconds
+  interval: number;   // seconds since last contraction started
+}
+
 // ── App Store (full persisted state) ──────────────────────────────────────
 
 export interface AppStore {
@@ -196,4 +275,8 @@ export interface AppStore {
   materials: Material[];
   birthPlan: BirthPlan;
   notes: Note[];
+  hospitalBag: BagItem[];
+  appointments: Appointment[];
+  contacts: Contact[];
+  contractions: Contraction[];
 }
