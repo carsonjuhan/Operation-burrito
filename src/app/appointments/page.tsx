@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { Appointment, AppointmentType } from "@/types";
 import { Modal } from "@/components/Modal";
+import { IcsImportModal } from "@/components/IcsImportModal";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus, Pencil, Trash2, MapPin, CheckCircle2, Circle } from "lucide-react";
+import { Plus, Pencil, Trash2, MapPin, CheckCircle2, Circle, CalendarPlus } from "lucide-react";
 import clsx from "clsx";
 
 const APPOINTMENT_TYPES: AppointmentType[] = [
@@ -43,6 +44,7 @@ export default function AppointmentsPage() {
   const { store, loaded, addAppointment, updateAppointment, deleteAppointment } =
     useStoreContext();
   const [showModal, setShowModal] = useState(false);
+  const [showIcsModal, setShowIcsModal] = useState(false);
   const [editing, setEditing] = useState<Appointment | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
 
@@ -117,9 +119,14 @@ export default function AppointmentsPage() {
             {appointments.length} appointment{appointments.length !== 1 ? "s" : ""}
           </p>
         </div>
-        <button onClick={openAdd} className="btn-primary">
-          <Plus size={16} /> Add Appointment
-        </button>
+        <div className="flex gap-2">
+          <button onClick={() => setShowIcsModal(true)} className="btn-secondary">
+            <CalendarPlus size={16} /> Import .ics
+          </button>
+          <button onClick={openAdd} className="btn-primary">
+            <Plus size={16} /> Add Appointment
+          </button>
+        </div>
       </div>
 
       {/* Content */}
@@ -167,6 +174,14 @@ export default function AppointmentsPage() {
             </Section>
           )}
         </div>
+      )}
+
+      {/* ICS Import Modal */}
+      {showIcsModal && (
+        <IcsImportModal
+          onClose={() => setShowIcsModal(false)}
+          onImport={(events) => events.forEach((ev) => addAppointment(ev))}
+        />
       )}
 
       {/* Modal */}

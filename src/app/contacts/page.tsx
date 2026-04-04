@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { Contact, ContactRole } from "@/types";
 import { Modal } from "@/components/Modal";
+import { VcardImportModal } from "@/components/VcardImportModal";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus, Pencil, Trash2, Phone, Mail } from "lucide-react";
+import { Plus, Pencil, Trash2, Phone, Mail, UserPlus } from "lucide-react";
 import clsx from "clsx";
 
 const ROLES: ContactRole[] = [
@@ -52,6 +53,7 @@ const DEFAULT_FORM = {
 export default function ContactsPage() {
   const { store, loaded, addContact, updateContact, deleteContact } = useStoreContext();
   const [showModal, setShowModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [editing, setEditing] = useState<Contact | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
 
@@ -112,9 +114,14 @@ export default function ContactsPage() {
             {contacts.length} contact{contacts.length !== 1 ? "s" : ""}
           </p>
         </div>
-        <button onClick={openAdd} className="btn-primary">
-          <Plus size={16} /> Add Contact
-        </button>
+        <div className="flex gap-2">
+          <button onClick={() => setShowImportModal(true)} className="btn-secondary">
+            <UserPlus size={16} /> Import
+          </button>
+          <button onClick={openAdd} className="btn-primary">
+            <Plus size={16} /> Add Contact
+          </button>
+        </div>
       </div>
 
       {/* Content */}
@@ -140,6 +147,15 @@ export default function ContactsPage() {
             />
           ))}
         </div>
+      )}
+
+      {/* vCard / EML Import Modal */}
+      {showImportModal && (
+        <VcardImportModal
+          onClose={() => setShowImportModal(false)}
+          onImportContacts={(contacts) => contacts.forEach((c) => addContact(c))}
+          onImportAppointment={() => {}}
+        />
       )}
 
       {/* Modal */}

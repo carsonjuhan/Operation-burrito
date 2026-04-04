@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { BabyItem, ItemCategory, ItemPriority } from "@/types";
 import { Modal } from "@/components/Modal";
+import { ReceiptImportModal } from "@/components/ReceiptImportModal";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus, CheckCircle2, Circle, Pencil, Trash2, ExternalLink, Filter } from "lucide-react";
+import { Plus, CheckCircle2, Circle, Pencil, Trash2, ExternalLink, Filter, ScanLine } from "lucide-react";
 import clsx from "clsx";
 
 const CATEGORIES: ItemCategory[] = [
@@ -32,8 +33,9 @@ const DEFAULT_FORM = {
 };
 
 export default function ItemsPage() {
-  const { store, loaded, addItem, updateItem, deleteItem } = useStoreContext();
+  const { store, loaded, addItem, updateItem, deleteItem, addBagItem } = useStoreContext();
   const [showModal, setShowModal] = useState(false);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [editing, setEditing] = useState<BabyItem | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
   const [filterCategory, setFilterCategory] = useState<ItemCategory | "All">("All");
@@ -119,9 +121,14 @@ export default function ItemsPage() {
             {totalCost > 0 && ` · ~$${totalCost.toFixed(0)} still needed`}
           </p>
         </div>
-        <button onClick={openAdd} className="btn-primary">
-          <Plus size={16} /> Add Item
-        </button>
+        <div className="flex gap-2">
+          <button onClick={() => setShowReceiptModal(true)} className="btn-secondary">
+            <ScanLine size={16} /> Scan Receipt
+          </button>
+          <button onClick={openAdd} className="btn-primary">
+            <Plus size={16} /> Add Item
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -198,6 +205,16 @@ export default function ItemsPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Receipt Import Modal */}
+      {showReceiptModal && (
+        <ReceiptImportModal
+          onClose={() => setShowReceiptModal(false)}
+          onImportItems={(items) => items.forEach((i) => addItem(i))}
+          onImportBagItems={(items) => items.forEach((i) => addBagItem(i))}
+          defaultDestination="items"
+        />
       )}
 
       {/* Modal */}

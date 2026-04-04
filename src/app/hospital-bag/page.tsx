@@ -4,8 +4,9 @@ import { useState, useMemo } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { BagItem, BagCategory } from "@/types";
 import { Modal } from "@/components/Modal";
+import { ReceiptImportModal } from "@/components/ReceiptImportModal";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus, Pencil, Trash2, Package } from "lucide-react";
+import { Plus, Pencil, Trash2, Package, ScanLine } from "lucide-react";
 import clsx from "clsx";
 
 const CATEGORIES: BagCategory[] = [
@@ -30,6 +31,7 @@ const DEFAULT_FORM = {
 export default function HospitalBagPage() {
   const { store, loaded, updateBagItem, addBagItem, deleteBagItem } = useStoreContext();
   const [showModal, setShowModal] = useState(false);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [editing, setEditing] = useState<BagItem | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
 
@@ -116,6 +118,9 @@ export default function HospitalBagPage() {
               {allPacked ? "Unpack All" : "Pack All"}
             </button>
           )}
+          <button onClick={() => setShowReceiptModal(true)} className="btn-secondary">
+            <ScanLine size={16} /> Scan Receipt
+          </button>
           <button onClick={openAdd} className="btn-primary">
             <Plus size={16} /> Add Item
           </button>
@@ -174,6 +179,16 @@ export default function HospitalBagPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Receipt Import Modal */}
+      {showReceiptModal && (
+        <ReceiptImportModal
+          onClose={() => setShowReceiptModal(false)}
+          onImportItems={() => {}}
+          onImportBagItems={(items) => items.forEach((i) => addBagItem(i))}
+          defaultDestination="bag"
+        />
       )}
 
       {/* Modal */}
