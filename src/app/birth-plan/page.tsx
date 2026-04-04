@@ -118,9 +118,9 @@ export default function BirthPlanPage() {
             )}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 print-hide">
           <button onClick={() => window.print()} className="btn-secondary">
-            <Printer size={16} /> Print
+            <Printer size={16} /> Save as PDF
           </button>
           <button onClick={handleSave} className="btn-primary">
             {saved ? <><CheckCircle2 size={16} /> Saved!</> : <><Save size={16} /> Save</>}
@@ -129,7 +129,7 @@ export default function BirthPlanPage() {
       </div>
 
       {/* Intro */}
-      <div className="card p-4 mb-5 flex items-start gap-3 bg-rose-50 border-rose-100">
+      <div className="card p-4 mb-5 flex items-start gap-3 bg-rose-50 border-rose-100 print-hide">
         <Heart size={16} className="text-rose-400 mt-0.5 shrink-0" />
         <p className="text-sm text-rose-700">
           Based on the BC Women&apos;s Hospital Labour &amp; Birth Guide. Fill in as much or as little as you like,
@@ -137,8 +137,20 @@ export default function BirthPlanPage() {
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-stone-100 rounded-xl p-1">
+      {/* Print header (only visible when printing) */}
+      <div className="hidden print:block mb-6">
+        <h1 className="text-2xl font-bold">Birth Plan</h1>
+        {plan.personalInfo.legalName && (
+          <p className="text-base mt-1">{plan.personalInfo.legalName}{plan.personalInfo.preferredName ? ` (${plan.personalInfo.preferredName})` : ""}</p>
+        )}
+        {plan.personalInfo.dueDate && (
+          <p className="text-sm text-stone-500">Due: {new Date(plan.personalInfo.dueDate).toLocaleDateString()}</p>
+        )}
+        <p className="text-xs text-stone-400 mt-1">Printed {new Date().toLocaleDateString()}</p>
+      </div>
+
+      {/* Tabs (hidden when printing) */}
+      <div className="flex gap-1 mb-6 bg-stone-100 rounded-xl p-1 print-hide">
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -155,22 +167,27 @@ export default function BirthPlanPage() {
         ))}
       </div>
 
-      {/* Tab content */}
-      {tab === "personal" && (
+      {/* Tab panels — always in DOM; hidden on screen if inactive, all visible when printing */}
+      <div className={clsx("birth-plan-panel", tab !== "personal" && "hidden")}>
+        <span className="print-section-title hidden">Personal Information</span>
         <PersonalTab plan={plan} patch={patch} />
-      )}
-      {tab === "labour" && (
+      </div>
+      <div className={clsx("birth-plan-panel", tab !== "labour" && "hidden")}>
+        <span className="print-section-title hidden">Labour &amp; Birth</span>
         <LabourTab plan={plan} patchLabour={patchLabour} />
-      )}
-      {tab === "afterBirth" && (
+      </div>
+      <div className={clsx("birth-plan-panel", tab !== "afterBirth" && "hidden")}>
+        <span className="print-section-title hidden">After Birth</span>
         <AfterBirthTab plan={plan} patchAfterBirth={patchAfterBirth} />
-      )}
-      {tab === "interventions" && (
+      </div>
+      <div className={clsx("birth-plan-panel", tab !== "interventions" && "hidden")}>
+        <span className="print-section-title hidden">Interventions &amp; Unexpected Events</span>
         <InterventionsTab plan={plan} patchInterventions={patchInterventions} />
-      )}
+      </div>
 
       {/* Global notes */}
-      <div className="mt-6">
+      <div className="mt-6 birth-plan-panel">
+        <span className="print-section-title hidden">Notes</span>
         <label className="label">Notes</label>
         <textarea
           className="textarea"
