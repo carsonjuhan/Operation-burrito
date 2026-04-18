@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useStoreContext } from "@/contexts/StoreContext";
 import {
   ShoppingCart, GraduationCap, BookOpen, Heart, StickyNote,
-  CheckCircle2, Circle, Calendar, Briefcase, Baby,
+  CheckCircle2, Circle, Calendar, Briefcase, Baby, ExternalLink,
 } from "lucide-react";
 
 function getDaysUntil(dateStr: string): number | null {
@@ -27,7 +27,7 @@ export default function DashboardPage() {
     );
   }
 
-  const { items, classes, materials, birthPlan, notes, hospitalBag, appointments } = store;
+  const { items, classes, materials, birthPlan, notes, hospitalBag, appointments, registryUrl } = store;
 
   // ── Stats ────────────────────────────────────────────────────────────────
   const itemsPurchased = items.filter((i) => i.purchased).length;
@@ -138,7 +138,7 @@ export default function DashboardPage() {
 
       {/* Budget strip */}
       {estimatedTotal > 0 && (
-        <div className="card p-4 mb-6 grid grid-cols-3 divide-x divide-stone-100">
+        <Link href="/budget" className="card p-4 mb-6 grid grid-cols-3 divide-x divide-stone-100 hover:bg-stone-50 transition-colors">
           <div className="px-4 first:pl-0">
             <p className="text-xs text-stone-400">Estimated Total</p>
             <p className="text-lg font-bold text-stone-800">${estimatedTotal.toFixed(0)}</p>
@@ -151,7 +151,7 @@ export default function DashboardPage() {
             <p className="text-xs text-stone-400">Still Needed</p>
             <p className="text-lg font-bold text-amber-700">${remaining.toFixed(0)}</p>
           </div>
-        </div>
+        </Link>
       )}
 
       {/* Lower grid */}
@@ -247,6 +247,23 @@ export default function DashboardPage() {
             <p className="text-2xl font-bold text-stone-800">{materials.length}</p>
             <p className="text-xs text-stone-400">saved resources</p>
           </div>
+
+          {/* Registry link */}
+          {registryUrl && (
+            <a
+              href={registryUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card p-5 flex items-center gap-3 hover:bg-sage-50 transition-colors"
+            >
+              <span className="text-2xl">🛍️</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-stone-700">Amazon Baby Registry</p>
+                <p className="text-xs text-stone-400 truncate">{registryUrl}</p>
+              </div>
+              <ExternalLink size={14} className="text-stone-300 shrink-0" />
+            </a>
+          )}
         </div>
       </div>
     </div>

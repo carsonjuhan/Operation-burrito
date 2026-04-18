@@ -279,4 +279,5 @@ export interface AppStore {
   appointments: Appointment[];
   contacts: Contact[];
   contractions: Contraction[];
+  registryUrl: string;
 }

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, ShoppingCart, GraduationCap, BookOpen,
   Heart, StickyNote, Settings, Github, Briefcase, Calendar,
-  Phone, Timer, Search, X, Menu,
+  Phone, Timer, Search, X, Menu, PiggyBank,
 } from "lucide-react";
 import clsx from "clsx";
 import { getPAT, getGistId, getLastSynced } from "@/lib/gistSync";
@@ -14,6 +14,7 @@ import { getPAT, getGistId, getLastSynced } from "@/lib/gistSync";
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/items", label: "Baby Items", icon: ShoppingCart },
+  { href: "/budget", label: "Budget", icon: PiggyBank },
   { href: "/hospital-bag", label: "Hospital Bag", icon: Briefcase },
   { href: "/appointments", label: "Appointments", icon: Calendar },
   { href: "/contacts", label: "Contacts", icon: Phone },

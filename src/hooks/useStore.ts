@@ -107,6 +107,7 @@ const DEFAULT_STORE: AppStore = {
   appointments: [],
   contacts: [],
   contractions: [],
+  registryUrl: "",
 };
 
 // ── Persistence ────────────────────────────────────────────────────────────
@@ -134,6 +135,7 @@ function loadStore(): AppStore {
       appointments: parsed.appointments ?? [],
       contacts: parsed.contacts ?? [],
       contractions: parsed.contractions ?? [],
+      registryUrl: parsed.registryUrl ?? "",
     };
   } catch {
     return DEFAULT_STORE;
@@ -294,6 +296,12 @@ export function useStore() {
     update((s) => ({ ...s, contractions: [] }));
   }, [update]);
 
+  // ── Registry URL ──────────────────────────────────────────────────────────
+
+  const updateRegistryUrl = useCallback((url: string) => {
+    update((s) => ({ ...s, registryUrl: url }));
+  }, [update]);
+
   // ── External load ─────────────────────────────────────────────────────────
 
   const loadFromExternal = useCallback((incoming: AppStore) => {
@@ -312,6 +320,7 @@ export function useStore() {
     addAppointment, updateAppointment, deleteAppointment,
     addContact, updateContact, deleteContact,
     addContraction, clearContractions,
+    updateRegistryUrl,
     loadFromExternal,
   };
 }

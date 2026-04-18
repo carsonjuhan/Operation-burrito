@@ -5,8 +5,9 @@ import { useStoreContext } from "@/contexts/StoreContext";
 import { BabyItem, ItemCategory, ItemPriority } from "@/types";
 import { Modal } from "@/components/Modal";
 import { ReceiptImportModal } from "@/components/ReceiptImportModal";
+import { CsvImportModal } from "@/components/CsvImportModal";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus, CheckCircle2, Circle, Pencil, Trash2, ExternalLink, Filter, ScanLine } from "lucide-react";
+import { Plus, CheckCircle2, Circle, Pencil, Trash2, ExternalLink, Filter, ScanLine, ShoppingBag, Table2 } from "lucide-react";
 import clsx from "clsx";
 
 const CATEGORIES: ItemCategory[] = [
@@ -34,8 +35,10 @@ const DEFAULT_FORM = {
 
 export default function ItemsPage() {
   const { store, loaded, addItem, updateItem, deleteItem, addBagItem } = useStoreContext();
+  const registryUrl = store.registryUrl ?? "";
   const [showModal, setShowModal] = useState(false);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [showCsvModal, setShowCsvModal] = useState(false);
   const [editing, setEditing] = useState<BabyItem | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
   const [filterCategory, setFilterCategory] = useState<ItemCategory | "All">("All");
@@ -121,7 +124,15 @@ export default function ItemsPage() {
             {totalCost > 0 && ` · ~$${totalCost.toFixed(0)} still needed`}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          {registryUrl && (
+            <a href={registryUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+              <ShoppingBag size={16} /> View Registry
+            </a>
+          )}
+          <button onClick={() => setShowCsvModal(true)} className="btn-secondary">
+            <Table2 size={16} /> Import Spreadsheet
+          </button>
           <button onClick={() => setShowReceiptModal(true)} className="btn-secondary">
             <ScanLine size={16} /> Scan Receipt
           </button>
@@ -205,6 +216,14 @@ export default function ItemsPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {/* CSV Import Modal */}
+      {showCsvModal && (
+        <CsvImportModal
+          onClose={() => setShowCsvModal(false)}
+          onImport={(items) => items.forEach((i) => addItem(i))}
+        />
       )}
 
       {/* Receipt Import Modal */}

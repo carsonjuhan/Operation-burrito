@@ -23,12 +23,13 @@ import {
   ExternalLink,
   Loader2,
   Info,
+  ShoppingBag,
 } from "lucide-react";
 
 type SyncStatus = "idle" | "loading" | "success" | "error";
 
 export default function SettingsPage() {
-  const { store, loadFromExternal } = useStoreContext();
+  const { store, loadFromExternal, updateRegistryUrl } = useStoreContext();
 
   const [pat, setPATState] = useState("");
   const [gistId, setGistIdState] = useState("");
@@ -42,6 +43,7 @@ export default function SettingsPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [confirmPull, setConfirmPull] = useState(false);
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
+  const [registryInput, setRegistryInput] = useState(store.registryUrl ?? "");
 
   useEffect(() => {
     const savedPAT = getPAT();
@@ -293,6 +295,43 @@ export default function SettingsPage() {
           </p>
         </div>
       )}
+
+      {/* Amazon Baby Registry */}
+      <div className="card p-5 mb-4 mt-4">
+        <div className="flex items-center gap-2 mb-3">
+          <ShoppingBag size={18} className="text-stone-600" />
+          <h2 className="text-sm font-semibold text-stone-700">Amazon Baby Registry</h2>
+        </div>
+        <p className="text-xs text-stone-400 mb-3">
+          Save your registry URL so it appears as a quick link on the Items page and Dashboard.
+        </p>
+        <div className="flex gap-2">
+          <input
+            className="input flex-1 text-xs"
+            type="url"
+            placeholder="https://www.amazon.ca/baby-reg/..."
+            value={registryInput}
+            onChange={(e) => setRegistryInput(e.target.value)}
+          />
+          <button
+            onClick={() => updateRegistryUrl(registryInput.trim())}
+            className="btn-primary shrink-0"
+            disabled={registryInput.trim() === (store.registryUrl ?? "")}
+          >
+            Save
+          </button>
+        </div>
+        {store.registryUrl && (
+          <a
+            href={store.registryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-sky-600 hover:underline inline-flex items-center gap-1 mt-2"
+          >
+            View registry <ExternalLink size={11} />
+          </a>
+        )}
+      </div>
 
       {/* Step 2b — Existing Gist ID (new device flow) */}
       {connected && !gistId && (
