@@ -45,19 +45,15 @@ export default function ItemsPage() {
   const [filterPriority, setFilterPriority] = useState<ItemPriority | "All">("All");
   const [filterStatus, setFilterStatus] = useState<"All" | "Purchased" | "Needed">("All");
 
-  if (!loaded) return null;
-
-  const { items } = store;
-
   const filtered = useMemo(() => {
-    return items.filter((item) => {
+    return store.items.filter((item) => {
       if (filterCategory !== "All" && item.category !== filterCategory) return false;
       if (filterPriority !== "All" && item.priority !== filterPriority) return false;
       if (filterStatus === "Purchased" && !item.purchased) return false;
       if (filterStatus === "Needed" && item.purchased) return false;
       return true;
     });
-  }, [items, filterCategory, filterPriority, filterStatus]);
+  }, [store.items, filterCategory, filterPriority, filterStatus]);
 
   const grouped = useMemo(() => {
     const groups: Partial<Record<ItemCategory, BabyItem[]>> = {};
@@ -67,6 +63,10 @@ export default function ItemsPage() {
     }
     return groups;
   }, [filtered]);
+
+  if (!loaded) return null;
+
+  const { items } = store;
 
   const totalCost = items
     .filter((i) => !i.purchased && i.estimatedCost)

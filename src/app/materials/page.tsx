@@ -46,12 +46,8 @@ export default function MaterialsPage() {
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<MaterialType | "All">("All");
 
-  if (!loaded) return null;
-
-  const { materials } = store;
-
   const filtered = useMemo(() => {
-    return materials.filter((m) => {
+    return store.materials.filter((m) => {
       if (filterType !== "All" && m.type !== filterType) return false;
       if (search) {
         const q = search.toLowerCase();
@@ -63,7 +59,21 @@ export default function MaterialsPage() {
       }
       return true;
     });
-  }, [materials, filterType, search]);
+  }, [store.materials, filterType, search]);
+
+  const topicGroups = useMemo(() => {
+    const g: Record<string, Material[]> = {};
+    for (const m of filtered) {
+      const key = m.topic || "General";
+      if (!g[key]) g[key] = [];
+      g[key].push(m);
+    }
+    return g;
+  }, [filtered]);
+
+  if (!loaded) return null;
+
+  const { materials } = store;
 
   function openAdd() {
     setEditing(null);
@@ -101,16 +111,6 @@ export default function MaterialsPage() {
     }
     setShowModal(false);
   }
-
-  const topicGroups = useMemo(() => {
-    const g: Record<string, Material[]> = {};
-    for (const m of filtered) {
-      const key = m.topic || "General";
-      if (!g[key]) g[key] = [];
-      g[key].push(m);
-    }
-    return g;
-  }, [filtered]);
 
   return (
     <div className="max-w-3xl mx-auto">

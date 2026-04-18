@@ -35,6 +35,15 @@ export default function HospitalBagPage() {
   const [editing, setEditing] = useState<BagItem | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
 
+  const grouped = useMemo(() => {
+    const groups: Partial<Record<BagCategory, BagItem[]>> = {};
+    for (const item of store.hospitalBag) {
+      if (!groups[item.category]) groups[item.category] = [];
+      groups[item.category]!.push(item);
+    }
+    return groups;
+  }, [store.hospitalBag]);
+
   if (!loaded) return null;
 
   const { hospitalBag } = store;
@@ -42,15 +51,6 @@ export default function HospitalBagPage() {
   const packed = hospitalBag.filter((i) => i.packed).length;
   const total = hospitalBag.length;
   const percent = total > 0 ? Math.round((packed / total) * 100) : 0;
-
-  const grouped = useMemo(() => {
-    const groups: Partial<Record<BagCategory, BagItem[]>> = {};
-    for (const item of hospitalBag) {
-      if (!groups[item.category]) groups[item.category] = [];
-      groups[item.category]!.push(item);
-    }
-    return groups;
-  }, [hospitalBag]);
 
   const allPacked = total > 0 && packed === total;
 

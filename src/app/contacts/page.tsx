@@ -57,17 +57,17 @@ export default function ContactsPage() {
   const [editing, setEditing] = useState<Contact | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
 
+  const sorted = useMemo(
+    () =>
+      [...store.contacts].sort(
+        (a, b) => ROLE_SORT_ORDER[a.role] - ROLE_SORT_ORDER[b.role]
+      ),
+    [store.contacts]
+  );
+
   if (!loaded) return null;
 
   const { contacts } = store;
-
-  const sorted = useMemo(
-    () =>
-      [...contacts].sort(
-        (a, b) => ROLE_SORT_ORDER[a.role] - ROLE_SORT_ORDER[b.role]
-      ),
-    [contacts]
-  );
 
   function openAdd() {
     setEditing(null);

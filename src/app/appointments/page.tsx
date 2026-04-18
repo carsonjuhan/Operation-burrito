@@ -48,25 +48,25 @@ export default function AppointmentsPage() {
   const [editing, setEditing] = useState<Appointment | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
 
-  if (!loaded) return null;
-
-  const { appointments } = store;
-
   const upcoming = useMemo(
     () =>
-      appointments
+      store.appointments
         .filter((a) => !a.completed)
         .sort((a, b) => (a.date > b.date ? 1 : a.date < b.date ? -1 : 0)),
-    [appointments]
+    [store.appointments]
   );
 
   const past = useMemo(
     () =>
-      appointments
+      store.appointments
         .filter((a) => a.completed)
         .sort((a, b) => (a.date > b.date ? -1 : a.date < b.date ? 1 : 0)),
-    [appointments]
+    [store.appointments]
   );
+
+  if (!loaded) return null;
+
+  const { appointments } = store;
 
   function openAdd() {
     setEditing(null);
