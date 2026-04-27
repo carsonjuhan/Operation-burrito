@@ -59,7 +59,8 @@
       "tags": [
         "steamed",
         "nourishing",
-        "gentle"
+        "gentle",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -249,7 +250,8 @@
       ],
       "tags": [
         "savory",
-        "easy"
+        "easy",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -280,7 +282,8 @@
       ],
       "tags": [
         "hearty",
-        "comforting"
+        "comforting",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -442,7 +445,8 @@
       ],
       "tags": [
         "braised",
-        "savory"
+        "savory",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -474,7 +478,8 @@
       "tags": [
         "stir-fry",
         "quick",
-        "protein-rich"
+        "protein-rich",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -538,7 +543,8 @@
       ],
       "tags": [
         "steamed",
-        "savory"
+        "savory",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -698,7 +704,8 @@
         "congee",
         "gentle",
         "easy-digest",
-        "rest-phase"
+        "rest-phase",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -764,7 +771,8 @@
       "tags": [
         "braised",
         "hearty",
-        "comforting"
+        "comforting",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -796,7 +804,8 @@
       ],
       "tags": [
         "steamed",
-        "gentle"
+        "gentle",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -895,7 +904,8 @@
       "tags": [
         "pan-fried",
         "quick",
-        "omega-3"
+        "omega-3",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -1121,7 +1131,8 @@
         "steamed",
         "light",
         "delicate",
-        "rest-phase"
+        "rest-phase",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -1881,7 +1892,8 @@
       "tags": [
         "dessert",
         "traditional",
-        "cantonese"
+        "cantonese",
+        "MenuReference"
       ],
       "cuisine": "chinese"
     },
@@ -3393,6 +3405,791 @@
         "easy"
       ],
       "cuisine": "japanese"
+    },
+    {
+      "id": "cn-061",
+      "name_en": "Cordyceps Flower Steamed Pork Patty",
+      "name_zh": "蟲草花蒸肉餅",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "ground pork 200g",
+        "dried cordyceps flowers 15g, soaked",
+        "ginger 2 slices, minced",
+        "light soy sauce 1 tbsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp",
+        "water 1 tbsp"
+      ],
+      "instructions": [
+        "Mix ground pork with soy sauce, sesame oil, cornstarch, and water until sticky.",
+        "Flatten into a disc on a heatproof plate, top with soaked cordyceps flowers and ginger.",
+        "Steam over high heat for 15 minutes until pork is cooked through.",
+        "Drizzle with hot oil and serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "nourishing"
+      ]
+    },
+    {
+      "id": "cn-062",
+      "name_en": "Hairy Gourd with Dried Scallop Stir-Fry",
+      "name_zh": "節瓜瑤柱炒肉片",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "hairy gourd 1, sliced",
+        "pork loin 150g, sliced",
+        "dried scallops 3pcs, soaked and shredded",
+        "garlic 2 cloves, minced",
+        "light soy sauce 1 tbsp",
+        "cooking oil 1 tbsp"
+      ],
+      "instructions": [
+        "Marinate pork slices with soy sauce for 10 minutes.",
+        "Heat oil, stir-fry garlic and dried scallops until fragrant.",
+        "Add pork slices, cook until colour changes.",
+        "Add hairy gourd, stir-fry 3–4 minutes until tender. Season and serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "stir-fry",
+        "light"
+      ]
+    },
+    {
+      "id": "cn-063",
+      "name_en": "Tea Tree Mushroom Steamed Spare Ribs",
+      "name_zh": "茶樹菇蒸排骨",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "spare ribs 300g, chopped",
+        "dried tea tree mushrooms 30g, soaked",
+        "ginger 3 slices",
+        "light soy sauce 1 tbsp",
+        "oyster sauce 1 tsp",
+        "cornstarch 1 tsp",
+        "sesame oil 1 tsp"
+      ],
+      "instructions": [
+        "Marinate ribs with soy sauce, oyster sauce, cornstarch, and sesame oil for 20 minutes.",
+        "Arrange soaked tea tree mushrooms on plate, place ribs on top with ginger.",
+        "Steam over high heat for 20 minutes.",
+        "Serve directly in the steaming plate."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "mushroom"
+      ]
+    },
+    {
+      "id": "cn-064",
+      "name_en": "Tomato Corn Scrambled Eggs",
+      "name_zh": "番茄栗米炒蛋",
+      "cuisine": "chinese",
+      "protein": "egg",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "eggs 3",
+        "tomato 1 large, diced",
+        "sweet corn kernels 80g",
+        "salt 1/4 tsp",
+        "sugar pinch",
+        "cooking oil 1 tbsp",
+        "spring onion 1, chopped"
+      ],
+      "instructions": [
+        "Beat eggs with a pinch of salt.",
+        "Heat oil, scramble eggs until just set, remove and set aside.",
+        "In the same pan, cook tomato until softened, add corn kernels.",
+        "Return eggs, toss together with sugar and spring onion. Serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "quick",
+        "light"
+      ]
+    },
+    {
+      "id": "cn-065",
+      "name_en": "Fish Maw Braised with Cabbage",
+      "name_zh": "花膠燉椰菜",
+      "cuisine": "chinese",
+      "protein": "other",
+      "phase": [
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 60,
+      "servings": 2,
+      "ingredients": [
+        "dried fish maw 50g, soaked overnight",
+        "napa cabbage 200g, chopped",
+        "chicken broth 400ml",
+        "ginger 3 slices",
+        "goji berries 1 tbsp",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch soaked fish maw in boiling water with ginger for 5 minutes, drain.",
+        "Cut fish maw into pieces.",
+        "Bring chicken broth to boil, add cabbage, ginger, and fish maw.",
+        "Simmer 30 minutes until fish maw is soft. Add goji berries, season and serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "collagen",
+        "braised"
+      ]
+    },
+    {
+      "id": "cn-066",
+      "name_en": "Chestnut Steamed Chicken",
+      "name_zh": "板栗蒸滑雞",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "chicken thigh 250g, chopped",
+        "peeled chestnuts 100g",
+        "ginger 3 slices",
+        "light soy sauce 1 tbsp",
+        "oyster sauce 1 tsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp"
+      ],
+      "instructions": [
+        "Marinate chicken with soy sauce, oyster sauce, sesame oil, and cornstarch for 15 minutes.",
+        "Arrange chestnuts on heatproof plate, place chicken and ginger on top.",
+        "Steam over high heat for 20 minutes until chicken is cooked.",
+        "Garnish with spring onion and serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "warming"
+      ]
+    },
+    {
+      "id": "cn-067",
+      "name_en": "Red Date Goji Steamed Pork Patty",
+      "name_zh": "紅棗杞子蒸肉餅",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "ground pork 200g",
+        "red dates 5pcs, pitted and chopped",
+        "goji berries 1 tbsp",
+        "light soy sauce 1 tbsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp"
+      ],
+      "instructions": [
+        "Mix ground pork with soy sauce, sesame oil, and cornstarch.",
+        "Flatten into a disc on a plate, scatter red dates and goji berries on top.",
+        "Steam over high heat for 15 minutes.",
+        "Drizzle with a little soy sauce and serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "nourishing"
+      ]
+    },
+    {
+      "id": "cn-068",
+      "name_en": "Potato with Rose Pork",
+      "name_zh": "薯仔玫瑰肉粒",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "pork shoulder 200g, diced",
+        "potato 1 medium, diced",
+        "rose cooking wine 1 tbsp",
+        "light soy sauce 1 tbsp",
+        "sugar 1 tsp",
+        "garlic 2 cloves, minced",
+        "cooking oil 1 tbsp"
+      ],
+      "instructions": [
+        "Parboil potato cubes for 3 minutes, drain.",
+        "Heat oil, sear pork until golden on all sides.",
+        "Add garlic, soy sauce, sugar, and rose wine, stir-fry briefly.",
+        "Add potato, toss together and cook 5 more minutes until tender."
+      ],
+      "tags": [
+        "MenuReference",
+        "stir-fry",
+        "hearty"
+      ]
+    },
+    {
+      "id": "cn-069",
+      "name_en": "Yellow Wine Braised Chicken",
+      "name_zh": "黃酒煮雞",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 40,
+      "servings": 2,
+      "ingredients": [
+        "chicken leg 300g, chopped",
+        "Shaoxing yellow wine 200ml",
+        "ginger 50g, sliced",
+        "sesame oil 2 tbsp",
+        "brown sugar 1 tbsp",
+        "water 100ml"
+      ],
+      "instructions": [
+        "Heat sesame oil, fry ginger until fragrant and golden.",
+        "Add chicken, stir-fry until sealed on all sides.",
+        "Pour in yellow wine and water, add brown sugar.",
+        "Bring to boil, then simmer 25 minutes until chicken is tender and sauce reduced."
+      ],
+      "tags": [
+        "MenuReference",
+        "warming",
+        "wine"
+      ]
+    },
+    {
+      "id": "cn-070",
+      "name_en": "Tomato Sauce Braised Piglet Ribs",
+      "name_zh": "茄汁燜豬仔骨",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 35,
+      "servings": 2,
+      "ingredients": [
+        "pork ribs 300g, chopped",
+        "tomato 2, diced",
+        "tomato paste 2 tbsp",
+        "sugar 1 tbsp",
+        "light soy sauce 1 tbsp",
+        "ginger 2 slices",
+        "water 200ml"
+      ],
+      "instructions": [
+        "Blanch ribs, drain and set aside.",
+        "Sauté ginger, add fresh tomato and cook until soft.",
+        "Add tomato paste, sugar, soy sauce, and water. Bring to boil.",
+        "Add ribs, simmer 25 minutes until tender and sauce thickened."
+      ],
+      "tags": [
+        "MenuReference",
+        "braised",
+        "tangy"
+      ]
+    },
+    {
+      "id": "cn-071",
+      "name_en": "Lotus Root Peanut Braised Chicken Thigh",
+      "name_zh": "蓮藕花生炆雞脾",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 45,
+      "servings": 2,
+      "ingredients": [
+        "chicken thigh 2pcs",
+        "lotus root 200g, sliced",
+        "raw peanuts 50g",
+        "ginger 3 slices",
+        "light soy sauce 2 tbsp",
+        "oyster sauce 1 tbsp",
+        "water 400ml"
+      ],
+      "instructions": [
+        "Brown chicken thighs in oil with ginger.",
+        "Add lotus root, peanuts, soy sauce, and oyster sauce.",
+        "Pour in water, bring to boil.",
+        "Cover and simmer 35 minutes until lotus root is tender and chicken falls off bone."
+      ],
+      "tags": [
+        "MenuReference",
+        "braised",
+        "hearty"
+      ]
+    },
+    {
+      "id": "cn-072",
+      "name_en": "Double Mushroom Snow Fungus Steamed Chicken",
+      "name_zh": "雙菇雪耳蒸滑雞",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "chicken thigh 200g, chopped",
+        "shiitake mushrooms 4, sliced",
+        "oyster mushrooms 50g",
+        "snow fungus 1 piece, soaked and torn",
+        "ginger 2 slices",
+        "light soy sauce 1 tbsp",
+        "sesame oil 1 tsp"
+      ],
+      "instructions": [
+        "Marinate chicken with soy sauce and sesame oil for 15 minutes.",
+        "Layer mushrooms and snow fungus on plate, place chicken on top with ginger.",
+        "Steam over high heat for 18 minutes.",
+        "Drizzle with spring onion oil before serving."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "light"
+      ]
+    },
+    {
+      "id": "cn-073",
+      "name_en": "Dace Fish Steamed Pork Patty",
+      "name_zh": "鯪魚蒸肉餅",
+      "cuisine": "chinese",
+      "protein": "fish",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "ground pork 150g",
+        "dace fish paste 80g",
+        "dried tangerine peel 1 small piece, soaked and minced",
+        "light soy sauce 1 tbsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp",
+        "water 1 tbsp"
+      ],
+      "instructions": [
+        "Mix pork and dace fish paste with soy sauce, sesame oil, cornstarch, tangerine peel, and water.",
+        "Flatten mixture into a disc on a heatproof plate.",
+        "Steam over high heat for 15 minutes.",
+        "Pour off excess liquid, drizzle with heated soy sauce and oil."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "classic"
+      ]
+    },
+    {
+      "id": "cn-074",
+      "name_en": "Porcini Mushroom Steamed Chicken",
+      "name_zh": "牛肝菌蒸滑雞",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "chicken thigh 250g, chopped",
+        "dried porcini mushrooms 20g, soaked",
+        "ginger 3 slices",
+        "light soy sauce 1 tbsp",
+        "oyster sauce 1 tsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp"
+      ],
+      "instructions": [
+        "Marinate chicken with soy sauce, oyster sauce, sesame oil, and cornstarch for 15 minutes.",
+        "Arrange soaked porcini on plate, place chicken on top with ginger.",
+        "Steam over high heat for 20 minutes.",
+        "Serve with porcini soaking liquid drizzled over."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "umami"
+      ]
+    },
+    {
+      "id": "cn-075",
+      "name_en": "Lotus Steamed Pork Patty",
+      "name_zh": "蓮花蒸肉餅",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "ground pork 200g",
+        "lotus seeds 30g, soaked",
+        "ginger 2 slices, minced",
+        "light soy sauce 1 tbsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp"
+      ],
+      "instructions": [
+        "Mix pork with soy sauce, sesame oil, ginger, and cornstarch until sticky.",
+        "Flatten into a disc, press lotus seeds into the surface.",
+        "Steam over high heat for 15 minutes.",
+        "Garnish with chopped spring onion."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "nourishing"
+      ]
+    },
+    {
+      "id": "cn-076",
+      "name_en": "Fresh Yam Stir-Fry with Pork",
+      "name_zh": "鮮淮山炒肉片",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "Chinese yam 200g, peeled and sliced",
+        "pork loin 150g, sliced",
+        "wood ear fungus 30g, soaked",
+        "ginger 2 slices",
+        "light soy sauce 1 tbsp",
+        "cooking oil 1 tbsp"
+      ],
+      "instructions": [
+        "Marinate pork with soy sauce for 10 minutes.",
+        "Heat oil, stir-fry ginger and pork until colour changes.",
+        "Add yam slices and wood ear, stir-fry 3–4 minutes.",
+        "Season with a pinch of salt and serve. Yam should be just tender."
+      ],
+      "tags": [
+        "MenuReference",
+        "stir-fry",
+        "digestive"
+      ]
+    },
+    {
+      "id": "cn-077",
+      "name_en": "Ginger Carrot Stir-Fried Pork Belly Strips",
+      "name_zh": "薑仔紅蘿蔔炒豬花",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "pork belly 200g, thinly sliced",
+        "carrot 1, julienned",
+        "young ginger 30g, shredded",
+        "light soy sauce 1 tbsp",
+        "rice wine 1 tbsp",
+        "cooking oil 1 tbsp"
+      ],
+      "instructions": [
+        "Heat oil, stir-fry ginger until fragrant.",
+        "Add pork belly slices, cook until edges crisp slightly.",
+        "Add carrot, rice wine, and soy sauce.",
+        "Stir-fry 3 minutes until carrot is tender-crisp. Serve hot."
+      ],
+      "tags": [
+        "MenuReference",
+        "stir-fry",
+        "warming"
+      ]
+    },
+    {
+      "id": "cn-078",
+      "name_en": "Shiitake Steamed Chicken",
+      "name_zh": "冬菇蒸滑雞",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "chicken thigh 250g, chopped",
+        "dried shiitake mushrooms 6, soaked and halved",
+        "ginger 3 slices",
+        "light soy sauce 1 tbsp",
+        "oyster sauce 1 tsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp"
+      ],
+      "instructions": [
+        "Marinate chicken with soy sauce, oyster sauce, sesame oil, and cornstarch for 15 minutes.",
+        "Place mushrooms on plate, arrange chicken and ginger on top.",
+        "Steam over high heat for 18 minutes.",
+        "Drizzle with hot oil and serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "classic"
+      ]
+    },
+    {
+      "id": "cn-079",
+      "name_en": "Wood Ear Steamed Pork Patty",
+      "name_zh": "木耳蒸肉餅",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "ground pork 200g",
+        "dried wood ear fungus 15g, soaked and chopped",
+        "light soy sauce 1 tbsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp",
+        "water 1 tbsp"
+      ],
+      "instructions": [
+        "Mix pork with chopped wood ear, soy sauce, sesame oil, cornstarch, and water.",
+        "Flatten into a disc on heatproof plate.",
+        "Steam over high heat for 15 minutes.",
+        "Pour off excess liquid, drizzle with soy sauce."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "iron-rich"
+      ]
+    },
+    {
+      "id": "cn-080",
+      "name_en": "Mushroom Minced Pork on Broccoli",
+      "name_zh": "香菇肉碎扒西蘭花",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm",
+        "major"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "broccoli 1 head, cut into florets",
+        "ground pork 100g",
+        "dried shiitake mushrooms 4, soaked and diced",
+        "garlic 2 cloves, minced",
+        "oyster sauce 1 tbsp",
+        "cornstarch slurry 1 tbsp",
+        "cooking oil 1 tbsp"
+      ],
+      "instructions": [
+        "Blanch broccoli until bright green, arrange on plate.",
+        "Heat oil, stir-fry garlic, mushrooms, and pork until cooked.",
+        "Add oyster sauce and cornstarch slurry, stir until sauce thickens.",
+        "Pour mushroom pork sauce over broccoli and serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "stir-fry",
+        "vegetables"
+      ]
+    },
+    {
+      "id": "cn-081",
+      "name_en": "Red Date Goji Steamed Spare Ribs",
+      "name_zh": "紅棗杞子蒸排骨",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "spare ribs 300g, chopped",
+        "red dates 6pcs, pitted",
+        "goji berries 1 tbsp",
+        "ginger 3 slices",
+        "light soy sauce 1 tbsp",
+        "cornstarch 1 tsp",
+        "sesame oil 1 tsp"
+      ],
+      "instructions": [
+        "Marinate ribs with soy sauce, cornstarch, and sesame oil for 20 minutes.",
+        "Place ribs on plate, top with red dates, goji berries, and ginger.",
+        "Steam over high heat for 20 minutes.",
+        "Serve directly."
+      ],
+      "tags": [
+        "MenuReference",
+        "steamed",
+        "nourishing"
+      ]
+    },
+    {
+      "id": "cn-082",
+      "name_en": "Bitter Melon with Chicken Stir-Fried Ribs",
+      "name_zh": "涼瓜雞生炒骨",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": [
+        "maintenance"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "pork ribs 250g, chopped small",
+        "bitter melon 1, sliced and deseeded",
+        "fermented black beans 1 tbsp",
+        "garlic 2 cloves, minced",
+        "light soy sauce 1 tbsp",
+        "sugar 1 tsp",
+        "cornstarch 1 tsp"
+      ],
+      "instructions": [
+        "Marinate ribs with soy sauce, sugar, and cornstarch for 15 minutes.",
+        "Deep-fry or pan-fry ribs until golden, set aside.",
+        "Stir-fry garlic, black beans, and bitter melon 2 minutes.",
+        "Return ribs, toss together until bitter melon is tender-crisp."
+      ],
+      "tags": [
+        "MenuReference",
+        "stir-fry",
+        "cooling"
+      ]
+    },
+    {
+      "id": "cn-083",
+      "name_en": "Abalone with Hairy Gourd",
+      "name_zh": "鮑魚節瓜粒",
+      "cuisine": "chinese",
+      "protein": "other",
+      "phase": [
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "canned abalone 2pcs, diced",
+        "hairy gourd 1, diced",
+        "garlic 2 cloves, minced",
+        "oyster sauce 1 tbsp",
+        "chicken broth 100ml",
+        "cornstarch slurry 1 tbsp",
+        "cooking oil 1 tbsp"
+      ],
+      "instructions": [
+        "Heat oil, sauté garlic until fragrant.",
+        "Add hairy gourd, stir-fry 3 minutes.",
+        "Add chicken broth and oyster sauce, simmer 5 minutes until gourd is tender.",
+        "Add diced abalone, thicken with cornstarch slurry. Serve."
+      ],
+      "tags": [
+        "MenuReference",
+        "braised",
+        "premium"
+      ]
+    },
+    {
+      "id": "cn-084",
+      "name_en": "Snow Lotus Red Date Goji Sweet Soup",
+      "name_zh": "雪蓮子紅棗杞子糖水",
+      "cuisine": "chinese",
+      "protein": "other",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 40,
+      "servings": 2,
+      "ingredients": [
+        "snow lotus seeds 30g, soaked overnight",
+        "red dates 8pcs, pitted",
+        "goji berries 2 tbsp",
+        "rock sugar 30g",
+        "water 800ml"
+      ],
+      "instructions": [
+        "Rinse soaked snow lotus seeds, drain.",
+        "Bring water to boil, add snow lotus seeds and red dates.",
+        "Simmer 30 minutes until snow lotus seeds are translucent.",
+        "Add goji berries and rock sugar, cook 5 more minutes. Serve warm."
+      ],
+      "tags": [
+        "MenuReference",
+        "dessert",
+        "sweet-soup",
+        "collagen"
+      ]
     }
   ]
 }
