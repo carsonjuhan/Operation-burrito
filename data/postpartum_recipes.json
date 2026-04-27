@@ -12,17 +12,18 @@
       "prepTime": 45,
       "servings": 2,
       "ingredients": [
-        "chicken leg 300g",
-        "sesame oil 3 tbsp",
-        "ginger 50g, sliced",
-        "rice wine 200ml",
-        "water 300ml"
+        "chicken leg 300g, chopped",
+        "black sesame oil (黑麻油) 3 tbsp",
+        "old ginger 80g, sliced",
+        "rice wine 300ml",
+        "water 100ml (nursing-safe adaptation; traditional uses all rice wine)"
       ],
       "instructions": [
-        "Heat sesame oil in clay pot, fry ginger slices until fragrant and edges curl.",
-        "Add chicken pieces, stir-fry until surface is sealed.",
+        "Heat black sesame oil in clay pot on low-medium heat, fry ginger slices until fragrant and edges curl golden.",
+        "Blanch chicken pieces in boiling water 2 minutes, drain.",
+        "Add chicken to pot, stir-fry until surface is sealed.",
         "Pour in rice wine and water, bring to boil.",
-        "Simmer on low heat 30 minutes until chicken is tender."
+        "Simmer on low heat 30 minutes until chicken is tender. Serve hot."
       ],
       "tags": [
         "warming",
@@ -43,18 +44,21 @@
       "prepTime": 30,
       "servings": 2,
       "ingredients": [
-        "chicken thigh 200g",
-        "red dates 8pcs",
+        "chicken thigh 200g, bone-in, chopped into pieces",
+        "red dates 8pcs, pitted",
         "ginger 3 slices",
+        "light soy sauce 1 tbsp",
         "sesame oil 1 tsp",
         "rice wine 1 tbsp",
-        "salt pinch"
+        "cornstarch 1 tsp",
+        "sugar 1/4 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
-        "Cut chicken into bite-sized pieces, marinate with rice wine and sesame oil 15 minutes.",
-        "Place in heatproof dish, top with red dates and ginger.",
-        "Steam over high heat 20 minutes.",
-        "Drizzle sesame oil before serving."
+        "Marinate chicken with soy sauce, rice wine, sesame oil, cornstarch, sugar, and white pepper for at least 30 minutes.",
+        "Place in heatproof dish, top with red dates and ginger slices.",
+        "Steam over high heat with rolling boil for 20 minutes.",
+        "Rest 2 minutes, drizzle with sesame oil before serving."
       ],
       "tags": [
         "steamed",
@@ -177,7 +181,8 @@
         "ginger 3 slices",
         "soy sauce 1 tbsp",
         "sesame oil 1 tsp",
-        "cornstarch 1 tsp"
+        "cornstarch 1 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Slice chicken, marinate with soy sauce, cornstarch and sesame oil.",
@@ -209,7 +214,9 @@
         "ginger 2 slices",
         "light soy sauce 1 tbsp",
         "rice wine 1 tsp",
-        "sesame oil 1 tsp"
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Marinate chicken with soy sauce, rice wine, sesame oil.",
@@ -517,7 +524,7 @@
     },
     {
       "id": "cn-017",
-      "name_en": "Braised Pork Ribs with Mushrooms",
+      "name_en": "Steamed Pork Ribs with Mushrooms",
       "name_zh": "冬菇蒸排骨",
       "protein": "pork",
       "phase": [
@@ -527,19 +534,23 @@
       "prepTime": 35,
       "servings": 2,
       "ingredients": [
-        "pork spare ribs 300g",
-        "dried shiitake mushrooms 6pcs",
-        "garlic 2 cloves",
-        "soy sauce 1.5 tbsp",
+        "spare ribs 300g, chopped into bite-sized pieces",
+        "dried shiitake mushrooms 6, soaked and halved",
+        "garlic 3 cloves, minced",
+        "ginger 2 slices, minced",
+        "light soy sauce 1 tbsp",
         "oyster sauce 1 tbsp",
-        "cornstarch 1 tsp",
-        "sesame oil 1 tsp"
+        "Shaoxing wine 1 tbsp",
+        "cornstarch 1 tbsp",
+        "sesame oil 1 tsp",
+        "sugar 1/2 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
-        "Soak mushrooms until soft, halve.",
-        "Marinate ribs with soy sauce, oyster sauce, cornstarch, garlic.",
-        "Layer mushrooms and ribs in dish.",
-        "Steam 25 minutes until ribs are tender."
+        "Soak ribs in cold water 30 minutes to draw out blood, drain and pat dry.",
+        "Marinate ribs with soy sauce, oyster sauce, wine, cornstarch, sesame oil, sugar, white pepper, garlic, and ginger for 30 minutes.",
+        "Place mushroom halves on heatproof plate, arrange marinated ribs on top.",
+        "Steam over high heat for 20 minutes. Garnish with spring onion."
       ],
       "tags": [
         "steamed",
@@ -685,20 +696,25 @@
       "prepTime": 50,
       "servings": 2,
       "ingredients": [
-        "rice 100g",
+        "rice 1 cup, rinsed",
         "ground pork 100g",
-        "dried shiitake 3pcs, diced",
-        "ginger 2 slices",
-        "water 1L",
-        "salt to taste",
-        "white pepper",
-        "scallion"
+        "dried shiitake mushrooms 4, soaked and diced",
+        "ginger 3 slices",
+        "light soy sauce 1 tbsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1/2 tsp",
+        "salt and white pepper to taste",
+        "scallions 2, chopped (garnish)",
+        "oil 1 tsp",
+        "water or chicken broth 8 cups"
       ],
       "instructions": [
-        "Rinse rice, combine with water and ginger in pot.",
-        "Bring to boil, simmer 35 minutes, stirring occasionally.",
-        "Season pork with salt and white pepper, add to congee with mushrooms.",
-        "Cook 10 minutes more. Garnish with scallion."
+        "Mix rice with 1 tsp oil, let sit 10 minutes (helps achieve silky congee texture).",
+        "Bring water/broth to boil, add rice and ginger. Reduce to low simmer, stirring occasionally to prevent sticking.",
+        "Cook 1–1.5 hours until rice has fully broken down into a thick porridge.",
+        "Meanwhile, season pork with soy sauce, sesame oil, and cornstarch.",
+        "In the last 10 minutes of cooking, stir in seasoned pork and diced mushrooms. Cook until pork is done.",
+        "Season with salt and white pepper. Serve topped with scallions and a drizzle of sesame oil."
       ],
       "tags": [
         "congee",
@@ -753,20 +769,28 @@
       "prepTime": 50,
       "servings": 3,
       "ingredients": [
-        "ground pork 300g",
-        "water chestnut 4pcs, diced",
+        "fatty ground pork 300g (70% lean, 30% fat)",
+        "water chestnuts 80g, finely diced",
+        "ginger 1 tbsp, minced",
+        "scallions 2, minced",
         "egg 1",
-        "soy sauce 2 tbsp",
-        "cornstarch 2 tsp",
-        "napa cabbage 200g",
-        "ginger 3 slices",
-        "chicken broth 400ml"
+        "cornstarch 1.5 tsp",
+        "light soy sauce 2 tbsp",
+        "dark soy sauce 1 tsp",
+        "Shaoxing wine 1 tbsp",
+        "white pepper 1/4 tsp",
+        "five spice powder pinch",
+        "napa cabbage 200g, quartered",
+        "chicken broth 400ml",
+        "rock sugar 1 tbsp",
+        "oil for frying"
       ],
       "instructions": [
-        "Mix pork, water chestnut, egg, 1 tbsp soy sauce, cornstarch. Form 4 large balls.",
-        "Pan-fry meatballs until golden.",
-        "Line pot with cabbage, place meatballs on top.",
-        "Add broth, remaining soy sauce, ginger. Simmer covered 30 minutes."
+        "Combine pork, water chestnuts, ginger, scallions, egg, cornstarch, 1 tbsp soy sauce, wine, white pepper, and five spice. Stir vigorously in one direction for 10 minutes until paste-like and sticky.",
+        "Form into 4 large meatballs. Deep-fry or pan-fry in oil until golden brown on all sides. Drain.",
+        "Line a clay pot with napa cabbage. Place meatballs on top.",
+        "Add broth, remaining soy sauce, dark soy sauce, and rock sugar. Bring to boil, then cover and simmer on low heat 40–45 minutes until meatballs are very tender.",
+        "Serve meatballs on cabbage with braising sauce."
       ],
       "tags": [
         "braised",
@@ -788,19 +812,25 @@
       "prepTime": 30,
       "servings": 2,
       "ingredients": [
-        "spare ribs 250g",
-        "pumpkin 200g, cubed",
-        "garlic 2 cloves",
-        "fermented black beans 1 tbsp",
-        "soy sauce 1 tbsp",
-        "cornstarch 1 tsp",
-        "oil 1 tsp"
+        "spare ribs 300g, chopped into bite-sized pieces",
+        "pumpkin 300g, cut into cubes",
+        "fermented black beans 1 tbsp, rinsed and chopped",
+        "garlic 3 cloves, minced",
+        "light soy sauce 1 tbsp",
+        "oyster sauce 1 tbsp",
+        "cornstarch 1 tbsp",
+        "Shaoxing wine 1 tbsp",
+        "sugar 1 tsp",
+        "white pepper 1/4 tsp",
+        "sesame oil 1 tsp",
+        "scallion for garnish"
       ],
       "instructions": [
-        "Marinate ribs with garlic, black beans, soy sauce, cornstarch, oil.",
-        "Spread pumpkin cubes on plate.",
-        "Place marinated ribs on pumpkin.",
-        "Steam 25 minutes until ribs are tender."
+        "Soak ribs in cold water 30 minutes to remove blood. Drain and pat dry.",
+        "Marinate ribs with black beans, garlic, soy sauce, oyster sauce, wine, cornstarch, sugar, white pepper, and sesame oil for 30 minutes.",
+        "Arrange pumpkin cubes on heatproof plate, place marinated ribs on top.",
+        "Steam over high heat 25–30 minutes until ribs are tender and pumpkin is soft.",
+        "Garnish with scallion and serve."
       ],
       "tags": [
         "steamed",
@@ -888,18 +918,22 @@
       "prepTime": 20,
       "servings": 2,
       "ingredients": [
-        "mackerel fillet 2pcs",
+        "mackerel fillets 2",
         "soy sauce 2 tbsp",
         "mirin 2 tbsp",
+        "sake 2 tbsp",
         "sugar 1 tsp",
         "ginger 2 slices",
-        "oil 1 tbsp"
+        "cooking oil 1 tbsp",
+        "salt and pepper for seasoning"
       ],
       "instructions": [
-        "Score fish skin, pan-fry skin-side down until crispy.",
-        "Flip and cook 2 minutes.",
-        "Mix soy sauce, mirin, sugar. Pour into pan with ginger.",
-        "Simmer until sauce glazes the fish."
+        "Mix soy sauce, mirin, sake, and sugar to make teriyaki sauce.",
+        "Pat mackerel fillets dry with paper towel. Season lightly with salt and pepper.",
+        "Heat oil in pan over medium-high heat. Place fillets skin-side down, cook 3 minutes until skin is crispy.",
+        "Flip, cook 2 minutes on the other side.",
+        "Add ginger slices and pour teriyaki sauce into pan. Reduce heat, let sauce bubble and glaze the fish for 1–2 minutes.",
+        "Serve glazed side up."
       ],
       "tags": [
         "pan-fried",
@@ -1846,7 +1880,7 @@
       "servings": 1,
       "ingredients": [
         "thin rice vermicelli 1 bundle",
-        "sesame oil 2 tbsp",
+        "black sesame oil (黑麻油) 2 tbsp",
         "old ginger 20g, sliced",
         "rice wine 2 tbsp",
         "water 300ml"
@@ -1913,7 +1947,9 @@
         "black sesame powder 2 tbsp",
         "red dates 4pcs",
         "water 800ml",
-        "honey or brown sugar to taste"
+        "honey or brown sugar to taste",
+        "scallions for garnish",
+        "white pepper pinch"
       ],
       "instructions": [
         "Rinse rice, combine with water and dates.",
@@ -3421,17 +3457,20 @@
       "ingredients": [
         "ground pork 200g",
         "dried cordyceps flowers 15g, soaked",
+        "egg white 1",
         "ginger 2 slices, minced",
         "light soy sauce 1 tbsp",
         "sesame oil 1 tsp",
         "cornstarch 1 tsp",
-        "water 1 tbsp"
+        "water 2 tbsp",
+        "sugar 1/2 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
-        "Mix ground pork with soy sauce, sesame oil, cornstarch, and water until sticky.",
+        "Mix ground pork with egg white, soy sauce, sesame oil, cornstarch, water, sugar, and white pepper. Stir in one direction until sticky.",
         "Flatten into a disc on a heatproof plate, top with soaked cordyceps flowers and ginger.",
-        "Steam over high heat for 15 minutes until pork is cooked through.",
-        "Drizzle with hot oil and serve."
+        "Drizzle a little oil on top for glossy finish.",
+        "Steam over high heat for 15 minutes until pork is cooked through. Drizzle with hot oil and serve."
       ],
       "tags": [
         "MenuReference",
@@ -3490,9 +3529,12 @@
         "light soy sauce 1 tbsp",
         "oyster sauce 1 tsp",
         "cornstarch 1 tsp",
-        "sesame oil 1 tsp"
+        "sesame oil 1 tsp",
+        "Shaoxing wine 1 tbsp",
+        "white pepper pinch"
       ],
       "instructions": [
+        "Soak ribs in cold water 30 minutes to draw out blood. Drain and pat dry.",
         "Marinate ribs with soy sauce, oyster sauce, cornstarch, and sesame oil for 20 minutes.",
         "Arrange soaked tea tree mushrooms on plate, place ribs on top with ginger.",
         "Steam over high heat for 20 minutes.",
@@ -3554,14 +3596,16 @@
         "napa cabbage 200g, chopped",
         "chicken broth 400ml",
         "ginger 3 slices",
+        "Shaoxing wine 1 tbsp",
         "goji berries 1 tbsp",
-        "salt to taste"
+        "oyster sauce 1 tbsp",
+        "salt and white pepper to taste"
       ],
       "instructions": [
-        "Blanch soaked fish maw in boiling water with ginger for 5 minutes, drain.",
-        "Cut fish maw into pieces.",
-        "Bring chicken broth to boil, add cabbage, ginger, and fish maw.",
-        "Simmer 30 minutes until fish maw is soft. Add goji berries, season and serve."
+        "Blanch soaked fish maw in boiling water with 2 ginger slices and wine for 5 minutes to remove fishiness. Drain and cut into pieces.",
+        "Bring chicken broth to boil, add cabbage, remaining ginger, oyster sauce, and fish maw.",
+        "Cover and simmer gently 45 minutes until fish maw is soft and gelatinous.",
+        "Add goji berries in the last 5 minutes. Season with salt and white pepper."
       ],
       "tags": [
         "MenuReference",
@@ -3588,7 +3632,8 @@
         "light soy sauce 1 tbsp",
         "oyster sauce 1 tsp",
         "sesame oil 1 tsp",
-        "cornstarch 1 tsp"
+        "cornstarch 1 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Marinate chicken with soy sauce, oyster sauce, sesame oil, and cornstarch for 15 minutes.",
@@ -3620,7 +3665,10 @@
         "goji berries 1 tbsp",
         "light soy sauce 1 tbsp",
         "sesame oil 1 tsp",
-        "cornstarch 1 tsp"
+        "cornstarch 1 tsp",
+        "egg white 1",
+        "water 2 tbsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Mix ground pork with soy sauce, sesame oil, and cornstarch.",
@@ -3683,15 +3731,20 @@
         "chicken leg 300g, chopped",
         "Shaoxing yellow wine 200ml",
         "ginger 50g, sliced",
-        "sesame oil 2 tbsp",
+        "black sesame oil 2 tbsp",
         "brown sugar 1 tbsp",
+        "red dates 6pcs, pitted",
+        "goji berries 1 tbsp",
+        "angelica root (當歸) 2 slices (optional)",
         "water 100ml"
       ],
       "instructions": [
-        "Heat sesame oil, fry ginger until fragrant and golden.",
+        "Heat black sesame oil on low-medium heat, fry ginger until fragrant and golden.",
         "Add chicken, stir-fry until sealed on all sides.",
-        "Pour in yellow wine and water, add brown sugar.",
-        "Bring to boil, then simmer 25 minutes until chicken is tender and sauce reduced."
+        "Add red dates and optional angelica root.",
+        "Pour in yellow wine and water, add brown sugar. Bring to boil.",
+        "Simmer 25 minutes until chicken is tender and sauce reduced.",
+        "Add goji berries in last 5 minutes. Serve hot."
       ],
       "tags": [
         "MenuReference",
@@ -3784,7 +3837,9 @@
         "snow fungus 1 piece, soaked and torn",
         "ginger 2 slices",
         "light soy sauce 1 tbsp",
-        "sesame oil 1 tsp"
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Marinate chicken with soy sauce and sesame oil for 15 minutes.",
@@ -3817,7 +3872,9 @@
         "light soy sauce 1 tbsp",
         "sesame oil 1 tsp",
         "cornstarch 1 tsp",
-        "water 1 tbsp"
+        "water 1 tbsp",
+        "egg white 1",
+        "white pepper pinch"
       ],
       "instructions": [
         "Mix pork and dace fish paste with soy sauce, sesame oil, cornstarch, tangerine peel, and water.",
@@ -3850,7 +3907,8 @@
         "light soy sauce 1 tbsp",
         "oyster sauce 1 tsp",
         "sesame oil 1 tsp",
-        "cornstarch 1 tsp"
+        "cornstarch 1 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Marinate chicken with soy sauce, oyster sauce, sesame oil, and cornstarch for 15 minutes.",
@@ -3882,7 +3940,10 @@
         "ginger 2 slices, minced",
         "light soy sauce 1 tbsp",
         "sesame oil 1 tsp",
-        "cornstarch 1 tsp"
+        "cornstarch 1 tsp",
+        "egg white 1",
+        "water 2 tbsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Mix pork with soy sauce, sesame oil, ginger, and cornstarch until sticky.",
@@ -3979,7 +4040,8 @@
         "light soy sauce 1 tbsp",
         "oyster sauce 1 tsp",
         "sesame oil 1 tsp",
-        "cornstarch 1 tsp"
+        "cornstarch 1 tsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Marinate chicken with soy sauce, oyster sauce, sesame oil, and cornstarch for 15 minutes.",
@@ -4011,7 +4073,9 @@
         "light soy sauce 1 tbsp",
         "sesame oil 1 tsp",
         "cornstarch 1 tsp",
-        "water 1 tbsp"
+        "water 1 tbsp",
+        "egg white 1",
+        "white pepper pinch"
       ],
       "instructions": [
         "Mix pork with chopped wood ear, soy sauce, sesame oil, cornstarch, and water.",
@@ -4045,7 +4109,10 @@
         "garlic 2 cloves, minced",
         "oyster sauce 1 tbsp",
         "cornstarch slurry 1 tbsp",
-        "cooking oil 1 tbsp"
+        "cooking oil 1 tbsp",
+        "egg white 1",
+        "water 2 tbsp",
+        "white pepper pinch"
       ],
       "instructions": [
         "Blanch broccoli until bright green, arrange on plate.",
@@ -4078,9 +4145,12 @@
         "ginger 3 slices",
         "light soy sauce 1 tbsp",
         "cornstarch 1 tsp",
-        "sesame oil 1 tsp"
+        "sesame oil 1 tsp",
+        "Shaoxing wine 1 tbsp",
+        "white pepper pinch"
       ],
       "instructions": [
+        "Soak ribs in cold water 30 minutes to draw out blood. Drain and pat dry.",
         "Marinate ribs with soy sauce, cornstarch, and sesame oil for 20 minutes.",
         "Place ribs on plate, top with red dates, goji berries, and ginger.",
         "Steam over high heat for 20 minutes.",
@@ -4172,17 +4242,19 @@
       "prepTime": 40,
       "servings": 2,
       "ingredients": [
-        "snow lotus seeds 30g, soaked overnight",
+        "snow lotus seeds (皂角米/雪蓮子) 30g, soaked overnight",
+        "snow fungus (雪耳) 1 piece, soaked and torn into small pieces (optional)",
         "red dates 8pcs, pitted",
         "goji berries 2 tbsp",
         "rock sugar 30g",
         "water 800ml"
       ],
       "instructions": [
-        "Rinse soaked snow lotus seeds, drain.",
-        "Bring water to boil, add snow lotus seeds and red dates.",
-        "Simmer 30 minutes until snow lotus seeds are translucent.",
-        "Add goji berries and rock sugar, cook 5 more minutes. Serve warm."
+        "Rinse soaked snow lotus seeds (they will have expanded 3–4x). Drain.",
+        "Bring water to boil, add snow lotus seeds, red dates, and snow fungus if using.",
+        "Simmer on low heat 35–40 minutes until snow lotus seeds are translucent and snow fungus is gelatinous.",
+        "Add goji berries and rock sugar in the last 5 minutes of cooking.",
+        "Serve warm. Can also be chilled as a cold dessert."
       ],
       "tags": [
         "MenuReference",
