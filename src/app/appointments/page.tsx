@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { Appointment, AppointmentType } from "@/types";
 import { Modal } from "@/components/Modal";
 import { IcsImportModal } from "@/components/IcsImportModal";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus, Pencil, Trash2, MapPin, CheckCircle2, Circle, CalendarPlus } from "lucide-react";
+import { useUndoDelete } from "@/hooks/useUndoDelete";
+import { Plus, Pencil, Trash2, MapPin, CheckCircle2, Circle, CalendarPlus, Download } from "lucide-react";
 import clsx from "clsx";
+import { PageTransition } from "@/components/PageTransition";
+import calendarData from "../../../data/calendar_events.json";
 
 const APPOINTMENT_TYPES: AppointmentType[] = [
   "OB / Midwife",
@@ -41,12 +44,36 @@ const DEFAULT_FORM = {
 };
 
 export default function AppointmentsPage() {
-  const { store, loaded, addAppointment, updateAppointment, deleteAppointment } =
+  const { store, loaded, addAppointment, updateAppointment, deleteAppointment, restoreAppointment } =
     useStoreContext();
+  const { handleDelete: handleUndoDelete } = useUndoDelete<Appointment>(deleteAppointment, restoreAppointment, (a) => a.title);
   const [showModal, setShowModal] = useState(false);
   const [showIcsModal, setShowIcsModal] = useState(false);
   const [editing, setEditing] = useState<Appointment | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
+  const hasImportedRef = useRef(false);
+
+  // Auto-import calendar appointments on first load if store is empty
+  useEffect(() => {
+    if (!loaded || hasImportedRef.current) return;
+    if (store.appointments.length > 0) {
+      hasImportedRef.current = true;
+      return;
+    }
+    for (const appt of calendarData.appointments) {
+      addAppointment({
+        title: appt.title,
+        type: appt.type as AppointmentType,
+        date: appt.date,
+        time: appt.time,
+        provider: appt.provider,
+        location: appt.location,
+        notes: appt.notes,
+        completed: appt.completed,
+      });
+    }
+    hasImportedRef.current = true;
+  }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const upcoming = useMemo(
     () =>
@@ -109,8 +136,31 @@ export default function AppointmentsPage() {
     setShowModal(false);
   }
 
+  function handleImportCalendar() {
+    let imported = 0;
+    for (const appt of calendarData.appointments) {
+      // Skip duplicates by matching title + date
+      const exists = store.appointments.some(
+        (a) => a.title === appt.title && a.date === appt.date
+      );
+      if (exists) continue;
+      addAppointment({
+        title: appt.title,
+        type: appt.type as AppointmentType,
+        date: appt.date,
+        time: appt.time,
+        provider: appt.provider,
+        location: appt.location,
+        notes: appt.notes,
+        completed: appt.completed,
+      });
+      imported++;
+    }
+    alert(`Imported ${imported} new appointment${imported !== 1 ? "s" : ""}. ${calendarData.appointments.length - imported} skipped (already exist).`);
+  }
+
   return (
-    <div className="max-w-3xl mx-auto">
+    <PageTransition className="max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
@@ -120,6 +170,9 @@ export default function AppointmentsPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          <button onClick={handleImportCalendar} className="btn-secondary">
+            <Download size={16} /> Import Calendar
+          </button>
           <button onClick={() => setShowIcsModal(true)} className="btn-secondary">
             <CalendarPlus size={16} /> Import .ics
           </button>
@@ -153,7 +206,7 @@ export default function AppointmentsPage() {
                     updateAppointment(appt.id, { completed: !appt.completed })
                   }
                   onEdit={() => openEdit(appt)}
-                  onDelete={() => deleteAppointment(appt.id)}
+                  onDelete={() => handleUndoDelete(appt)}
                 />
               ))}
             </Section>
@@ -168,7 +221,7 @@ export default function AppointmentsPage() {
                     updateAppointment(appt.id, { completed: !appt.completed })
                   }
                   onEdit={() => openEdit(appt)}
-                  onDelete={() => deleteAppointment(appt.id)}
+                  onDelete={() => handleUndoDelete(appt)}
                 />
               ))}
             </Section>
@@ -289,7 +342,7 @@ export default function AppointmentsPage() {
           </form>
         </Modal>
       )}
-    </div>
+    </PageTransition>
   );
 }
 
@@ -337,8 +390,8 @@ function AppointmentCard({
       <div className="flex items-start gap-3">
         <button
           onClick={onToggle}
-          className="mt-0.5 shrink-0 text-stone-400 hover:text-emerald-500 transition-colors"
-          title={appt.completed ? "Mark as upcoming" : "Mark as completed"}
+          className="mt-0.5 shrink-0 text-stone-400 hover:text-emerald-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+          aria-label={appt.completed ? `Mark ${appt.title} as upcoming` : `Mark ${appt.title} as completed`}
         >
           {appt.completed ? (
             <CheckCircle2 size={20} className="text-emerald-500" />
@@ -378,16 +431,18 @@ function AppointmentCard({
             <p className="text-xs text-stone-500 mt-2 whitespace-pre-wrap">{appt.notes}</p>
           )}
         </div>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity shrink-0">
           <button
             onClick={onEdit}
-            className="p-1.5 rounded hover:bg-stone-100 text-stone-400"
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-stone-100 text-stone-400"
+            aria-label={`Edit ${appt.title}`}
           >
             <Pencil size={14} />
           </button>
           <button
             onClick={onDelete}
-            className="p-1.5 rounded hover:bg-red-50 text-stone-400 hover:text-red-500"
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-red-50 text-stone-400 hover:text-red-500"
+            aria-label={`Delete ${appt.title}`}
           >
             <Trash2 size={14} />
           </button>

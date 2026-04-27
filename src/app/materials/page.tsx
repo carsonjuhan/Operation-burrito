@@ -5,7 +5,9 @@ import { useStoreContext } from "@/contexts/StoreContext";
 import { Material, MaterialType } from "@/types";
 import { Modal } from "@/components/Modal";
 import { EmptyState } from "@/components/EmptyState";
+import { useUndoDelete } from "@/hooks/useUndoDelete";
 import { Plus, Pencil, Trash2, ExternalLink, FileText, Video, Globe, BookOpen, Smartphone, Tag, Search } from "lucide-react";
+import { PageTransition } from "@/components/PageTransition";
 
 const MATERIAL_TYPES: MaterialType[] = [
   "PDF / Document", "Video", "Article", "Book", "App", "Other",
@@ -39,7 +41,8 @@ const DEFAULT_FORM = {
 };
 
 export default function MaterialsPage() {
-  const { store, loaded, addMaterial, updateMaterial, deleteMaterial } = useStoreContext();
+  const { store, loaded, addMaterial, updateMaterial, deleteMaterial, restoreMaterial } = useStoreContext();
+  const { handleDelete: handleUndoDelete } = useUndoDelete<Material>(deleteMaterial, restoreMaterial, (m) => m.title);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Material | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
@@ -113,7 +116,7 @@ export default function MaterialsPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <PageTransition className="max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
@@ -129,12 +132,13 @@ export default function MaterialsPage() {
       {materials.length > 0 && (
         <div className="card p-4 mb-6 flex flex-wrap gap-3 items-center">
           <div className="flex items-center gap-2 flex-1 min-w-[180px]">
-            <Search size={14} className="text-stone-400 shrink-0" />
+            <Search size={14} className="text-stone-400 shrink-0" aria-hidden="true" />
             <input
               className="text-sm bg-transparent focus:outline-none w-full"
               placeholder="Search materials…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search materials"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -143,6 +147,7 @@ export default function MaterialsPage() {
               className="text-xs border border-stone-200 rounded-md px-2 py-1 bg-white focus:outline-none"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as MaterialType | "All")}
+              aria-label="Filter by type"
             >
               <option value="All">All</option>
               {MATERIAL_TYPES.map((t) => <option key={t}>{t}</option>)}
@@ -176,7 +181,7 @@ export default function MaterialsPage() {
                     key={mat.id}
                     mat={mat}
                     onEdit={() => openEdit(mat)}
-                    onDelete={() => deleteMaterial(mat.id)}
+                    onDelete={() => handleUndoDelete(mat)}
                   />
                 ))}
               </div>
@@ -260,7 +265,7 @@ export default function MaterialsPage() {
           </form>
         </Modal>
       )}
-    </div>
+    </PageTransition>
   );
 }
 
@@ -281,9 +286,9 @@ function MaterialRow({
           <span className="text-sm font-medium text-stone-700">{mat.title}</span>
           <span className={`badge ${TYPE_COLORS[mat.type]}`}>{mat.type}</span>
         </div>
-        {mat.notes && <p className="text-xs text-stone-400 mt-0.5 truncate">{mat.notes}</p>}
+        {mat.notes && <p className="text-xs text-stone-500 mt-0.5 truncate">{mat.notes}</p>}
         {mat.savedAt && (
-          <p className="text-xs text-stone-300 mt-0.5">
+          <p className="text-xs text-stone-500 mt-0.5">
             Saved {new Date(mat.savedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
           </p>
         )}
@@ -293,17 +298,18 @@ function MaterialRow({
           href={mat.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-stone-300 hover:text-sage-600 transition-colors shrink-0"
+          className="text-stone-500 hover:text-sage-600 transition-colors shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center"
           onClick={(e) => e.stopPropagation()}
+          aria-label={`Open link for ${mat.title} (opens in new tab)`}
         >
           <ExternalLink size={14} />
         </a>
       )}
-      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button onClick={onEdit} className="p-1.5 rounded hover:bg-stone-100 text-stone-400">
+      <div className="flex gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+        <button onClick={onEdit} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-stone-100 text-stone-400" aria-label={`Edit ${mat.title}`}>
           <Pencil size={14} />
         </button>
-        <button onClick={onDelete} className="p-1.5 rounded hover:bg-red-50 text-stone-400 hover:text-red-500">
+        <button onClick={onDelete} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-red-50 text-stone-400 hover:text-red-500" aria-label={`Delete ${mat.title}`}>
           <Trash2 size={14} />
         </button>
       </div>

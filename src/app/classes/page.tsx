@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { BabyClass, ClassType } from "@/types";
 import { Modal } from "@/components/Modal";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus, CheckCircle2, Clock, Pencil, Trash2, MapPin, DollarSign } from "lucide-react";
+import { useUndoDelete } from "@/hooks/useUndoDelete";
+import { Plus, CheckCircle2, Clock, Pencil, Trash2, MapPin, DollarSign, Download } from "lucide-react";
 import clsx from "clsx";
+import { PageTransition } from "@/components/PageTransition";
+import calendarData from "../../../data/calendar_events.json";
 
 const CLASS_TYPES: ClassType[] = [
   "Childbirth", "Breastfeeding", "Newborn Care", "CPR / First Aid",
@@ -35,18 +38,49 @@ const DEFAULT_FORM = {
 };
 
 export default function ClassesPage() {
-  const { store, loaded, addClass, updateClass, deleteClass } = useStoreContext();
+  const { store, loaded, addClass, updateClass, deleteClass, restoreClass } = useStoreContext();
+  const { handleDelete: handleUndoDelete } = useUndoDelete<BabyClass>(deleteClass, restoreClass, (c) => c.name);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<BabyClass | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
+  const hasImportedRef = useRef(false);
+
+  // Auto-import calendar classes on first load if store is empty
+  useEffect(() => {
+    if (!loaded || hasImportedRef.current) return;
+    if (store.classes.length > 0) {
+      hasImportedRef.current = true;
+      return;
+    }
+    for (const cls of calendarData.classes) {
+      addClass({
+        name: cls.name,
+        type: cls.type as ClassType,
+        provider: cls.provider,
+        date: cls.date,
+        completed: cls.completed,
+        notes: cls.notes,
+        location: cls.location,
+      });
+    }
+    hasImportedRef.current = true;
+  }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const { classes } = store;
+
+  const upcoming = useMemo(
+    () => classes.filter((c) => !c.completed).sort((a, b) => (a.date > b.date ? 1 : -1)),
+    [classes]
+  );
+
+  const done = useMemo(
+    () => classes.filter((c) => c.completed).sort((a, b) => (a.date > b.date ? -1 : 1)),
+    [classes]
+  );
 
   if (!loaded) return null;
 
-  const { classes } = store;
   const completed = classes.filter((c) => c.completed).length;
-
-  const upcoming = classes.filter((c) => !c.completed).sort((a, b) => (a.date > b.date ? 1 : -1));
-  const done = classes.filter((c) => c.completed).sort((a, b) => (a.date > b.date ? -1 : 1));
 
   function openAdd() {
     setEditing(null);
@@ -89,8 +123,29 @@ export default function ClassesPage() {
     setShowModal(false);
   }
 
+  function handleImportCalendar() {
+    let imported = 0;
+    for (const cls of calendarData.classes) {
+      const exists = store.classes.some(
+        (c) => c.name === cls.name && c.date === cls.date
+      );
+      if (exists) continue;
+      addClass({
+        name: cls.name,
+        type: cls.type as ClassType,
+        provider: cls.provider,
+        date: cls.date,
+        completed: cls.completed,
+        notes: cls.notes,
+        location: cls.location || undefined,
+      });
+      imported++;
+    }
+    alert(`Imported ${imported} new class${imported !== 1 ? "es" : ""}. ${calendarData.classes.length - imported} skipped (already exist).`);
+  }
+
   return (
-    <div className="max-w-3xl mx-auto">
+    <PageTransition className="max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
@@ -99,9 +154,14 @@ export default function ClassesPage() {
             {completed} of {classes.length} completed
           </p>
         </div>
-        <button onClick={openAdd} className="btn-primary">
-          <Plus size={16} /> Add Class
-        </button>
+        <div className="flex gap-2">
+          <button onClick={handleImportCalendar} className="btn-secondary">
+            <Download size={16} /> Import Calendar
+          </button>
+          <button onClick={openAdd} className="btn-primary">
+            <Plus size={16} /> Add Class
+          </button>
+        </div>
       </div>
 
       {classes.length === 0 ? (
@@ -125,7 +185,7 @@ export default function ClassesPage() {
                   cls={cls}
                   onToggle={() => updateClass(cls.id, { completed: !cls.completed })}
                   onEdit={() => openEdit(cls)}
-                  onDelete={() => deleteClass(cls.id)}
+                  onDelete={() => handleUndoDelete(cls)}
                 />
               ))}
             </Section>
@@ -138,7 +198,7 @@ export default function ClassesPage() {
                   cls={cls}
                   onToggle={() => updateClass(cls.id, { completed: !cls.completed })}
                   onEdit={() => openEdit(cls)}
-                  onDelete={() => deleteClass(cls.id)}
+                  onDelete={() => handleUndoDelete(cls)}
                 />
               ))}
             </Section>
@@ -240,7 +300,7 @@ export default function ClassesPage() {
           </form>
         </Modal>
       )}
-    </div>
+    </PageTransition>
   );
 }
 
@@ -267,7 +327,7 @@ function ClassCard({
   return (
     <div className={clsx("p-4 group", cls.completed && "opacity-70")}>
       <div className="flex items-start gap-3">
-        <button onClick={onToggle} className="mt-0.5 shrink-0 text-stone-400 hover:text-emerald-500 transition-colors">
+        <button onClick={onToggle} className="mt-0.5 shrink-0 text-stone-400 hover:text-emerald-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label={cls.completed ? `Mark ${cls.name} as incomplete` : `Mark ${cls.name} as completed`}>
           {cls.completed ? (
             <CheckCircle2 size={20} className="text-emerald-500" />
           ) : (
@@ -305,11 +365,11 @@ function ClassCard({
             <p className="text-xs text-stone-500 mt-2 whitespace-pre-wrap">{cls.notes}</p>
           )}
         </div>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-          <button onClick={onEdit} className="p-1.5 rounded hover:bg-stone-100 text-stone-400">
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity shrink-0">
+          <button onClick={onEdit} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-stone-100 text-stone-400" aria-label={`Edit ${cls.name}`}>
             <Pencil size={14} />
           </button>
-          <button onClick={onDelete} className="p-1.5 rounded hover:bg-red-50 text-stone-400 hover:text-red-500">
+          <button onClick={onDelete} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-red-50 text-stone-400 hover:text-red-500" aria-label={`Delete ${cls.name}`}>
             <Trash2 size={14} />
           </button>
         </div>

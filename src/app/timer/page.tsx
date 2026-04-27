@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { Contraction } from "@/types";
 import { Timer, StopCircle, PlayCircle, Trash2, AlertTriangle, Activity } from "lucide-react";
 import clsx from "clsx";
+import { PageTransition } from "@/components/PageTransition";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -121,30 +122,38 @@ export default function TimerPage() {
     setShowClearConfirm(false);
   }, [clearContractions]);
 
-  if (!loaded) return null;
-
   const { contractions } = store;
-  const sorted = [...contractions].sort(
-    (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+
+  const sorted = useMemo(
+    () => [...contractions].sort(
+      (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+    ),
+    [contractions]
   );
-  const recent = sorted.slice(0, 10);
+
+  const recent = useMemo(() => sorted.slice(0, 10), [sorted]);
 
   // Stats
   const last = sorted[0] ?? null;
-  const avgInterval =
-    contractions.length > 1
-      ? Math.round(
-          contractions
-            .filter((c) => c.interval > 0)
-            .reduce((sum, c) => sum + c.interval, 0) /
-            contractions.filter((c) => c.interval > 0).length
-        )
-      : null;
+  const avgInterval = useMemo(
+    () =>
+      contractions.length > 1
+        ? Math.round(
+            contractions
+              .filter((c) => c.interval > 0)
+              .reduce((sum, c) => sum + c.interval, 0) /
+              contractions.filter((c) => c.interval > 0).length
+          )
+        : null,
+    [contractions]
+  );
 
-  const is511 = check511Rule(contractions);
+  const is511 = useMemo(() => check511Rule(contractions), [contractions]);
+
+  if (!loaded) return null;
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <PageTransition className="max-w-2xl mx-auto">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
@@ -158,7 +167,7 @@ export default function TimerPage() {
 
       {/* 5-1-1 Rule Warning Banner */}
       {is511 && (
-        <div className="mb-6 flex items-start gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800">
+        <div className="mb-6 flex items-start gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800" role="alert" aria-live="assertive">
           <AlertTriangle size={20} className="shrink-0 mt-0.5 text-rose-600" />
           <div>
             <p className="font-semibold text-sm">5-1-1 Rule Active</p>
@@ -192,8 +201,11 @@ export default function TimerPage() {
         <div
           className={clsx(
             "font-mono font-bold tabular-nums transition-colors",
-            phase === "timing" ? "text-8xl text-rose-600" : "text-8xl text-stone-300"
+            phase === "timing" ? "text-8xl text-rose-600" : "text-8xl text-stone-500"
           )}
+          role="timer"
+          aria-live="off"
+          aria-label={`Contraction timer: ${formatSeconds(elapsed)}`}
         >
           {formatSeconds(elapsed)}
         </div>
@@ -356,7 +368,7 @@ export default function TimerPage() {
           <p className="text-sm">Press Start when a contraction begins</p>
         </div>
       )}
-    </div>
+    </PageTransition>
   );
 }
 

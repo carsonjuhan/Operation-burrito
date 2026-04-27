@@ -4,45 +4,114 @@
 
 @layer base {
   body {
-    @apply bg-stone-50 text-stone-800;
+    @apply bg-stone-50 text-stone-800 dark:bg-stone-900 dark:text-stone-100;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-4 py-2 bg-sage-600 hover:bg-sage-700 text-white text-sm font-medium rounded-lg transition-colors;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] bg-sage-600 hover:bg-sage-700 text-white text-sm font-medium rounded-lg transition-colors dark:bg-sage-600 dark:hover:bg-sage-500;
   }
   .btn-secondary {
-    @apply inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-stone-50 text-stone-700 text-sm font-medium rounded-lg border border-stone-200 transition-colors;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] bg-white hover:bg-stone-50 text-stone-700 text-sm font-medium rounded-lg border border-stone-200 transition-colors dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-200 dark:border-stone-600;
   }
   .btn-danger {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-medium rounded-lg transition-colors;
+    @apply inline-flex items-center justify-center gap-2 px-3 py-1.5 min-h-[44px] bg-red-50 hover:bg-red-100 text-red-600 text-sm font-medium rounded-lg transition-colors dark:bg-red-950 dark:hover:bg-red-900 dark:text-red-400;
   }
   .card {
-    @apply bg-white rounded-xl border border-stone-200 shadow-sm;
+    @apply bg-white rounded-xl border border-stone-200 shadow-sm dark:bg-stone-800 dark:border-stone-700;
   }
   .input {
-    @apply w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent bg-white;
+    @apply w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent bg-white dark:bg-stone-800 dark:border-stone-600 dark:text-stone-100 dark:placeholder-stone-400;
   }
   .label {
-    @apply block text-xs font-medium text-stone-500 mb-1;
+    @apply block text-xs font-medium text-stone-500 mb-1 dark:text-stone-400;
   }
   .select {
-    @apply w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent bg-white;
+    @apply w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent bg-white dark:bg-stone-800 dark:border-stone-600 dark:text-stone-100;
   }
   .textarea {
-    @apply w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent bg-white resize-none;
+    @apply w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sage-400 focus:border-transparent bg-white resize-none dark:bg-stone-800 dark:border-stone-600 dark:text-stone-100 dark:placeholder-stone-400;
   }
   .badge {
-    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium dark:text-stone-200;
   }
 }
 
+/* ── Accessibility: Focus-visible styles ──────────────────────────────── */
+
+/* Enhanced focus-visible ring for all interactive elements */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #85a389; /* sage-400 */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove default outline for mouse users — focus-visible handles keyboard only */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Page transition & animation utilities ─────────────────────────────── */
+
+.animate-page-in {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+.animate-stagger-item {
+  animation: slideUp 0.35s ease-out both;
+  animation-delay: calc(var(--stagger-index, 0) * 50ms);
+}
+
+.animate-toggle {
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.animate-toggle-active {
+  animation: slideUp 0.25s ease-out both;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-page-in,
+  .animate-stagger-item,
+  .animate-toggle-active {
+    animation: none !important;
+  }
+  .animate-toggle {
+    transition: none !important;
+  }
+}
+
+/* Print-only elements are hidden on screen */
+.print-only {
+  display: none !important;
+}
+
 @media print {
-  /* Hide chrome */
+  /* Page setup for letter/A4 paper */
+  @page {
+    size: auto;
+    margin: 1.5cm 2cm;
+  }
+
+  /* Hide chrome and screen-only elements */
   aside,
   .print-hide {
     display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print-only {
+    display: block !important;
   }
 
   /* Full-width content */
@@ -53,18 +122,25 @@
 
   body {
     background: white !important;
-    font-size: 12px;
+    font-size: 11pt;
+    color: #1c1917 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
-  /* Show all birth plan tab panels */
-  .birth-plan-panel {
+  /* Show birth plan print view */
+  .birth-plan-print-view {
     display: block !important;
   }
 
-  /* Avoid page breaks inside cards */
-  .card {
+  /* Avoid page breaks inside sections */
+  .card,
+  .print-view-section {
     break-inside: avoid;
     box-shadow: none !important;
+  }
+
+  .card {
     border: 1px solid #e0e0e0 !important;
   }
 
@@ -73,7 +149,7 @@
     break-after: avoid;
   }
 
-  /* Print section dividers */
+  /* Print section dividers (legacy support for non-birth-plan pages) */
   .print-section-title {
     display: block !important;
     font-size: 14px;
@@ -85,7 +161,20 @@
     letter-spacing: 0.05em;
   }
 
-  /* Hide textareas — show as plain text */
+  /* Birth plan print footer — appears at bottom of last page */
+  .birth-plan-print-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 8pt;
+    color: #a8a29e;
+    padding: 8px 0;
+    border-top: 1px solid #e7e5e4;
+  }
+
+  /* Hide textareas — show as plain text (for non-birth-plan pages) */
   textarea {
     border: none !important;
     resize: none;

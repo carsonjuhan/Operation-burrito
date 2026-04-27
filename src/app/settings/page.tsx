@@ -12,7 +12,15 @@ import {
   setGistId,
   getLastSynced,
   clearGistConfig,
+  fetchGistUpdatedAt,
 } from "@/lib/gistSync";
+import {
+  hasLocalChanges,
+  hasRemoteChanges,
+  formatTimestamp,
+  getLastModifiedAt,
+  type ConflictInfo,
+} from "@/lib/conflictDetection";
 import {
   Github,
   CheckCircle2,
@@ -24,12 +32,31 @@ import {
   Loader2,
   Info,
   ShoppingBag,
+  HardDrive,
+  AlertTriangle,
+  RotateCcw,
+  FileDown,
+  FileUp,
 } from "lucide-react";
+import {
+  savePrePullSnapshot,
+  getPrePullSnapshot,
+  clearPrePullSnapshot,
+  hasPrePullSnapshot,
+} from "@/lib/syncValidation";
+import { STORAGE_LIMIT_BYTES } from "@/lib/storageMonitor";
+import { exportStoreAsJSON, parseImportFile } from "@/lib/dataImportExport";
+import { PageTransition } from "@/components/PageTransition";
+import { ReminderSettings } from "@/components/ReminderSettings";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { ActionHistory } from "@/components/ActionHistory";
+import { useActionHistory } from "@/hooks/useActionHistory";
 
 type SyncStatus = "idle" | "loading" | "success" | "error";
 
 export default function SettingsPage() {
-  const { store, loadFromExternal, updateRegistryUrl } = useStoreContext();
+  const { store, loadFromExternal, updateRegistryUrl, storageInfo } = useStoreContext();
+  const { history, revertTo, clearHistory: clearActionHistory } = useActionHistory(loadFromExternal);
 
   const [pat, setPATState] = useState("");
   const [gistId, setGistIdState] = useState("");
@@ -44,6 +71,23 @@ export default function SettingsPage() {
   const [confirmPull, setConfirmPull] = useState(false);
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
   const [registryInput, setRegistryInput] = useState(store.registryUrl ?? "");
+  const [hasSnapshot, setHasSnapshot] = useState(false);
+
+  // Conflict detection state (S-008)
+  const [pullConflict, setPullConflict] = useState<ConflictInfo | null>(null);
+  const [pushConflict, setPushConflict] = useState<ConflictInfo | null>(null);
+
+  // Import/export state
+  const [importStatus, setImportStatus] = useState<"idle" | "confirm" | "success" | "error">("idle");
+  const [importErrorMsg, setImportErrorMsg] = useState("");
+  const [importWarnings, setImportWarnings] = useState<string[]>([]);
+  const [pendingImport, setPendingImport] = useState<import("@/types").AppStore | null>(null);
+  const [exportDone, setExportDone] = useState(false);
+
+  // Check for existing snapshot on mount
+  useEffect(() => {
+    setHasSnapshot(hasPrePullSnapshot());
+  }, []);
 
   useEffect(() => {
     const savedPAT = getPAT();
@@ -89,6 +133,34 @@ export default function SettingsPage() {
   // ── Push ─────────────────────────────────────────────────────────────────
 
   async function handlePush() {
+    // If a conflict dialog is already showing, the user clicked "Proceed" — skip the check
+    if (!pushConflict) {
+      // Check for remote changes before pushing
+      const savedGistId = getGistId();
+      const savedLastSynced = getLastSynced();
+      if (savedGistId && savedLastSynced) {
+        setPushStatus("loading");
+        setErrorMsg("");
+        try {
+          const remoteUpdatedAt = await fetchGistUpdatedAt(getPAT(), savedGistId);
+          if (hasRemoteChanges(remoteUpdatedAt, savedLastSynced)) {
+            setPushStatus("idle");
+            setPushConflict({
+              type: "remote-changes-on-push",
+              localModifiedAt: getLastModifiedAt(),
+              remoteUpdatedAt,
+              lastSynced: savedLastSynced,
+            });
+            return;
+          }
+        } catch (e) {
+          // If we can't check remote, proceed with push anyway
+          console.warn("Could not check remote Gist timestamp:", (e as Error).message);
+        }
+      }
+    }
+
+    setPushConflict(null);
     setPushStatus("loading");
     setErrorMsg("");
     try {
@@ -103,25 +175,78 @@ export default function SettingsPage() {
     }
   }
 
+  function handlePushCancel() {
+    setPushConflict(null);
+  }
+
   // ── Pull ─────────────────────────────────────────────────────────────────
 
   async function handlePull() {
-    if (!confirmPull) {
+    // Step 1: Check for local changes before pulling (conflict detection)
+    if (!pullConflict && !confirmPull) {
+      const savedLastSynced = getLastSynced();
+      const localModified = getLastModifiedAt();
+      if (hasLocalChanges(savedLastSynced, localModified)) {
+        setPullConflict({
+          type: "local-changes-on-pull",
+          localModifiedAt: localModified,
+          remoteUpdatedAt: "",
+          lastSynced: savedLastSynced,
+        });
+        return;
+      }
+      // No conflict — show the standard overwrite confirmation
       setConfirmPull(true);
       return;
     }
+
+    // Step 2: If conflict dialog was shown and user proceeded, show standard confirm
+    if (pullConflict && !confirmPull) {
+      setPullConflict(null);
+      setConfirmPull(true);
+      return;
+    }
+
+    // Step 3: User confirmed — execute the pull
     setPullStatus("loading");
     setErrorMsg("");
     setConfirmPull(false);
+    setPullConflict(null);
     try {
+      // Save a pre-pull snapshot for recovery
+      savePrePullSnapshot(store);
+      setHasSnapshot(true);
+
       const remoteStore = await pullFromGist(getPAT());
       loadFromExternal(remoteStore);
       setLastSyncedState(new Date().toISOString());
       setPullStatus("success");
-      setTimeout(() => setPullStatus("idle"), 3000);
+      // Clear snapshot on successful pull after a delay
+      setTimeout(() => {
+        setPullStatus("idle");
+        clearPrePullSnapshot();
+        setHasSnapshot(false);
+      }, 5000);
     } catch (e) {
       setErrorMsg((e as Error).message);
       setPullStatus("error");
+      // Snapshot is preserved so user can restore
+    }
+  }
+
+  function handlePullConflictCancel() {
+    setPullConflict(null);
+    setConfirmPull(false);
+  }
+
+  function handleRestoreSnapshot() {
+    const snapshot = getPrePullSnapshot();
+    if (snapshot) {
+      loadFromExternal(snapshot);
+      clearPrePullSnapshot();
+      setHasSnapshot(false);
+      setPullStatus("idle");
+      setErrorMsg("");
     }
   }
 
@@ -131,8 +256,58 @@ export default function SettingsPage() {
     setGistId(gistId.trim());
   }
 
+  // ── Export ────────────────────────────────────────────────────────────────
+
+  function handleExport() {
+    exportStoreAsJSON(store);
+    setExportDone(true);
+    setTimeout(() => setExportDone(false), 3000);
+  }
+
+  // ── Import ────────────────────────────────────────────────────────────────
+
+  async function handleImportFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset the input so the same file can be re-selected
+    e.target.value = "";
+
+    setImportStatus("idle");
+    setImportErrorMsg("");
+    setImportWarnings([]);
+    setPendingImport(null);
+
+    const result = await parseImportFile(file);
+
+    if (!result.valid || !result.store) {
+      setImportStatus("error");
+      setImportErrorMsg(result.errors.join(" "));
+      return;
+    }
+
+    // Show confirmation dialog
+    setPendingImport(result.store);
+    setImportWarnings(result.warnings);
+    setImportStatus("confirm");
+  }
+
+  function handleImportConfirm() {
+    if (!pendingImport) return;
+    loadFromExternal(pendingImport);
+    setPendingImport(null);
+    setImportStatus("success");
+    setTimeout(() => setImportStatus("idle"), 5000);
+  }
+
+  function handleImportCancel() {
+    setPendingImport(null);
+    setImportStatus("idle");
+    setImportWarnings([]);
+  }
+
   return (
-    <div className="max-w-2xl mx-auto">
+    <PageTransition className="max-w-2xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-stone-800">Settings</h1>
         <p className="text-sm text-stone-400 mt-1">Manage data backup and sync via GitHub Gist.</p>
@@ -276,6 +451,54 @@ export default function SettingsPage() {
             </button>
           </div>
 
+          {/* Conflict: local changes on pull (S-008) */}
+          {pullConflict && !confirmPull && (
+            <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+              <p className="text-sm text-amber-800 font-medium flex items-center gap-1">
+                <AlertTriangle size={14} /> Local changes detected
+              </p>
+              <p className="text-xs text-amber-700">
+                You have unsaved local changes made since your last sync. Pulling will overwrite these changes with the remote version.
+              </p>
+              <div className="text-xs text-stone-500 space-y-0.5">
+                <p>Last synced: <span className="font-medium">{formatTimestamp(pullConflict.lastSynced)}</span></p>
+                <p>Local changes: <span className="font-medium">{formatTimestamp(pullConflict.localModifiedAt)}</span></p>
+              </div>
+              <div className="flex gap-2 mt-2">
+                <button onClick={handlePull} className="btn-danger text-xs">
+                  Proceed with pull
+                </button>
+                <button onClick={handlePullConflictCancel} className="btn-secondary text-xs">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Conflict: remote changes on push (S-008) */}
+          {pushConflict && (
+            <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+              <p className="text-sm text-amber-800 font-medium flex items-center gap-1">
+                <AlertTriangle size={14} /> Remote changes detected
+              </p>
+              <p className="text-xs text-amber-700">
+                The remote Gist has been updated since your last sync (possibly from another device). Pushing will overwrite those remote changes.
+              </p>
+              <div className="text-xs text-stone-500 space-y-0.5">
+                <p>Last synced: <span className="font-medium">{formatTimestamp(pushConflict.lastSynced)}</span></p>
+                <p>Remote updated: <span className="font-medium">{formatTimestamp(pushConflict.remoteUpdatedAt)}</span></p>
+              </div>
+              <div className="flex gap-2 mt-2">
+                <button onClick={handlePush} className="btn-danger text-xs">
+                  Proceed with push
+                </button>
+                <button onClick={handlePushCancel} className="btn-secondary text-xs">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
           {confirmPull && (
             <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
               <AlertCircle size={13} /> This will replace all local data with the version on GitHub. Click again to confirm.
@@ -283,9 +506,19 @@ export default function SettingsPage() {
           )}
 
           {(pushStatus === "error" || pullStatus === "error") && (
-            <p className="text-xs text-red-500 mt-2 flex items-center gap-1">
-              <AlertCircle size={13} /> {errorMsg}
-            </p>
+            <div className="mt-2 space-y-2">
+              <p className="text-xs text-red-500 flex items-center gap-1">
+                <AlertCircle size={13} /> {errorMsg}
+              </p>
+              {pullStatus === "error" && hasSnapshot && (
+                <button
+                  onClick={handleRestoreSnapshot}
+                  className="btn-secondary text-xs flex items-center gap-1"
+                >
+                  <RotateCcw size={13} /> Restore previous data
+                </button>
+              )}
+            </div>
           )}
 
           <p className="text-xs text-stone-400 mt-3">
@@ -295,6 +528,14 @@ export default function SettingsPage() {
           </p>
         </div>
       )}
+
+      {/* Language */}
+      <div className="card p-5 mb-4">
+        <LanguageSelector />
+      </div>
+
+      {/* Appointment Reminders */}
+      <ReminderSettings />
 
       {/* Amazon Baby Registry */}
       <div className="card p-5 mb-4 mt-4">
@@ -333,6 +574,137 @@ export default function SettingsPage() {
         )}
       </div>
 
+      {/* Data Storage */}
+      <div className="card p-5 mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <HardDrive size={18} className="text-stone-600" />
+          <h2 className="text-sm font-semibold text-stone-700">Data Storage</h2>
+        </div>
+        <p className="text-xs text-stone-400 mb-3">
+          All app data is stored in your browser&apos;s localStorage (~5 MB limit).
+        </p>
+
+        {/* Progress bar */}
+        <div className="w-full bg-stone-100 rounded-full h-2.5 mb-2">
+          <div
+            className={`h-2.5 rounded-full transition-all ${
+              storageInfo.percent >= 80
+                ? "bg-red-500"
+                : storageInfo.percent >= 60
+                ? "bg-amber-500"
+                : "bg-sage-500"
+            }`}
+            style={{ width: `${Math.max(storageInfo.percent, 1)}%` }}
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-stone-600">
+            <span className="font-semibold">{storageInfo.formatted}</span>
+            {" "}of ~{(STORAGE_LIMIT_BYTES / (1024 * 1024)).toFixed(0)} MB used
+          </p>
+          <p className="text-xs text-stone-400">{storageInfo.percent}%</p>
+        </div>
+
+        {storageInfo.warning && (
+          <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+            <AlertTriangle size={14} className="text-amber-500 mt-0.5 shrink-0" />
+            <div className="text-xs text-amber-700">
+              <p className="font-medium">Storage is running low</p>
+              <p className="mt-0.5">
+                Consider enabling GitHub Gist sync (above) to back up your data and prevent loss
+                if the browser storage limit is reached.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Data Import & Export */}
+      <div className="card p-5 mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <FileDown size={18} className="text-stone-600" />
+          <h2 className="text-sm font-semibold text-stone-700">Data Import &amp; Export</h2>
+        </div>
+        <p className="text-xs text-stone-400 mb-4">
+          Export your data as a JSON backup file, or import a previously exported file to restore your data.
+        </p>
+
+        <div className="flex gap-3 mb-3">
+          {/* Export button */}
+          <button
+            onClick={handleExport}
+            className="btn-primary flex-1 justify-center"
+          >
+            {exportDone ? (
+              <><CheckCircle2 size={16} /> Exported!</>
+            ) : (
+              <><FileDown size={16} /> Export Data</>
+            )}
+          </button>
+
+          {/* Import button */}
+          <label className="btn-secondary flex-1 justify-center cursor-pointer">
+            <FileUp size={16} /> Import Data
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={handleImportFileSelected}
+            />
+          </label>
+        </div>
+
+        {/* Import confirmation */}
+        {importStatus === "confirm" && (
+          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+            <p className="text-sm text-amber-800 font-medium flex items-center gap-1">
+              <AlertTriangle size={14} /> Replace all local data?
+            </p>
+            <p className="text-xs text-amber-700">
+              Importing will replace all your current data with the contents of the file. This cannot be undone.
+            </p>
+            {importWarnings.length > 0 && (
+              <div className="text-xs text-amber-600 space-y-0.5">
+                <p className="font-medium">Notes:</p>
+                {importWarnings.map((w, i) => (
+                  <p key={i}>- {w}</p>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-2 mt-2">
+              <button onClick={handleImportConfirm} className="btn-danger text-xs">
+                Yes, replace my data
+              </button>
+              <button onClick={handleImportCancel} className="btn-secondary text-xs">
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Import success */}
+        {importStatus === "success" && (
+          <p className="text-xs text-emerald-600 flex items-center gap-1">
+            <CheckCircle2 size={13} /> Data imported successfully.
+          </p>
+        )}
+
+        {/* Import error */}
+        {importStatus === "error" && (
+          <p className="text-xs text-red-500 flex items-center gap-1">
+            <AlertCircle size={13} /> {importErrorMsg}
+          </p>
+        )}
+      </div>
+
+      {/* Action History (S-051) */}
+      <ActionHistory
+        history={history}
+        revertTo={revertTo}
+        clearHistory={clearActionHistory}
+      />
+
       {/* Step 2b — Existing Gist ID (new device flow) */}
       {connected && !gistId && (
         <div className="card p-5">
@@ -353,6 +725,6 @@ export default function SettingsPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageTransition>
   );
 }

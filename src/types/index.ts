@@ -13,6 +13,14 @@ export type ItemCategory =
 
 export type ItemPriority = "Must Have" | "Nice to Have" | "Optional";
 
+export type ItemTiming =
+  | "Pregnancy"
+  | "Hospital (Pre-birth)"
+  | "Newborn (0-3 months)"
+  | "1-6 months"
+  | "Special occasions"
+  | "Other";
+
 export interface BabyItem {
   id: string;
   name: string;
@@ -24,6 +32,22 @@ export interface BabyItem {
   estimatedCost?: number;
   actualCost?: number;
   createdAt: string;
+  timing?: ItemTiming;
+  photos?: string[];
+}
+
+// ── Checklist Items (from metadata) ────────────────────────────────────────
+
+export interface ChecklistItem {
+  id: string;
+  name: string;
+  nameOriginal?: string;
+  category: ItemCategory;
+  categoryOriginal?: string;
+  categoryEn?: string;
+  timing: ItemTiming;
+  source?: string;
+  list?: string;
 }
 
 // ── Classes ────────────────────────────────────────────────────────────────
@@ -187,6 +211,7 @@ export interface Note {
   pinned: boolean;
   createdAt: string;
   updatedAt: string;
+  photos?: string[];
 }
 
 // ── Hospital Bag ───────────────────────────────────────────────────────────
@@ -280,4 +305,31 @@ export interface AppStore {
   contacts: Contact[];
   contractions: Contraction[];
   registryUrl: string;
+  lastModifiedAt?: string;
+  // Checklist state (previously in separate localStorage keys)
+  checklistSkipped?: string[];
+  checklistAlreadyHave?: string[];
+  hospitalChecklistPacked?: string[];
+  hospitalChecklistSkipped?: string[];
+}
+
+// ── Postpartum Recipes ────────────────────────────────────────────────────
+
+export type RecipeCuisine = "chinese" | "japanese";
+export type RecipeProtein = "chicken" | "pork" | "fish" | "beef" | "tofu" | "egg" | "other";
+export type RecipePhase = "rest" | "warm" | "major" | "maintenance";
+
+export interface PostpartumRecipe {
+  id: string;
+  name_en: string;
+  name_zh?: string;
+  name_ja?: string;
+  cuisine: RecipeCuisine;
+  protein: RecipeProtein;
+  phase: RecipePhase[];
+  prepTime: number;
+  servings: number;
+  ingredients: string[];
+  instructions: string[];
+  tags?: string[];
 }

@@ -7,6 +7,7 @@ import { BudgetChart } from "@/components/BudgetChart";
 import { ItemCategory, ItemPriority } from "@/types";
 import { ExternalLink, ShoppingBag, AlertTriangle, TrendingUp, CheckCircle2 } from "lucide-react";
 import clsx from "clsx";
+import { PageTransition } from "@/components/PageTransition";
 
 const CATEGORIES: ItemCategory[] = [
   "Nursery", "Clothing", "Feeding", "Safety", "Travel",
@@ -70,7 +71,7 @@ export default function BudgetPage() {
   if (!loaded) return null;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <PageTransition className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-stone-800">Budget & Analytics</h1>
@@ -228,7 +229,7 @@ export default function BudgetPage() {
           </p>
         )}
       </div>
-    </div>
+    </PageTransition>
   );
 }
 

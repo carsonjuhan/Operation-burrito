@@ -3,8 +3,10 @@
 import { useState, useCallback } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { BirthPlan } from "@/types";
-import { Save, CheckCircle2, Heart, Printer } from "lucide-react";
+import { Save, CheckCircle2, Heart, FileDown, Share2, Copy, Check as CheckIcon, X } from "lucide-react";
 import clsx from "clsx";
+import { PageTransition } from "@/components/PageTransition";
+import { generateShareUrl } from "@/lib/birthPlanShare";
 
 type Tab = "personal" | "labour" | "afterBirth" | "interventions";
 
@@ -63,6 +65,9 @@ export default function BirthPlanPage() {
   const { store, loaded, updateBirthPlan } = useStoreContext();
   const [tab, setTab] = useState<Tab>("personal");
   const [saved, setSaved] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const plan = store.birthPlan;
 
@@ -100,104 +105,177 @@ export default function BirthPlanPage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const handleShare = () => {
+    const url = generateShareUrl(plan);
+    setShareUrl(url);
+    setCopied(false);
+    setShareOpen(true);
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textarea = document.createElement("textarea");
+      textarea.value = shareUrl;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   // Progress: count non-empty string fields + true booleans across all sections
   const filledFields = countFilled(plan);
 
   if (!loaded) return null;
 
   return (
-    <div className="max-w-3xl mx-auto">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-stone-800">Birth Plan</h1>
-          <p className="text-sm text-stone-400 mt-1">
-            {filledFields} fields filled
-            {plan.updatedAt && (
-              <> · Last updated {new Date(plan.updatedAt).toLocaleDateString()}</>
-            )}
+    <PageTransition className="max-w-3xl mx-auto">
+      {/* ── Screen-only interactive form ────────────────────────────────── */}
+      <div className="print-hide">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-stone-800">Birth Plan</h1>
+            <p className="text-sm text-stone-400 mt-1">
+              {filledFields} fields filled
+              {plan.updatedAt && (
+                <> · Last updated {new Date(plan.updatedAt).toLocaleDateString()}</>
+              )}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleShare} className="btn-secondary" aria-label="Share birth plan">
+              <Share2 size={16} /> Share
+            </button>
+            <button onClick={() => window.print()} className="btn-secondary" aria-label="Export birth plan as PDF">
+              <FileDown size={16} /> Export PDF
+            </button>
+            <button onClick={handleSave} className="btn-primary">
+              {saved ? <><CheckCircle2 size={16} /> Saved!</> : <><Save size={16} /> Save</>}
+            </button>
+          </div>
+        </div>
+
+        {/* Intro */}
+        <div className="card p-4 mb-5 flex items-start gap-3 bg-rose-50 border-rose-100">
+          <Heart size={16} className="text-rose-400 mt-0.5 shrink-0" />
+          <p className="text-sm text-rose-700">
+            Based on the BC Women&apos;s Hospital Labour &amp; Birth Guide. Fill in as much or as little as you like,
+            then export as PDF and bring a copy for your care team.
           </p>
         </div>
-        <div className="flex gap-2 print-hide">
-          <button onClick={() => window.print()} className="btn-secondary">
-            <Printer size={16} /> Save as PDF
-          </button>
-          <button onClick={handleSave} className="btn-primary">
-            {saved ? <><CheckCircle2 size={16} /> Saved!</> : <><Save size={16} /> Save</>}
-          </button>
+
+        {/* Tabs */}
+        <div className="flex gap-1 mb-6 bg-stone-100 rounded-xl p-1">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={clsx(
+                "flex-1 py-2 px-3 text-sm font-medium rounded-lg transition-colors",
+                tab === t.id
+                  ? "bg-white text-stone-800 shadow-sm"
+                  : "text-stone-500 hover:text-stone-700"
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab panels */}
+        <div className={clsx(tab !== "personal" && "hidden")}>
+          <PersonalTab plan={plan} patch={patch} />
+        </div>
+        <div className={clsx(tab !== "labour" && "hidden")}>
+          <LabourTab plan={plan} patchLabour={patchLabour} />
+        </div>
+        <div className={clsx(tab !== "afterBirth" && "hidden")}>
+          <AfterBirthTab plan={plan} patchAfterBirth={patchAfterBirth} />
+        </div>
+        <div className={clsx(tab !== "interventions" && "hidden")}>
+          <InterventionsTab plan={plan} patchInterventions={patchInterventions} />
+        </div>
+
+        {/* Global notes */}
+        <div className="mt-6">
+          <label className="label">Notes</label>
+          <textarea
+            className="textarea"
+            rows={3}
+            placeholder="Any other wishes or information for your care team…"
+            value={plan.notes}
+            onChange={(e) => patch({ notes: e.target.value })}
+          />
         </div>
       </div>
 
-      {/* Intro */}
-      <div className="card p-4 mb-5 flex items-start gap-3 bg-rose-50 border-rose-100 print-hide">
-        <Heart size={16} className="text-rose-400 mt-0.5 shrink-0" />
-        <p className="text-sm text-rose-700">
-          Based on the BC Women&apos;s Hospital Labour &amp; Birth Guide. Fill in as much or as little as you like,
-          then print and bring a copy for your care team.
-        </p>
-      </div>
+      {/* ── Print-only clean view ───────────────────────────────────────── */}
+      <BirthPlanPrintView plan={plan} />
 
-      {/* Print header (only visible when printing) */}
-      <div className="hidden print:block mb-6">
-        <h1 className="text-2xl font-bold">Birth Plan</h1>
-        {plan.personalInfo.legalName && (
-          <p className="text-base mt-1">{plan.personalInfo.legalName}{plan.personalInfo.preferredName ? ` (${plan.personalInfo.preferredName})` : ""}</p>
-        )}
-        {plan.personalInfo.dueDate && (
-          <p className="text-sm text-stone-500">Due: {new Date(plan.personalInfo.dueDate).toLocaleDateString()}</p>
-        )}
-        <p className="text-xs text-stone-400 mt-1">Printed {new Date().toLocaleDateString()}</p>
-      </div>
-
-      {/* Tabs (hidden when printing) */}
-      <div className="flex gap-1 mb-6 bg-stone-100 rounded-xl p-1 print-hide">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={clsx(
-              "flex-1 py-2 px-3 text-sm font-medium rounded-lg transition-colors",
-              tab === t.id
-                ? "bg-white text-stone-800 shadow-sm"
-                : "text-stone-500 hover:text-stone-700"
-            )}
+      {/* ── Share Dialog ───────────────────────────────────────────────── */}
+      {shareOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShareOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Share birth plan"
+        >
+          <div
+            className="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6"
+            onClick={(e) => e.stopPropagation()}
           >
-            {t.label}
-          </button>
-        ))}
-      </div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-stone-800 flex items-center gap-2">
+                <Share2 size={18} className="text-sage-600" />
+                Share Birth Plan
+              </h2>
+              <button
+                onClick={() => setShareOpen(false)}
+                className="p-1 text-stone-400 hover:text-stone-600 rounded-lg hover:bg-stone-100 transition-colors"
+                aria-label="Close share dialog"
+              >
+                <X size={18} />
+              </button>
+            </div>
 
-      {/* Tab panels — always in DOM; hidden on screen if inactive, all visible when printing */}
-      <div className={clsx("birth-plan-panel", tab !== "personal" && "hidden")}>
-        <span className="print-section-title hidden">Personal Information</span>
-        <PersonalTab plan={plan} patch={patch} />
-      </div>
-      <div className={clsx("birth-plan-panel", tab !== "labour" && "hidden")}>
-        <span className="print-section-title hidden">Labour &amp; Birth</span>
-        <LabourTab plan={plan} patchLabour={patchLabour} />
-      </div>
-      <div className={clsx("birth-plan-panel", tab !== "afterBirth" && "hidden")}>
-        <span className="print-section-title hidden">After Birth</span>
-        <AfterBirthTab plan={plan} patchAfterBirth={patchAfterBirth} />
-      </div>
-      <div className={clsx("birth-plan-panel", tab !== "interventions" && "hidden")}>
-        <span className="print-section-title hidden">Interventions &amp; Unexpected Events</span>
-        <InterventionsTab plan={plan} patchInterventions={patchInterventions} />
-      </div>
+            <p className="text-sm text-stone-500 mb-4">
+              Anyone with this link can view a read-only copy of your birth plan. The data is encoded in the URL itself -- no server or account needed.
+            </p>
 
-      {/* Global notes */}
-      <div className="mt-6 birth-plan-panel">
-        <span className="print-section-title hidden">Notes</span>
-        <label className="label">Notes</label>
-        <textarea
-          className="textarea"
-          rows={3}
-          placeholder="Any other wishes or information for your care team…"
-          value={plan.notes}
-          onChange={(e) => patch({ notes: e.target.value })}
-        />
-      </div>
-    </div>
+            <div className="flex gap-2">
+              <input
+                readOnly
+                value={shareUrl}
+                className="input flex-1 text-xs font-mono bg-stone-50"
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+              />
+              <button
+                onClick={handleCopyLink}
+                className="btn-primary shrink-0"
+                aria-label="Copy share link"
+              >
+                {copied ? <><CheckIcon size={16} /> Copied!</> : <><Copy size={16} /> Copy</>}
+              </button>
+            </div>
+
+            <div className="mt-4 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+              <p className="text-xs text-amber-700">
+                To revoke this link, simply edit your birth plan and share a new link. The old link will show outdated data.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </PageTransition>
   );
 }
 
@@ -477,6 +555,272 @@ function InterventionsTab({
           <input className="input" value={inv.specialCareForBaby.other} onChange={(e) => setSC({ other: e.target.value })} placeholder="Other…" />
         </Field>
       </Section>
+    </div>
+  );
+}
+
+// ── Print View ───────────────────────────────────────────────────────────
+
+function PrintValue({ value, fallback = "Not specified" }: { value: string; fallback?: string }) {
+  return <span className={value.trim() ? "text-stone-800" : "text-stone-400 italic"}>{value.trim() || fallback}</span>;
+}
+
+function PrintCheck({ checked, label }: { checked: boolean; label: string }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className={checked ? "text-sage-600" : "text-stone-300"}>{checked ? "\u2713" : "\u2717"}</span>
+      <span className={checked ? "text-stone-800" : "text-stone-400"}>{label}</span>
+    </div>
+  );
+}
+
+function PrintSection({ title, children, isEmpty = false }: { title: string; children: React.ReactNode; isEmpty?: boolean }) {
+  if (isEmpty) return null;
+  return (
+    <div className="print-view-section mb-4">
+      <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1.5 border-b border-stone-200 pb-1">{title}</h3>
+      <div className="space-y-1 text-sm">{children}</div>
+    </div>
+  );
+}
+
+function PrintField({ label, value, fallback = "Not specified" }: { label: string; value: string; fallback?: string }) {
+  return (
+    <div>
+      <span className="font-medium text-stone-600">{label}: </span>
+      <PrintValue value={value} fallback={fallback} />
+    </div>
+  );
+}
+
+function BirthPlanPrintView({ plan }: { plan: BirthPlan }) {
+  const pi = plan.personalInfo;
+  const l = plan.labour;
+  const ab = plan.afterBirth;
+  const inv = plan.interventions;
+
+  const hasPersonalInfo = !!(pi.legalName || pi.preferredName || pi.dueDate || pi.currentMedications || pi.allergies);
+  const hasLabour = !!(l.birthPartner || l.doula || l.otherSupportPeople || l.labourGoal || l.atmosphereNotes ||
+    l.photographyNotes || l.personalTouches || l.otherRequests || l.cordBloodTissueBankingNotes ||
+    l.comfortMeasures.walking || l.comfortMeasures.labourBall || l.comfortMeasures.tub ||
+    l.comfortMeasures.shower || l.comfortMeasures.heat || l.comfortMeasures.ice ||
+    l.comfortMeasures.massage || l.comfortMeasures.tens || l.comfortMeasures.other ||
+    l.pushingPreferences.varietyOfPositions || l.pushingPreferences.helpWithPushing ||
+    l.pushingPreferences.selfDirected || l.pushingPreferences.other ||
+    l.painMedication.onlyIfAsked || l.painMedication.offerIfNotCoping ||
+    l.painMedication.offerAsSoonAsPossible || l.painMedication.nitrous ||
+    l.painMedication.morphineFentanyl || l.painMedication.epidural || l.painMedication.other ||
+    l.cordBloodBankDonation);
+  const hasAfterBirth = !!(ab.skinToSkin || ab.cordCuttingPerson || ab.feedingPlan || ab.feedingNotes ||
+    ab.newbornTreatments.antibioticEyeOintment || ab.newbornTreatments.vitaminKInjection ||
+    ab.newbornTreatments.other || ab.placentaPreferences || ab.circumcisionPreferences || ab.visitorsPreference);
+  const hasInterventions = !!(inv.unexpectedEvents.includeInAllDecisions || inv.unexpectedEvents.partnerIncluded ||
+    inv.unexpectedEvents.other || inv.continuousMonitoring.preferMobile || inv.continuousMonitoring.useShowerBath ||
+    inv.prolongedLabour.tryNaturalMethods || inv.prolongedLabour.offerMedication ||
+    inv.assistedBirthPreference || inv.caesarianWishes ||
+    inv.specialCareForBaby.skinToSkinIfPossible || inv.specialCareForBaby.helpExpressing ||
+    inv.specialCareForBaby.involvedInCare || inv.specialCareForBaby.other);
+
+  return (
+    <div className="hidden print:block birth-plan-print-view">
+      {/* Print Header */}
+      <div className="mb-6 pb-4 border-b-2 border-stone-800">
+        <h1 className="text-2xl font-bold text-stone-900">Birth Plan</h1>
+        {pi.legalName && (
+          <p className="text-lg mt-1 text-stone-800">
+            {pi.legalName}{pi.preferredName ? ` (${pi.preferredName})` : ""}
+          </p>
+        )}
+        <div className="flex gap-4 mt-1 text-sm text-stone-500">
+          {pi.dueDate && (
+            <span>Due date: {new Date(pi.dueDate + "T00:00:00").toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</span>
+          )}
+          <span>Generated: {new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</span>
+        </div>
+      </div>
+
+      {/* Personal Information */}
+      {hasPersonalInfo && (
+        <div className="mb-5">
+          <h2 className="text-base font-bold text-stone-800 uppercase tracking-wide mb-3 border-b-2 border-stone-300 pb-1">Personal Information</h2>
+          <PrintSection title="Identity">
+            <PrintField label="Legal Name" value={pi.legalName} />
+            <PrintField label="Preferred Name" value={pi.preferredName} />
+            {pi.dueDate && <PrintField label="Due Date" value={new Date(pi.dueDate + "T00:00:00").toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })} />}
+          </PrintSection>
+          <PrintSection title="Medical Information" isEmpty={!pi.currentMedications && !pi.allergies}>
+            <PrintField label="Current Medications" value={pi.currentMedications} />
+            <PrintField label="Allergies" value={pi.allergies} />
+          </PrintSection>
+        </div>
+      )}
+
+      {/* Labour & Birth */}
+      {hasLabour && (
+        <div className="mb-5">
+          <h2 className="text-base font-bold text-stone-800 uppercase tracking-wide mb-3 border-b-2 border-stone-300 pb-1">Labour &amp; Birth</h2>
+
+          <PrintSection title="Labour Goal" isEmpty={!l.labourGoal}>
+            <PrintField label="Approach" value={l.labourGoal} />
+          </PrintSection>
+
+          <PrintSection title="Support People" isEmpty={!l.birthPartner && !l.doula && !l.otherSupportPeople}>
+            {l.birthPartner && <PrintField label="Birth Partner" value={l.birthPartner} />}
+            {l.doula && <PrintField label="Doula" value={l.doula} />}
+            {l.otherSupportPeople && <PrintField label="Other Support" value={l.otherSupportPeople} />}
+          </PrintSection>
+
+          <PrintSection title="Room Atmosphere & Personal Touches" isEmpty={!l.atmosphereNotes && !l.photographyNotes && !l.personalTouches}>
+            {l.atmosphereNotes && <PrintField label="Atmosphere" value={l.atmosphereNotes} />}
+            {l.photographyNotes && <PrintField label="Photography" value={l.photographyNotes} />}
+            {l.personalTouches && <PrintField label="Personal Touches" value={l.personalTouches} />}
+          </PrintSection>
+
+          <PrintSection title="Comfort Measures" isEmpty={
+            !l.comfortMeasures.walking && !l.comfortMeasures.labourBall && !l.comfortMeasures.tub &&
+            !l.comfortMeasures.shower && !l.comfortMeasures.heat && !l.comfortMeasures.ice &&
+            !l.comfortMeasures.massage && !l.comfortMeasures.tens && !l.comfortMeasures.other
+          }>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+              <PrintCheck checked={l.comfortMeasures.walking} label="Walking, rocking, leaning" />
+              <PrintCheck checked={l.comfortMeasures.labourBall} label="Labour ball" />
+              <PrintCheck checked={l.comfortMeasures.tub} label="Tub / hydrotherapy" />
+              <PrintCheck checked={l.comfortMeasures.shower} label="Shower" />
+              <PrintCheck checked={l.comfortMeasures.heat} label="Heat" />
+              <PrintCheck checked={l.comfortMeasures.ice} label="Ice" />
+              <PrintCheck checked={l.comfortMeasures.massage} label="Massage" />
+              <PrintCheck checked={l.comfortMeasures.tens} label="TENS machine" />
+            </div>
+            {l.comfortMeasures.other && <PrintField label="Other" value={l.comfortMeasures.other} />}
+          </PrintSection>
+
+          <PrintSection title="Pushing Preferences" isEmpty={
+            !l.pushingPreferences.varietyOfPositions && !l.pushingPreferences.helpWithPushing &&
+            !l.pushingPreferences.selfDirected && !l.pushingPreferences.other
+          }>
+            <PrintCheck checked={l.pushingPreferences.varietyOfPositions} label="Try a variety of pushing positions" />
+            <PrintCheck checked={l.pushingPreferences.helpWithPushing} label="Have help or direction with pushing" />
+            <PrintCheck checked={l.pushingPreferences.selfDirected} label="Self-directed pushing" />
+            {l.pushingPreferences.other && <PrintField label="Other" value={l.pushingPreferences.other} />}
+          </PrintSection>
+
+          <PrintSection title="Pain Medication Preferences" isEmpty={
+            !l.painMedication.onlyIfAsked && !l.painMedication.offerIfNotCoping &&
+            !l.painMedication.offerAsSoonAsPossible && !l.painMedication.nitrous &&
+            !l.painMedication.morphineFentanyl && !l.painMedication.epidural && !l.painMedication.other
+          }>
+            {l.painMedication.onlyIfAsked && <PrintCheck checked={true} label="Only if I ask -- do not offer" />}
+            {l.painMedication.offerIfNotCoping && <PrintCheck checked={true} label="Offer if I appear not to be coping" />}
+            {l.painMedication.offerAsSoonAsPossible && <PrintCheck checked={true} label="Offer as soon as possible" />}
+            {(l.painMedication.nitrous || l.painMedication.morphineFentanyl || l.painMedication.epidural) && (
+              <div className="mt-1">
+                <span className="font-medium text-stone-600">Options to consider: </span>
+                {[
+                  l.painMedication.nitrous && "Nitrous oxide",
+                  l.painMedication.morphineFentanyl && "Morphine / fentanyl",
+                  l.painMedication.epidural && "Epidural",
+                ].filter(Boolean).join(", ")}
+              </div>
+            )}
+            {l.painMedication.other && <PrintField label="Other" value={l.painMedication.other} />}
+          </PrintSection>
+
+          <PrintSection title="Cord Blood" isEmpty={!l.cordBloodBankDonation && !l.cordBloodTissueBankingNotes}>
+            {l.cordBloodBankDonation && <PrintCheck checked={true} label="Donate to the Canadian Cord Blood Bank" />}
+            {l.cordBloodTissueBankingNotes && <PrintField label="Notes" value={l.cordBloodTissueBankingNotes} />}
+          </PrintSection>
+
+          <PrintSection title="Other Requests" isEmpty={!l.otherRequests}>
+            <p className="text-stone-800">{l.otherRequests}</p>
+          </PrintSection>
+        </div>
+      )}
+
+      {/* After Birth */}
+      {hasAfterBirth && (
+        <div className="mb-5">
+          <h2 className="text-base font-bold text-stone-800 uppercase tracking-wide mb-3 border-b-2 border-stone-300 pb-1">After Birth</h2>
+
+          <PrintSection title="Immediately After Birth" isEmpty={!ab.skinToSkin && !ab.cordCuttingPerson}>
+            {ab.skinToSkin && <PrintCheck checked={true} label="Skin-to-skin contact with baby right away" />}
+            {ab.cordCuttingPerson && <PrintField label="Cord cutting" value={ab.cordCuttingPerson} />}
+          </PrintSection>
+
+          <PrintSection title="Feeding" isEmpty={!ab.feedingPlan && !ab.feedingNotes}>
+            {ab.feedingPlan && <PrintField label="Feeding plan" value={ab.feedingPlan === "breastfeed" ? "Breastfeed" : ab.feedingPlan === "formula" ? "Formula" : "Other"} />}
+            {ab.feedingNotes && <PrintField label="Notes" value={ab.feedingNotes} />}
+          </PrintSection>
+
+          <PrintSection title="Newborn Treatments" isEmpty={!ab.newbornTreatments.antibioticEyeOintment && !ab.newbornTreatments.vitaminKInjection && !ab.newbornTreatments.other}>
+            <PrintCheck checked={ab.newbornTreatments.antibioticEyeOintment} label="Antibiotic eye ointment" />
+            <PrintCheck checked={ab.newbornTreatments.vitaminKInjection} label="Vitamin K injection" />
+            {ab.newbornTreatments.other && <PrintField label="Other" value={ab.newbornTreatments.other} />}
+          </PrintSection>
+
+          <PrintSection title="Circumcision & Other Procedures" isEmpty={!ab.circumcisionPreferences}>
+            <p className="text-stone-800">{ab.circumcisionPreferences}</p>
+          </PrintSection>
+
+          <PrintSection title="Placenta" isEmpty={!ab.placentaPreferences}>
+            <p className="text-stone-800">{ab.placentaPreferences}</p>
+          </PrintSection>
+
+          <PrintSection title="Visitors" isEmpty={!ab.visitorsPreference}>
+            <p className="text-stone-800">{ab.visitorsPreference}</p>
+          </PrintSection>
+        </div>
+      )}
+
+      {/* Interventions */}
+      {hasInterventions && (
+        <div className="mb-5">
+          <h2 className="text-base font-bold text-stone-800 uppercase tracking-wide mb-3 border-b-2 border-stone-300 pb-1">Interventions &amp; Unexpected Events</h2>
+
+          <PrintSection title="If Unexpected Events Occur" isEmpty={!inv.unexpectedEvents.includeInAllDecisions && !inv.unexpectedEvents.partnerIncluded && !inv.unexpectedEvents.other}>
+            {inv.unexpectedEvents.includeInAllDecisions && <PrintCheck checked={true} label="Include me in all decisions" />}
+            {inv.unexpectedEvents.partnerIncluded && <PrintCheck checked={true} label="Include my partner in all decisions" />}
+            {inv.unexpectedEvents.other && <PrintField label="Other" value={inv.unexpectedEvents.other} />}
+          </PrintSection>
+
+          <PrintSection title="If Continuous Monitoring is Needed" isEmpty={!inv.continuousMonitoring.preferMobile && !inv.continuousMonitoring.useShowerBath}>
+            {inv.continuousMonitoring.preferMobile && <PrintCheck checked={true} label="I prefer to be mobile" />}
+            {inv.continuousMonitoring.useShowerBath && <PrintCheck checked={true} label="I would like to use the shower or bath if possible" />}
+          </PrintSection>
+
+          <PrintSection title="If Labour is Prolonged" isEmpty={!inv.prolongedLabour.tryNaturalMethods && !inv.prolongedLabour.offerMedication}>
+            {inv.prolongedLabour.tryNaturalMethods && <PrintCheck checked={true} label="Try natural methods as long as possible" />}
+            {inv.prolongedLabour.offerMedication && <PrintCheck checked={true} label="Offer medication as soon as labour slows and it is safe" />}
+          </PrintSection>
+
+          <PrintSection title="Assisted Birth / Caesarian Wishes" isEmpty={!inv.assistedBirthPreference && !inv.caesarianWishes}>
+            {inv.assistedBirthPreference && <p className="text-stone-800">{inv.assistedBirthPreference}</p>}
+            {inv.caesarianWishes && <PrintField label="Caesarian wishes" value={inv.caesarianWishes} />}
+          </PrintSection>
+
+          <PrintSection title="If Baby Needs Special Care" isEmpty={
+            !inv.specialCareForBaby.skinToSkinIfPossible && !inv.specialCareForBaby.helpExpressing &&
+            !inv.specialCareForBaby.involvedInCare && !inv.specialCareForBaby.other
+          }>
+            {inv.specialCareForBaby.skinToSkinIfPossible && <PrintCheck checked={true} label="Skin-to-skin care if possible" />}
+            {inv.specialCareForBaby.helpExpressing && <PrintCheck checked={true} label="Help to start expressing / pumping milk" />}
+            {inv.specialCareForBaby.involvedInCare && <PrintCheck checked={true} label="Be involved in baby's care as much as possible" />}
+            {inv.specialCareForBaby.other && <PrintField label="Other" value={inv.specialCareForBaby.other} />}
+          </PrintSection>
+        </div>
+      )}
+
+      {/* Notes */}
+      {plan.notes.trim() && (
+        <div className="mb-5">
+          <h2 className="text-base font-bold text-stone-800 uppercase tracking-wide mb-3 border-b-2 border-stone-300 pb-1">Additional Notes</h2>
+          <p className="text-sm text-stone-800 whitespace-pre-wrap">{plan.notes}</p>
+        </div>
+      )}
+
+      {/* Print Footer */}
+      <div className="birth-plan-print-footer">
+        Generated by Operation Burrito
+      </div>
     </div>
   );
 }

@@ -6,8 +6,10 @@ import { Contact, ContactRole } from "@/types";
 import { Modal } from "@/components/Modal";
 import { VcardImportModal } from "@/components/VcardImportModal";
 import { EmptyState } from "@/components/EmptyState";
+import { useUndoDelete } from "@/hooks/useUndoDelete";
 import { Plus, Pencil, Trash2, Phone, Mail, UserPlus } from "lucide-react";
 import clsx from "clsx";
+import { PageTransition } from "@/components/PageTransition";
 
 const ROLES: ContactRole[] = [
   "OB / Doctor",
@@ -51,7 +53,8 @@ const DEFAULT_FORM = {
 };
 
 export default function ContactsPage() {
-  const { store, loaded, addContact, updateContact, deleteContact } = useStoreContext();
+  const { store, loaded, addContact, updateContact, deleteContact, restoreContact } = useStoreContext();
+  const { handleDelete: handleUndoDelete } = useUndoDelete<Contact>(deleteContact, restoreContact, (c) => c.name);
   const [showModal, setShowModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [editing, setEditing] = useState<Contact | null>(null);
@@ -105,7 +108,7 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageTransition className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
@@ -143,7 +146,7 @@ export default function ContactsPage() {
               key={contact.id}
               contact={contact}
               onEdit={() => openEdit(contact)}
-              onDelete={() => deleteContact(contact.id)}
+              onDelete={() => handleUndoDelete(contact)}
             />
           ))}
         </div>
@@ -232,7 +235,7 @@ export default function ContactsPage() {
           </form>
         </Modal>
       )}
-    </div>
+    </PageTransition>
   );
 }
 
@@ -279,16 +282,18 @@ function ContactCard({
           </div>
         </div>
 
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity shrink-0">
           <button
             onClick={onEdit}
-            className="p-1.5 rounded hover:bg-stone-100 text-stone-400"
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-stone-100 text-stone-400"
+            aria-label={`Edit ${contact.name}`}
           >
             <Pencil size={14} />
           </button>
           <button
             onClick={onDelete}
-            className="p-1.5 rounded hover:bg-red-50 text-stone-400 hover:text-red-500"
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-red-50 text-stone-400 hover:text-red-500"
+            aria-label={`Delete ${contact.name}`}
           >
             <Trash2 size={14} />
           </button>

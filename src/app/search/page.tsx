@@ -11,6 +11,7 @@ import {
   Appointment,
   Contact,
   BagItem,
+  PostpartumRecipe,
 } from "@/types";
 import {
   ShoppingCart,
@@ -21,8 +22,11 @@ import {
   Phone,
   Briefcase,
   Search,
+  UtensilsCrossed,
 } from "lucide-react";
+import recipesData from "../../../data/postpartum_recipes.json";
 import clsx from "clsx";
+import { PageTransition } from "@/components/PageTransition";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -41,7 +45,8 @@ type SectionKey =
   | "classes"
   | "appointments"
   | "contacts"
-  | "hospitalBag";
+  | "hospitalBag"
+  | "recipes";
 
 // ── Section config ─────────────────────────────────────────────────────────
 
@@ -103,6 +108,13 @@ const SECTION_CONFIG: Record<SectionKey, SectionMeta> = {
     iconColor: "text-orange-600",
     bgColor: "bg-orange-50",
   },
+  recipes: {
+    label: "Recipes",
+    href: "/recipes",
+    Icon: UtensilsCrossed,
+    iconColor: "text-pink-600",
+    bgColor: "bg-pink-50",
+  },
 };
 
 const SECTION_ORDER: SectionKey[] = [
@@ -113,6 +125,7 @@ const SECTION_ORDER: SectionKey[] = [
   "appointments",
   "contacts",
   "hospitalBag",
+  "recipes",
 ];
 
 // ── Highlight helper ───────────────────────────────────────────────────────
@@ -158,6 +171,7 @@ function buildResults(
     appointments: [],
     contacts: [],
     hospitalBag: [],
+    recipes: [],
   };
 
   if (!q) return out;
@@ -271,6 +285,24 @@ function buildResults(
     }
   }
 
+  // Recipes (static data, not from store)
+  const allRecipes = (recipesData as { recipes: PostpartumRecipe[] }).recipes;
+  for (const recipe of allRecipes) {
+    const haystack = [
+      recipe.name_en, recipe.name_zh ?? "", recipe.name_ja ?? "",
+      ...recipe.ingredients, ...(recipe.tags ?? []),
+    ].join(" ");
+    if (matchesQuery(haystack, q)) {
+      out.recipes.push({
+        id: recipe.id,
+        sectionKey: "recipes",
+        title: `${recipe.name_en}${recipe.name_zh ? ` (${recipe.name_zh})` : recipe.name_ja ? ` (${recipe.name_ja})` : ""}`,
+        subtitle: `${recipe.cuisine === "chinese" ? "Chinese" : "Japanese"} · ${recipe.protein} · ${recipe.prepTime}min`,
+        href: "/recipes",
+      });
+    }
+  }
+
   return out;
 }
 
@@ -293,7 +325,7 @@ export default function SearchPage() {
   if (!loaded) return null;
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <PageTransition className="max-w-2xl mx-auto">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
@@ -404,7 +436,7 @@ export default function SearchPage() {
           })}
         </div>
       )}
-    </div>
+    </PageTransition>
   );
 }
 

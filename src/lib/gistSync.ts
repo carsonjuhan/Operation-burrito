@@ -1,4 +1,6 @@
 import { AppStore } from "@/types";
+import { validateAppStore } from "@/lib/syncValidation";
+import { clearLastModifiedAt } from "@/lib/conflictDetection";
 
 const GIST_FILENAME = "operation-burrito.json";
 const PAT_KEY = "ob-github-pat";
@@ -29,6 +31,7 @@ export function clearGistConfig() {
   localStorage.removeItem(PAT_KEY);
   localStorage.removeItem(GIST_ID_KEY);
   localStorage.removeItem(LAST_SYNCED_KEY);
+  clearLastModifiedAt();
 }
 
 // ── GitHub API helpers ─────────────────────────────────────────────────────
@@ -93,8 +96,38 @@ export async function loadGist(pat: string, gistId: string): Promise<AppStore> {
   const data = await res.json();
   const raw = data.files?.[GIST_FILENAME]?.content;
   if (!raw) throw new Error("Gist found but no data file inside.");
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error("Gist contains invalid JSON. The data may be corrupted.");
+  }
+
+  const validation = validateAppStore(parsed);
+  if (!validation.valid || !validation.store) {
+    throw new Error(
+      `Pulled data failed validation: ${validation.errors.join("; ")}`
+    );
+  }
+
   setLastSynced();
-  return JSON.parse(raw) as AppStore;
+  return validation.store;
+}
+
+// ── Gist metadata ─────────────────────────────────────────────────────────
+
+/**
+ * Fetch the Gist's updated_at timestamp without downloading the full content.
+ * Used for conflict detection before push.
+ */
+export async function fetchGistUpdatedAt(pat: string, gistId: string): Promise<string> {
+  const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+    headers: headers(pat),
+  });
+  if (!res.ok) throw new Error(`Failed to fetch Gist metadata: ${res.status}`);
+  const data = await res.json();
+  return (data.updated_at as string) ?? "";
 }
 
 // ── Combined push / pull ───────────────────────────────────────────────────

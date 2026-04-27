@@ -1,0 +1,512 @@
+{
+  "metadata": {
+    "generated_at": "2026-04-18",
+    "sources": [
+      {
+        "id": "kewi_mommy",
+        "name": "葵媽咪 @kewi.mommy",
+        "language": "zh-TW",
+        "type": "Hospital Bag Checklist (待產包清單) + Baby Shopping Checklist (寶寶用品採買清單)"
+      },
+      {
+        "id": "akachan_honpo",
+        "name": "アカチャンホンポ (Akachan Honpo)",
+        "language": "ja",
+        "type": "Comprehensive Baby & Maternity Preparation Checklist"
+      }
+    ]
+  },
+  "checklists": [
+    {
+      "source": "kewi_mommy",
+      "list_name": "待產包清單 (Hospital Bag Checklist)",
+      "categories": [
+        {
+          "category_zh": "證件類 (隨身攜帶)",
+          "category_en": "ID & Cards (Carry-on)",
+          "items": [
+            { "name_zh": "雙方健保卡", "name_en": "Both parties' health insurance cards" },
+            { "name_zh": "雙方身分證", "name_en": "Both parties' ID cards" },
+            { "name_zh": "孕婦健康手冊", "name_en": "Maternal health handbook" },
+            { "name_zh": "媽媽手冊", "name_en": "Mother's handbook" },
+            { "name_zh": "現金", "name_en": "Cash" },
+            { "name_zh": "提款卡/信用卡", "name_en": "Debit card / credit card" }
+          ]
+        },
+        {
+          "category_zh": "文件類 (依醫院規定)",
+          "category_en": "Documents (Per Hospital Requirements)",
+          "items": [
+            { "name_zh": "產檢報告", "name_en": "Prenatal check-up report" },
+            { "name_zh": "B群報告", "name_en": "Group B strep report" },
+            { "name_zh": "妊娠糖報告", "name_en": "Gestational diabetes report" },
+            { "name_zh": "媽媽身分證影本", "name_en": "Copy of mother's ID" },
+            { "name_zh": "健保卡影本", "name_en": "Copy of health insurance card" },
+            { "name_zh": "入院同意書", "name_en": "Hospital admission consent form" },
+            { "name_zh": "研究計畫文件", "name_en": "Research plan documents" },
+            { "name_zh": "出生證明資料夾", "name_en": "Birth certificate folder" },
+            { "name_zh": "突發狀況交代書", "name_en": "Emergency instructions document" }
+          ]
+        },
+        {
+          "category_zh": "生活用品",
+          "category_en": "Daily Essentials",
+          "items": [
+            { "name_zh": "手機充電線", "name_en": "Phone charging cable" },
+            { "name_zh": "乾洗手", "name_en": "Hand sanitizer" },
+            { "name_zh": "環保餐具", "name_en": "Reusable cutlery" },
+            { "name_zh": "保溫杯", "name_en": "Insulated cup / thermos" },
+            { "name_zh": "衛生紙", "name_en": "Tissue paper" },
+            { "name_zh": "髮圈", "name_en": "Hair tie" },
+            { "name_zh": "拖鞋", "name_en": "Slippers" },
+            { "name_zh": "能量點心", "name_en": "Energy snacks" },
+            { "name_zh": "小風扇", "name_en": "Small fan" },
+            { "name_zh": "筆記本／筆", "name_en": "Notebook and pen" }
+          ]
+        },
+        {
+          "category_zh": "其他貼心小物",
+          "category_en": "Other Thoughtful Items",
+          "items": [
+            { "name_zh": "香氛貼", "name_en": "Aromatherapy patches" },
+            { "name_zh": "按摩球", "name_en": "Massage ball" },
+            { "name_zh": "濕紙巾加熱器", "name_en": "Wet wipe warmer" },
+            { "name_zh": "手機架", "name_en": "Phone stand" },
+            { "name_zh": "療癒小物", "name_en": "Comfort / soothing items" }
+          ]
+        },
+        {
+          "category_zh": "生產用品 (Labour & Delivery)",
+          "category_en": "Labour & Delivery Items",
+          "items": [
+            { "name_zh": "手機／相機", "name_en": "Phone / camera" },
+            { "name_zh": "冰袋熱敷袋", "name_en": "Ice pack / heat pack" },
+            { "name_zh": "產褥靠枕", "name_en": "Postpartum support pillow" },
+            { "name_zh": "電熱水瓶", "name_en": "Electric hot water bottle" },
+            { "name_zh": "醫療口罩", "name_en": "Medical mask" },
+            { "name_zh": "口罩收納袋", "name_en": "Mask storage bag" },
+            { "name_zh": "生產毛巾", "name_en": "Delivery towel" },
+            { "name_zh": "拉梅茲球", "name_en": "Lamaze birthing ball" }
+          ]
+        },
+        {
+          "category_zh": "生產用品 (Breastfeeding & Postpartum)",
+          "category_en": "Breastfeeding & Postpartum Items",
+          "items": [
+            { "name_zh": "哺乳內衣", "name_en": "Nursing bra" },
+            { "name_zh": "溢乳墊", "name_en": "Breast pads" },
+            { "name_zh": "哺乳枕", "name_en": "Nursing pillow" },
+            { "name_zh": "前開式衣物", "name_en": "Front-opening clothing" },
+            { "name_zh": "哺乳巾", "name_en": "Nursing cover" },
+            { "name_zh": "羊脂膏", "name_en": "Lanolin cream" },
+            { "name_zh": "擠乳器", "name_en": "Breast pump" },
+            { "name_zh": "集乳袋", "name_en": "Breast milk storage bags" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "kewi_mommy",
+      "list_name": "待產包清單 (Hospital Bag) — Mama Items",
+      "categories": [
+        {
+          "category_zh": "媽咪用品-日常",
+          "category_en": "Mama Daily Items",
+          "items": [
+            { "name_zh": "洗髮精", "name_en": "Shampoo" },
+            { "name_zh": "沐浴乳", "name_en": "Body wash" },
+            { "name_zh": "牙刷", "name_en": "Toothbrush" },
+            { "name_zh": "牙膏", "name_en": "Toothpaste" },
+            { "name_zh": "洗面乳", "name_en": "Face wash" },
+            { "name_zh": "毛巾", "name_en": "Towel" },
+            { "name_zh": "浴巾", "name_en": "Bath towel" },
+            { "name_zh": "保溫杯／吸管杯", "name_en": "Thermos / straw cup" },
+            { "name_zh": "濕紙巾", "name_en": "Wet wipes" },
+            { "name_zh": "衛生紙", "name_en": "Tissue" },
+            { "name_zh": "保養品", "name_en": "Skincare products" },
+            { "name_zh": "護唇膏", "name_en": "Lip balm" },
+            { "name_zh": "乾洗手", "name_en": "Hand sanitizer" },
+            { "name_zh": "75%酒精", "name_en": "75% alcohol sanitizer" },
+            { "name_zh": "凡士林", "name_en": "Vaseline" },
+            { "name_zh": "哺乳內衣*3件", "name_en": "Nursing bra x3" },
+            { "name_zh": "溢乳墊", "name_en": "Breast pads" },
+            { "name_zh": "哺乳枕", "name_en": "Nursing pillow" },
+            { "name_zh": "出院衣服", "name_en": "Discharge outfit" },
+            { "name_zh": "帽子", "name_en": "Hat" },
+            { "name_zh": "襪子", "name_en": "Socks" }
+          ]
+        },
+        {
+          "category_zh": "媽咪用品-產後護理",
+          "category_en": "Mama Postpartum Care",
+          "items": [
+            { "name_zh": "看護墊, 產褥墊*5片", "name_en": "Nursing pad / postpartum mat x5" },
+            { "name_zh": "加長衛生棉*10片", "name_en": "Extra-long sanitary pads x10" },
+            { "name_zh": "束腹帶*1條", "name_en": "Abdominal binder x1" },
+            { "name_zh": "免洗內褲*7件", "name_en": "Disposable underwear x7" },
+            { "name_zh": "安睡褲", "name_en": "Postpartum sleep pants" },
+            { "name_zh": "產後衛生棉", "name_en": "Postpartum sanitary pads" },
+            { "name_zh": "拋棄式保潔墊", "name_en": "Disposable bed pads" },
+            { "name_zh": "沖洗罐", "name_en": "Perineal rinse bottle" },
+            { "name_zh": "幸福鱸魚", "name_en": "Perch fish (postpartum soup ingredient)" },
+            { "name_zh": "羊脂膏", "name_en": "Lanolin nipple cream" }
+          ]
+        },
+        {
+          "category_zh": "寶寶用品 (Hospital)",
+          "category_en": "Baby Items for Hospital",
+          "items": [
+            { "name_zh": "奶瓶(160ml)*2個", "name_en": "Baby bottle 160ml x2" },
+            { "name_zh": "香草奶嘴", "name_en": "Vanilla pacifier" },
+            { "name_zh": "配方奶", "name_en": "Formula milk" },
+            { "name_zh": "新生兒尿布*1包", "name_en": "Newborn diapers x1 pack" },
+            { "name_zh": "防尿墊", "name_en": "Waterproof diaper mat" },
+            { "name_zh": "紗布巾*8條", "name_en": "Gauze cloth x8" },
+            { "name_zh": "紗布浴巾*1件", "name_en": "Gauze bath towel x1" },
+            { "name_zh": "包巾*2件", "name_en": "Swaddle blanket x2" },
+            { "name_zh": "紗布衣*3件", "name_en": "Gauze baby wear x3" },
+            { "name_zh": "嬰兒帽", "name_en": "Baby hat" },
+            { "name_zh": "手套", "name_en": "Baby mittens" },
+            { "name_zh": "襪子", "name_en": "Baby socks" },
+            { "name_zh": "紗被", "name_en": "Gauze blanket" },
+            { "name_zh": "嬰兒乳液", "name_en": "Baby lotion" },
+            { "name_zh": "體溫計", "name_en": "Thermometer" },
+            { "name_zh": "寶寶沐浴乳", "name_en": "Baby body wash" },
+            { "name_zh": "屁屁膏", "name_en": "Diaper rash cream" },
+            { "name_zh": "安全座椅", "name_en": "Car seat" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "kewi_mommy",
+      "list_name": "寶寶用品採買清單 (Baby Shopping Checklist)",
+      "categories": [
+        {
+          "category_zh": "睡眠用品",
+          "category_en": "Sleep Items",
+          "items": [
+            { "name_zh": "嬰兒床", "name_en": "Baby cot / crib" },
+            { "name_zh": "防濕床墊", "name_en": "Waterproof mattress" },
+            { "name_zh": "防踢背心（夏薄／冬厚）", "name_en": "Anti-kick sleeping bag (thin for summer / thick for winter)" },
+            { "name_zh": "防溢乳巾", "name_en": "Drool bib / anti-leak cloth" },
+            { "name_zh": "嬰兒枕頭", "name_en": "Baby pillow" },
+            { "name_zh": "嬰兒棉被", "name_en": "Baby cotton blanket" },
+            { "name_zh": "小夜燈", "name_en": "Night light" }
+          ]
+        },
+        {
+          "category_zh": "清潔與護理",
+          "category_en": "Cleaning & Care",
+          "items": [
+            { "name_zh": "指甲剪", "name_en": "Nail scissors" },
+            { "name_zh": "棉花棒", "name_en": "Cotton swabs" },
+            { "name_zh": "消毒用品 (病毒盾)", "name_en": "Disinfectant (e.g., Virus Shield)" },
+            { "name_zh": "屁屁膏", "name_en": "Diaper rash cream" },
+            { "name_zh": "鼻吸器", "name_en": "Nasal aspirator" },
+            { "name_zh": "新生兒用退熱貼", "name_en": "Newborn fever patch" },
+            { "name_zh": "嬰兒洗衣液", "name_en": "Baby laundry detergent" },
+            { "name_zh": "尿布", "name_en": "Diapers" },
+            { "name_zh": "換尿布台", "name_en": "Diaper changing table/mat" },
+            { "name_zh": "濕紙巾", "name_en": "Wet wipes" },
+            { "name_zh": "紅外線耳溫計", "name_en": "Infrared ear thermometer" }
+          ]
+        },
+        {
+          "category_zh": "穿衣用品",
+          "category_en": "Clothing",
+          "items": [
+            { "name_zh": "紗布衣", "name_en": "Gauze bodysuit" },
+            { "name_zh": "和尚袍", "name_en": "Monk-style robe (kimono wrap)" },
+            { "name_zh": "蝴蝶衣", "name_en": "Butterfly onesie" },
+            { "name_zh": "包屁衣", "name_en": "Snap crotch onesie / bodysuit" },
+            { "name_zh": "長褲、包腳褲", "name_en": "Long pants / footed pants" },
+            { "name_zh": "帽子", "name_en": "Hat" },
+            { "name_zh": "肚圍", "name_en": "Belly band" },
+            { "name_zh": "襪子", "name_en": "Socks" },
+            { "name_zh": "包巾", "name_en": "Swaddle blanket" },
+            { "name_zh": "手套", "name_en": "Mittens" },
+            { "name_zh": "口水巾", "name_en": "Drool bib" }
+          ]
+        },
+        {
+          "category_zh": "沐浴用品",
+          "category_en": "Bath Items",
+          "items": [
+            { "name_zh": "嬰兒浴盆", "name_en": "Baby bathtub" },
+            { "name_zh": "洗澡用網架", "name_en": "Bath support net" },
+            { "name_zh": "沐浴乳／洗髮精 (二合一)", "name_en": "2-in-1 baby wash & shampoo" },
+            { "name_zh": "大浴巾", "name_en": "Large bath towel" },
+            { "name_zh": "紗布巾", "name_en": "Gauze cloth" },
+            { "name_zh": "水溫計", "name_en": "Water thermometer" },
+            { "name_zh": "潤膚乳液 (AMDS奈米乳)", "name_en": "Moisturizing lotion (AMDS nano lotion)" }
+          ]
+        },
+        {
+          "category_zh": "餵哺用品 - 配方奶及其他",
+          "category_en": "Feeding - Formula & Others",
+          "items": [
+            { "name_zh": "嬰幼兒奶粉", "name_en": "Infant formula powder" },
+            { "name_zh": "冷.熱水瓶", "name_en": "Cold & hot water thermos" },
+            { "name_zh": "奶瓶240ml", "name_en": "Baby bottle 240ml" },
+            { "name_zh": "奶瓶120ml", "name_en": "Baby bottle 120ml" },
+            { "name_zh": "奶瓶奶嘴", "name_en": "Bottle nipple" },
+            { "name_zh": "安撫奶嘴", "name_en": "Pacifier" },
+            { "name_zh": "奶瓶消毒鍋", "name_en": "Bottle sterilizer" },
+            { "name_zh": "奶瓶清潔液", "name_en": "Bottle cleaning liquid" },
+            { "name_zh": "奶瓶刷／奶嘴刷", "name_en": "Bottle brush / nipple brush" },
+            { "name_zh": "奶瓶夾", "name_en": "Bottle tongs" },
+            { "name_zh": "奶瓶保存箱", "name_en": "Bottle storage box" },
+            { "name_zh": "暖奶器", "name_en": "Bottle warmer" },
+            { "name_zh": "調乳器", "name_en": "Formula mixer / prep machine" },
+            { "name_zh": "奶粉分裝盒", "name_en": "Formula portioner / dispenser" }
+          ]
+        },
+        {
+          "category_zh": "餵哺用品 - 母乳",
+          "category_en": "Feeding - Breastfeeding",
+          "items": [
+            { "name_zh": "哺乳內衣", "name_en": "Nursing bra" },
+            { "name_zh": "溢乳墊", "name_en": "Breast pads" },
+            { "name_zh": "保冰袋", "name_en": "Breast milk cooler bag" },
+            { "name_zh": "儲奶袋 / 奶瓶", "name_en": "Milk storage bags / bottles" },
+            { "name_zh": "奶泵", "name_en": "Breast pump" },
+            { "name_zh": "哺乳枕", "name_en": "Nursing pillow" }
+          ]
+        },
+        {
+          "category_zh": "外出用品",
+          "category_en": "Outing Items",
+          "items": [
+            { "name_zh": "嬰兒揹帶", "name_en": "Baby carrier" },
+            { "name_zh": "嬰兒車", "name_en": "Stroller / pram" },
+            { "name_zh": "嬰兒汽車座椅", "name_en": "Baby car seat" },
+            { "name_zh": "嬰兒百寶袋", "name_en": "Diaper bag / baby tote" },
+            { "name_zh": "安撫玩具", "name_en": "Soothing toy" }
+          ]
+        },
+        {
+          "category_zh": "其他建議備品",
+          "category_en": "Other Recommended Items",
+          "items": [
+            { "name_zh": "曬衣架", "name_en": "Drying rack" },
+            { "name_zh": "小夾子 (曬紗布巾用)", "name_en": "Small clips (for hanging gauze cloths)" },
+            { "name_zh": "音樂盒", "name_en": "Music box" },
+            { "name_zh": "安撫玩具", "name_en": "Soothing toy" },
+            { "name_zh": "餵藥器", "name_en": "Medicine feeder / dropper" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "akachan_honpo",
+      "list_name": "マタニティ＆ママ / Maternity & Mama Items",
+      "categories": [
+        {
+          "category_ja": "産前用品 (Pre-birth)",
+          "category_en": "Pre-birth Maternity Items",
+          "items": [
+            { "name_ja": "マタニティ＆ママ向けサプリメント・食品", "name_en": "Maternity supplements & food", "necessity": "nice_to_have", "qty": "as needed" },
+            { "name_ja": "マルチケース（母子手帳ケース）", "name_en": "Multi-case / maternal health record holder", "necessity": "essential", "qty": "1" },
+            { "name_ja": "マタニティボディケアクリーム", "name_en": "Maternity body care cream (stretch mark cream)", "necessity": "essential", "qty": "1–2 bottles" },
+            { "name_ja": "マタニティショーツ", "name_en": "Maternity shorts / underwear", "necessity": "essential", "qty": "3–4" },
+            { "name_ja": "マタニティブラジャー・ハーフトップ", "name_en": "Maternity bra / half-top (nursing-compatible)", "necessity": "essential", "qty": "3–4" },
+            { "name_ja": "キャミソール・タンクトップ", "name_en": "Maternity camisole / tank top", "necessity": "essential", "qty": "2–3" },
+            { "name_ja": "妊婦帯 (腹帯)", "name_en": "Maternity belly band / support belt", "necessity": "essential", "qty": "2–3" },
+            { "name_ja": "はらまき", "name_en": "Belly warmer / haramaki", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "抱き枕", "name_en": "Body pillow (doubles as nursing pillow postpartum)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "マタニティウェア", "name_en": "Maternity clothing", "necessity": "essential", "qty": "3–4" },
+            { "name_ja": "マタニティ用レギンス・タイツ・パンスト", "name_en": "Maternity leggings / tights / pantyhose", "necessity": "nice_to_have", "qty": "3–4" },
+            { "name_ja": "ルームウェア", "name_en": "Maternity loungewear / room wear", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "マザーズバッグ", "name_en": "Mother's bag / diaper bag", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "円座クッション", "name_en": "Donut cushion / perineal relief cushion", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "吸水ケアシート", "name_en": "Absorbent care sheet (incontinence)", "necessity": "nice_to_have", "qty": "1 pack" }
+          ]
+        },
+        {
+          "category_ja": "入院準備用品 (Hospital Admission)",
+          "category_en": "Hospital Admission Items",
+          "items": [
+            { "name_ja": "マタニティパジャマ", "name_en": "Maternity pyjamas (front-open or wrap style)", "necessity": "essential", "qty": "2–3" },
+            { "name_ja": "産じょくショーツ", "name_en": "Postpartum shorts (waterproof crotch, for pad changes)", "necessity": "essential", "qty": "3–4" },
+            { "name_ja": "骨盤ベルト・骨盤パンツ（産後すぐ）", "name_en": "Pelvic support belt / pelvic pants (immediate postpartum)", "necessity": "essential", "qty": "1–2" },
+            { "name_ja": "お産用パッド", "name_en": "Maternity pad (large & regular)", "necessity": "essential", "qty": "2–3 packs" },
+            { "name_ja": "母乳パッド", "name_en": "Breast pads", "necessity": "essential", "qty": "1 pack" },
+            { "name_ja": "ペットボトルストロー", "name_en": "Bottle straw cap (for drinking while lying down)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "乳頭ケアクリーム", "name_en": "Nipple care cream", "necessity": "nice_to_have", "qty": "1 tube" },
+            { "name_ja": "全開産じょくショーツ (帝王切開)", "name_en": "Full-open postpartum shorts (for C-section)", "necessity": "nice_to_have", "qty": "3–4" },
+            { "name_ja": "腹部保護帯 (帝王切開)", "name_en": "Abdominal protector (for C-section wound)", "necessity": "nice_to_have", "qty": "1" }
+          ]
+        },
+        {
+          "category_ja": "産後用品 (Postpartum)",
+          "category_en": "Postpartum Items",
+          "items": [
+            { "name_ja": "リフォームガードル（産後1ヵ月頃）", "name_en": "Postpartum shaping girdle (from ~1 month postpartum)", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "授乳ケープ", "name_en": "Nursing cover / cape", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "着圧ソックス", "name_en": "Compression socks (for postpartum leg swelling)", "necessity": "nice_to_have", "qty": "1 pair" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "akachan_honpo",
+      "list_name": "ベビーウェア / Baby Clothing",
+      "categories": [
+        {
+          "category_ja": "ベビーウェア",
+          "category_en": "Baby Clothing",
+          "items": [
+            { "name_ja": "短肌着", "name_en": "Short undershirt / short kimono bodysuit (base layer)", "necessity": "essential", "qty": "3+" },
+            { "name_ja": "コンビ肌着", "name_en": "Combi undershirt (extends to knee, snap crotch)", "necessity": "essential", "qty": "3–5" },
+            { "name_ja": "打ち合わせロンパース", "name_en": "Wrap-style romper (connected top-bottom)", "necessity": "nice_to_have", "qty": "2+" },
+            { "name_ja": "ドレスオール（2WAYオール）", "name_en": "2-way all-in-one / gown (dress or romper)", "necessity": "essential", "qty": "2–3" },
+            { "name_ja": "スタイ（よだれかけ）", "name_en": "Bib / drool bib", "necessity": "nice_to_have", "qty": "as needed" },
+            { "name_ja": "ガーゼハンカチ", "name_en": "Gauze handkerchief (multi-use: bath, nursing, wiping)", "necessity": "essential", "qty": "10+" },
+            { "name_ja": "ミトン", "name_en": "Baby mittens (prevent scratching)", "necessity": "nice_to_have", "qty": "1–2 pairs" },
+            { "name_ja": "ソックス", "name_en": "Baby socks", "necessity": "nice_to_have", "qty": "2–3 pairs" },
+            { "name_ja": "新生児帽子", "name_en": "Newborn hat (temperature regulation)", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "おくるみ", "name_en": "Swaddle blanket (multi-use)", "necessity": "essential", "qty": "1–2" },
+            { "name_ja": "ベスト", "name_en": "Baby vest / gilet (temperature layering)", "necessity": "nice_to_have", "qty": "1–2" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "akachan_honpo",
+      "list_name": "ねんね・おへや / Sleep & Room",
+      "categories": [
+        {
+          "category_ja": "ねんね・おへや",
+          "category_en": "Sleep & Room Items",
+          "items": [
+            { "name_ja": "ベビーベッド", "name_en": "Baby cot / crib (regular, mini, or foldable)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "ベビーふとん基本セット", "name_en": "Baby futon / bedding basic set", "necessity": "essential", "qty": "1 set" },
+            { "name_ja": "掛けふとんカバー・フィッティングシーツ", "name_en": "Duvet cover and fitted sheet", "necessity": "essential", "qty": "1–2 each" },
+            { "name_ja": "防水キルトパッド", "name_en": "Waterproof quilt pad (protects mattress)", "necessity": "essential", "qty": "1–2" },
+            { "name_ja": "ベビー枕", "name_en": "Baby pillow (donut-shaped recommended for newborns)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "タオルケット・毛布", "name_en": "Towel blanket / baby blanket", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "シーズン敷きパッド", "name_en": "Seasonal fitted pad (cooling/warming)", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "スリーパー", "name_en": "Sleeper / sleeping bag (wearable blanket)", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "ねんねスワドル", "name_en": "Swaddle wrap (reduces Moro reflex)", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "メリー", "name_en": "Mobile / baby gym (with music)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "ベビーラック", "name_en": "Baby bouncer / rocker / lounger", "necessity": "essential", "qty": "1" },
+            { "name_ja": "バウンサー", "name_en": "Bouncer (foldable, portable)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "ベビーモニター", "name_en": "Baby monitor (video or audio)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "授乳用ライト", "name_en": "Nursing night light", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "収納アイテム", "name_en": "Baby storage / organizer", "necessity": "nice_to_have", "qty": "as needed" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "akachan_honpo",
+      "list_name": "授乳・調乳 / Feeding & Formula Prep",
+      "categories": [
+        {
+          "category_ja": "授乳・調乳",
+          "category_en": "Breastfeeding & Formula Preparation",
+          "items": [
+            { "name_ja": "粉ミルク・液体ミルク", "name_en": "Powdered formula / liquid formula (emergency use)", "necessity": "essential", "qty": "1+" },
+            { "name_ja": "ほ乳びん", "name_en": "Baby bottle (glass or plastic, 1–2 to start)", "necessity": "essential", "qty": "1–2+" },
+            { "name_ja": "ほ乳びん用乳首（替え）", "name_en": "Replacement bottle nipples (newborn-size to start)", "necessity": "essential", "qty": "2+" },
+            { "name_ja": "ほ乳びんブラシ・乳首ブラシ", "name_en": "Bottle brush and nipple brush", "necessity": "essential", "qty": "1" },
+            { "name_ja": "ほ乳びん用洗剤", "name_en": "Bottle washing detergent (baby-safe)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "ほ乳びん消毒グッズ", "name_en": "Bottle sterilizer (steam or chemical)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "ほ乳びんハサミ", "name_en": "Bottle tongs / scissor-grip (for sterilized bottles)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "粉ミルクケース", "name_en": "Formula dispenser / portioner case (for outings)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "ほ乳びんポーチ", "name_en": "Bottle pouch / insulated carrier", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "調乳ポット", "name_en": "Formula prep pot (keeps water at correct temperature)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "さく乳器", "name_en": "Breast pump (manual or electric)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "母乳保存バッグ", "name_en": "Breast milk storage bags", "necessity": "nice_to_have", "qty": "1 box" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "akachan_honpo",
+      "list_name": "おむつ替え・お洗濯 / Diapering & Laundry",
+      "categories": [
+        {
+          "category_ja": "おむつ替え・お洗濯",
+          "category_en": "Diapering & Laundry",
+          "items": [
+            { "name_ja": "紙おむつ", "name_en": "Disposable diapers", "necessity": "essential", "qty": "1 case (10–15/day)" },
+            { "name_ja": "おしりふき", "name_en": "Baby wipes (thick, gentle)", "necessity": "essential", "qty": "1 case" },
+            { "name_ja": "おしりふきのふた", "name_en": "Wipe dispenser lid / case", "necessity": "nice_to_have", "qty": "1–2" },
+            { "name_ja": "おしりふきウォーマー", "name_en": "Wipe warmer (prevents cold shock in winter)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "ベビースキンフレッシュナー", "name_en": "Baby skin freshener / mist", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "おむつ替えシート", "name_en": "Diaper changing mat (home-type or disposable travel-type)", "necessity": "nice_to_have", "qty": "as needed" },
+            { "name_ja": "おむつ用ゴミ箱", "name_en": "Nappy bin / diaper pail (with odour control)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "おむつ処理袋", "name_en": "Nappy disposal bags", "necessity": "nice_to_have", "qty": "1 pack" },
+            { "name_ja": "ベビー衣料用洗剤", "name_en": "Baby laundry detergent (fragrance & fluorescent-agent free)", "necessity": "essential", "qty": "1 bottle" },
+            { "name_ja": "ベビーハンガー", "name_en": "Baby hangers", "necessity": "essential", "qty": "6–10" },
+            { "name_ja": "ベビーハンガー連結タイプ", "name_en": "Baby hanger rack / connected hanger set", "necessity": "essential", "qty": "1" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "akachan_honpo",
+      "list_name": "おふろ・ベビーケア / Bath & Baby Care",
+      "categories": [
+        {
+          "category_ja": "おふろ・ベビーケア",
+          "category_en": "Bath & Baby Care",
+          "items": [
+            { "name_ja": "ベビーバス", "name_en": "Baby bath tub (inflatable or sink-use type)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "バスマット", "name_en": "Bath mat", "necessity": "essential", "qty": "1" },
+            { "name_ja": "湯上がりタオル", "name_en": "Hooded bath towel (square type recommended)", "necessity": "essential", "qty": "2–3" },
+            { "name_ja": "湯温計", "name_en": "Water temperature gauge / bath thermometer", "necessity": "essential", "qty": "1" },
+            { "name_ja": "沐浴布（ガーゼ）", "name_en": "Bath gauze cloth (laid over baby during bathing)", "necessity": "essential", "qty": "2–3" },
+            { "name_ja": "沐浴剤", "name_en": "Baby bath additive (no-rinse type)", "necessity": "nice_to_have", "qty": "1 bottle" },
+            { "name_ja": "ベビーソープ（泡タイプ・固形タイプ）", "name_en": "Baby soap / wash (foam or bar; foam type recommended)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "スポンジ", "name_en": "Bath sponge", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "ベビーローション・ベビークリーム", "name_en": "Baby lotion / cream (post-bath moisturiser)", "necessity": "essential", "qty": "1 bottle" },
+            { "name_ja": "ワセリン・ベビーオイル", "name_en": "Vaseline / baby oil (dry skin protection)", "necessity": "nice_to_have", "qty": "1 bottle" },
+            { "name_ja": "綿棒", "name_en": "Baby cotton swabs (for ears, nose, navel)", "necessity": "essential", "qty": "1 pack" },
+            { "name_ja": "つめ切りハサミ・ヤスリ", "name_en": "Baby nail scissors / file (electric type recommended)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "体温計", "name_en": "Thermometer (ear, forehead, or underarm type)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "温湿度計", "name_en": "Room temperature & humidity monitor", "necessity": "essential", "qty": "1" },
+            { "name_ja": "鼻吸い器", "name_en": "Nasal aspirator (mouth-suction or electric type)", "necessity": "nice_to_have", "qty": "1" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "akachan_honpo",
+      "list_name": "おでかけ / Outings",
+      "categories": [
+        {
+          "category_ja": "おでかけ",
+          "category_en": "Outings",
+          "items": [
+            { "name_ja": "ベビーカー", "name_en": "Stroller / pram (lifestyle-appropriate)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "ベビーカー小物", "name_en": "Stroller accessories (hooks, blanket clip, rain cover)", "necessity": "nice_to_have", "qty": "as needed" },
+            { "name_ja": "チャイルドシート", "name_en": "Car seat (ISOFIX or belt installation)", "necessity": "essential", "qty": "1" },
+            { "name_ja": "チャイルドシート小物", "name_en": "Car seat accessories (safety sign, seat mat/protector)", "necessity": "nice_to_have", "qty": "as needed" },
+            { "name_ja": "抱っこ紐", "name_en": "Baby carrier (newborn type, long-use type, or secondary carrier)", "necessity": "essential", "qty": "1–2" },
+            { "name_ja": "抱っこ紐小物", "name_en": "Carrier accessories (cover, UV cape, cold weather cape)", "necessity": "nice_to_have", "qty": "as needed" }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "akachan_honpo",
+      "list_name": "メモリアル・セレモニー / Milestone & Ceremony",
+      "categories": [
+        {
+          "category_ja": "メモリアル・セレモニー",
+          "category_en": "Milestone & Ceremony",
+          "items": [
+            { "name_ja": "セレモニードレス", "name_en": "Ceremony dress (for hospital discharge, naming ceremony, shrine visit)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "祝着・お宮参り小物", "name_en": "Traditional celebration wear & accessories (30-day shrine visit)", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "命名紙", "name_en": "Naming certificate / calligraphy naming paper", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "へその緒ケース", "name_en": "Umbilical cord keepsake case", "necessity": "nice_to_have", "qty": "1" },
+            { "name_ja": "手がたスタンプ・アルバム", "name_en": "Handprint / footprint stamp set & photo album", "necessity": "nice_to_have", "qty": "as needed" }
+          ]
+        }
+      ]
+    }
+  ]
+}

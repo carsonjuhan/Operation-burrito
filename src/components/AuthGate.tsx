@@ -5,6 +5,9 @@ import { useState, useEffect, ReactNode } from "react";
 const AUTH_KEY = "ob-authed";
 const PASSWORD = process.env.NEXT_PUBLIC_APP_PASSWORD ?? "burrito";
 
+/** Routes that bypass authentication (publicly accessible) */
+const PUBLIC_ROUTES = ["/birth-plan/view", "/items/share"];
+
 export function AuthGate({ children }: { children: ReactNode }) {
   const [authed, setAuthed] = useState<boolean | null>(null); // null = loading
   const [input, setInput] = useState("");
@@ -12,6 +15,15 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const [shake, setShake] = useState(false);
 
   useEffect(() => {
+    // Check if current path is a public route (bypass auth)
+    const path = window.location.pathname;
+    // Strip basePath for production (e.g., /Operation-burrito)
+    const normalizedPath = path.replace(/^\/Operation-burrito/, "");
+    const isPublic = PUBLIC_ROUTES.some((route) => normalizedPath.startsWith(route));
+    if (isPublic) {
+      setAuthed(true);
+      return;
+    }
     setAuthed(sessionStorage.getItem(AUTH_KEY) === "1");
   }, []);
 
@@ -34,12 +46,12 @@ export function AuthGate({ children }: { children: ReactNode }) {
   if (authed) return <>{children}</>;
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center p-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <span className="text-5xl">🌯</span>
-          <h1 className="text-xl font-bold text-stone-800 mt-4">Operation Burrito</h1>
-          <p className="text-sm text-stone-400 mt-1">Enter the password to continue</p>
+          <h1 className="text-xl font-bold text-stone-800 dark:text-stone-100 mt-4">Operation Burrito</h1>
+          <p className="text-sm text-stone-400 dark:text-stone-500 mt-1">Enter the password to continue</p>
         </div>
 
         <form

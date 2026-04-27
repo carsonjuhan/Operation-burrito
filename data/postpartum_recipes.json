@@ -1,0 +1,3398 @@
+{
+  "recipes": [
+    {
+      "id": "cn-001",
+      "name_en": "Sesame Oil Chicken",
+      "name_zh": "麻油雞",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 45,
+      "servings": 2,
+      "ingredients": [
+        "chicken leg 300g",
+        "sesame oil 3 tbsp",
+        "ginger 50g, sliced",
+        "rice wine 200ml",
+        "water 300ml"
+      ],
+      "instructions": [
+        "Heat sesame oil in clay pot, fry ginger slices until fragrant and edges curl.",
+        "Add chicken pieces, stir-fry until surface is sealed.",
+        "Pour in rice wine and water, bring to boil.",
+        "Simmer on low heat 30 minutes until chicken is tender."
+      ],
+      "tags": [
+        "warming",
+        "classic",
+        "soup"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-002",
+      "name_en": "Red Date Steamed Chicken",
+      "name_zh": "紅棗蒸滑雞",
+      "protein": "chicken",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "chicken thigh 200g",
+        "red dates 8pcs",
+        "ginger 3 slices",
+        "sesame oil 1 tsp",
+        "rice wine 1 tbsp",
+        "salt pinch"
+      ],
+      "instructions": [
+        "Cut chicken into bite-sized pieces, marinate with rice wine and sesame oil 15 minutes.",
+        "Place in heatproof dish, top with red dates and ginger.",
+        "Steam over high heat 20 minutes.",
+        "Drizzle sesame oil before serving."
+      ],
+      "tags": [
+        "steamed",
+        "nourishing",
+        "gentle"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-003",
+      "name_en": "Black Chicken Soup with Goji",
+      "name_zh": "枸杞烏雞湯",
+      "protein": "chicken",
+      "phase": [
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 90,
+      "servings": 4,
+      "ingredients": [
+        "black chicken (silkie) 1 whole",
+        "goji berries 30g",
+        "red dates 10pcs",
+        "dang gui 10g",
+        "ginger 5 slices",
+        "water 1.5L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch chicken in boiling water 3 minutes, rinse.",
+        "Place chicken, ginger, dang gui, red dates in clay pot with water.",
+        "Bring to boil, reduce to low simmer 1.5 hours.",
+        "Add goji berries in last 10 minutes. Season with salt."
+      ],
+      "tags": [
+        "soup",
+        "nourishing",
+        "iron-rich",
+        "traditional"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-004",
+      "name_en": "Ginger Wine Chicken",
+      "name_zh": "薑酒雞",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 40,
+      "servings": 2,
+      "ingredients": [
+        "chicken drumstick 2pcs",
+        "old ginger 80g, sliced",
+        "black sesame oil 2 tbsp",
+        "rice wine 300ml",
+        "brown sugar 1 tbsp"
+      ],
+      "instructions": [
+        "Heat sesame oil, fry ginger until golden and fragrant.",
+        "Add chicken, sear on all sides.",
+        "Pour in rice wine and brown sugar.",
+        "Cover and simmer 25 minutes until tender."
+      ],
+      "tags": [
+        "warming",
+        "classic"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-005",
+      "name_en": "Dang Gui Chicken Soup",
+      "name_zh": "當歸雞湯",
+      "protein": "chicken",
+      "phase": [
+        "major"
+      ],
+      "prepTime": 80,
+      "servings": 3,
+      "ingredients": [
+        "chicken thighs 400g",
+        "dang gui (angelica root) 15g",
+        "astragalus 10g",
+        "red dates 6pcs",
+        "ginger 4 slices",
+        "water 1.2L"
+      ],
+      "instructions": [
+        "Blanch chicken pieces, drain and rinse.",
+        "Combine all herbs, chicken and water in pot.",
+        "Bring to boil, simmer on low 1 hour.",
+        "Season lightly with salt. Drink soup and eat chicken."
+      ],
+      "tags": [
+        "soup",
+        "herbal",
+        "blood-nourishing"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-006",
+      "name_en": "Steamed Chicken with Mushrooms",
+      "name_zh": "雙菇蒸雞",
+      "protein": "chicken",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 35,
+      "servings": 2,
+      "ingredients": [
+        "chicken breast 200g",
+        "shiitake mushrooms 4pcs",
+        "wood ear mushrooms 10g",
+        "ginger 3 slices",
+        "soy sauce 1 tbsp",
+        "sesame oil 1 tsp",
+        "cornstarch 1 tsp"
+      ],
+      "instructions": [
+        "Slice chicken, marinate with soy sauce, cornstarch and sesame oil.",
+        "Soak and slice mushrooms.",
+        "Layer mushrooms and chicken in dish with ginger on top.",
+        "Steam 18 minutes until cooked through."
+      ],
+      "tags": [
+        "steamed",
+        "gentle",
+        "umami"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-007",
+      "name_en": "Pumpkin Steamed Chicken",
+      "name_zh": "南瓜蒸雞",
+      "protein": "chicken",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 35,
+      "servings": 2,
+      "ingredients": [
+        "chicken thigh 200g",
+        "pumpkin 200g, cubed",
+        "ginger 2 slices",
+        "light soy sauce 1 tbsp",
+        "rice wine 1 tsp",
+        "sesame oil 1 tsp"
+      ],
+      "instructions": [
+        "Marinate chicken with soy sauce, rice wine, sesame oil.",
+        "Spread pumpkin cubes on plate, place chicken on top.",
+        "Add ginger slices.",
+        "Steam 20 minutes until pumpkin is soft and chicken cooked."
+      ],
+      "tags": [
+        "steamed",
+        "gentle",
+        "vitamin-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-008",
+      "name_en": "Honey Glazed Chicken Wings",
+      "name_zh": "蜜糖燒香雞",
+      "protein": "chicken",
+      "phase": [
+        "maintenance"
+      ],
+      "prepTime": 40,
+      "servings": 2,
+      "ingredients": [
+        "chicken wings 6pcs",
+        "honey 2 tbsp",
+        "soy sauce 2 tbsp",
+        "ginger 3 slices",
+        "garlic 2 cloves",
+        "rice wine 1 tbsp"
+      ],
+      "instructions": [
+        "Marinate wings with soy sauce, rice wine, ginger 20 minutes.",
+        "Pan-fry wings until golden on both sides.",
+        "Add honey and a splash of water, cover and braise 15 minutes.",
+        "Reduce sauce until glossy coating forms."
+      ],
+      "tags": [
+        "savory",
+        "easy"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-009",
+      "name_en": "Japanese Curry Chicken (Chinese Style)",
+      "name_zh": "日式咖哩雞",
+      "protein": "chicken",
+      "phase": [
+        "maintenance"
+      ],
+      "prepTime": 45,
+      "servings": 3,
+      "ingredients": [
+        "chicken thigh 300g",
+        "potato 1",
+        "carrot 1",
+        "onion 1",
+        "curry roux 2 blocks",
+        "water 500ml",
+        "oil 1 tbsp"
+      ],
+      "instructions": [
+        "Cut chicken and vegetables into chunks.",
+        "Sauté onion in oil, add chicken and brown.",
+        "Add carrot, potato and water, bring to boil.",
+        "Simmer 20 minutes, add curry roux and stir until thickened."
+      ],
+      "tags": [
+        "hearty",
+        "comforting"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-010",
+      "name_en": "Lotus Root Peanut Chicken Soup",
+      "name_zh": "蓮藕花生雞湯",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 90,
+      "servings": 4,
+      "ingredients": [
+        "chicken drumsticks 2pcs",
+        "lotus root 300g, sliced",
+        "raw peanuts 50g",
+        "red dates 6pcs",
+        "ginger 4 slices",
+        "water 1.5L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch chicken, rinse.",
+        "Soak peanuts 30 minutes.",
+        "Combine all ingredients in pot, bring to boil.",
+        "Simmer on low 1.5 hours. Season with salt."
+      ],
+      "tags": [
+        "soup",
+        "nourishing",
+        "traditional"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-011",
+      "name_en": "Tomato Egg Drop Chicken Soup",
+      "name_zh": "番茄雞蛋雞湯",
+      "protein": "chicken",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "chicken breast 150g, shredded",
+        "tomato 2, quartered",
+        "egg 1, beaten",
+        "ginger 2 slices",
+        "chicken broth 600ml",
+        "salt to taste",
+        "scallion 1, chopped"
+      ],
+      "instructions": [
+        "Bring broth to boil with ginger.",
+        "Add chicken shreds, cook 5 minutes.",
+        "Add tomatoes, simmer 10 minutes until soft.",
+        "Slowly drizzle in beaten egg, stir gently. Garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "light",
+        "quick"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-012",
+      "name_en": "Braised Chicken with Chestnuts",
+      "name_zh": "板栗燒雞",
+      "protein": "chicken",
+      "phase": [
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 50,
+      "servings": 3,
+      "ingredients": [
+        "chicken thighs 400g",
+        "chestnuts 200g, peeled",
+        "soy sauce 2 tbsp",
+        "sugar 1 tsp",
+        "ginger 4 slices",
+        "star anise 1",
+        "water 300ml",
+        "oil 1 tbsp"
+      ],
+      "instructions": [
+        "Brown chicken pieces in oil with ginger.",
+        "Add soy sauce, sugar, star anise and water.",
+        "Add chestnuts, bring to boil.",
+        "Simmer 35 minutes until chestnuts are tender and sauce reduced."
+      ],
+      "tags": [
+        "braised",
+        "hearty",
+        "warming"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-013",
+      "name_en": "Papaya Chicken Soup",
+      "name_zh": "木瓜雞湯",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 70,
+      "servings": 3,
+      "ingredients": [
+        "chicken leg 1",
+        "green papaya 1, cubed",
+        "red dates 6pcs",
+        "ginger 4 slices",
+        "water 1.2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch chicken, cut into pieces.",
+        "Combine chicken, papaya, dates, ginger in pot with water.",
+        "Bring to boil, simmer 1 hour.",
+        "Season with salt. Good for milk production."
+      ],
+      "tags": [
+        "soup",
+        "lactation",
+        "traditional"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-014",
+      "name_en": "Wine-Braised Chicken Thigh",
+      "name_zh": "紅燒雞脾",
+      "protein": "chicken",
+      "phase": [
+        "warm"
+      ],
+      "prepTime": 35,
+      "servings": 2,
+      "ingredients": [
+        "chicken thighs 2",
+        "rice wine 100ml",
+        "soy sauce 1.5 tbsp",
+        "rock sugar 1 tbsp",
+        "ginger 4 slices",
+        "scallion 2 stalks"
+      ],
+      "instructions": [
+        "Sear chicken thighs in a dry pan until golden.",
+        "Add ginger, scallion, soy sauce and sugar.",
+        "Pour in rice wine, bring to boil.",
+        "Cover and braise 25 minutes, basting occasionally."
+      ],
+      "tags": [
+        "braised",
+        "savory"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-015",
+      "name_en": "Western Broccoli Cashew Chicken",
+      "name_zh": "西蘭腰果炒雞丁",
+      "protein": "chicken",
+      "phase": [
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "chicken breast 200g, diced",
+        "broccoli 150g, florets",
+        "cashews 30g",
+        "garlic 2 cloves",
+        "oyster sauce 1.5 tbsp",
+        "cornstarch 1 tsp",
+        "oil 2 tbsp"
+      ],
+      "instructions": [
+        "Marinate chicken with cornstarch and splash of soy sauce.",
+        "Blanch broccoli 2 minutes, drain.",
+        "Stir-fry chicken until cooked, set aside.",
+        "Sauté garlic, add broccoli, chicken, cashews and oyster sauce. Toss well."
+      ],
+      "tags": [
+        "stir-fry",
+        "quick",
+        "protein-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-016",
+      "name_en": "Pig Trotter Peanut Soup",
+      "name_zh": "花生豬腳湯",
+      "protein": "pork",
+      "phase": [
+        "major"
+      ],
+      "prepTime": 120,
+      "servings": 4,
+      "ingredients": [
+        "pig trotter 1, chopped",
+        "raw peanuts 100g",
+        "red dates 8pcs",
+        "ginger 5 slices",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch pig trotter pieces 5 minutes, rinse.",
+        "Soak peanuts 1 hour.",
+        "Combine all ingredients in pressure cooker or pot.",
+        "Pressure cook 45 minutes or simmer 2 hours until trotter is fall-off-bone tender."
+      ],
+      "tags": [
+        "soup",
+        "lactation",
+        "collagen",
+        "traditional"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-017",
+      "name_en": "Braised Pork Ribs with Mushrooms",
+      "name_zh": "冬菇蒸排骨",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 35,
+      "servings": 2,
+      "ingredients": [
+        "pork spare ribs 300g",
+        "dried shiitake mushrooms 6pcs",
+        "garlic 2 cloves",
+        "soy sauce 1.5 tbsp",
+        "oyster sauce 1 tbsp",
+        "cornstarch 1 tsp",
+        "sesame oil 1 tsp"
+      ],
+      "instructions": [
+        "Soak mushrooms until soft, halve.",
+        "Marinate ribs with soy sauce, oyster sauce, cornstarch, garlic.",
+        "Layer mushrooms and ribs in dish.",
+        "Steam 25 minutes until ribs are tender."
+      ],
+      "tags": [
+        "steamed",
+        "savory"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-018",
+      "name_en": "Pork Liver with Sesame Oil",
+      "name_zh": "麻油豬肝",
+      "protein": "pork",
+      "phase": [
+        "rest"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "pork liver 200g, sliced thin",
+        "old ginger 30g, sliced",
+        "black sesame oil 2 tbsp",
+        "rice wine 100ml"
+      ],
+      "instructions": [
+        "Soak liver slices in water 10 minutes, drain.",
+        "Heat sesame oil, fry ginger until golden.",
+        "Add liver, quickly stir-fry on high heat 2 minutes.",
+        "Deglaze with rice wine, cook 1 minute more. Serve immediately."
+      ],
+      "tags": [
+        "quick",
+        "iron-rich",
+        "traditional",
+        "rest-phase"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-019",
+      "name_en": "Pork Rib Lotus Root Soup",
+      "name_zh": "排骨蓮藕湯",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 90,
+      "servings": 3,
+      "ingredients": [
+        "pork ribs 400g",
+        "lotus root 300g, sliced",
+        "corn 1 ear, cut",
+        "red dates 6pcs",
+        "ginger 4 slices",
+        "water 1.5L"
+      ],
+      "instructions": [
+        "Blanch ribs, rinse.",
+        "Combine ribs, lotus root, corn, dates, ginger in pot.",
+        "Bring to boil, simmer 1.5 hours.",
+        "Season with salt."
+      ],
+      "tags": [
+        "soup",
+        "nourishing"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-020",
+      "name_en": "Steamed Pork Patty with Salted Egg",
+      "name_zh": "鹹蛋蒸肉餅",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "ground pork 200g",
+        "salted egg 1",
+        "soy sauce 1 tsp",
+        "cornstarch 1 tsp",
+        "water 2 tbsp",
+        "scallion for garnish"
+      ],
+      "instructions": [
+        "Mix pork with soy sauce, cornstarch and water.",
+        "Press into a flat patty on plate.",
+        "Place salted egg yolk on top (chop the white around patty).",
+        "Steam 15 minutes. Garnish with scallion."
+      ],
+      "tags": [
+        "steamed",
+        "easy",
+        "comforting"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-021",
+      "name_en": "Red Date Pork Kidney Soup",
+      "name_zh": "紅棗腰子湯",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 40,
+      "servings": 2,
+      "ingredients": [
+        "pork kidney 1, cleaned and sliced",
+        "red dates 8pcs",
+        "goji berries 15g",
+        "ginger 4 slices",
+        "sesame oil 1 tbsp",
+        "rice wine 50ml",
+        "water 800ml"
+      ],
+      "instructions": [
+        "Remove white membrane from kidney, slice thin, soak in water with rice wine.",
+        "Heat sesame oil, fry ginger until fragrant.",
+        "Add kidney slices, stir-fry quickly on high heat.",
+        "Add water, dates, bring to boil. Simmer 20 minutes. Add goji last 5 minutes."
+      ],
+      "tags": [
+        "soup",
+        "iron-rich",
+        "traditional"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-022",
+      "name_en": "Ground Pork Congee",
+      "name_zh": "香菇肉碎粥",
+      "protein": "pork",
+      "phase": [
+        "rest"
+      ],
+      "prepTime": 50,
+      "servings": 2,
+      "ingredients": [
+        "rice 100g",
+        "ground pork 100g",
+        "dried shiitake 3pcs, diced",
+        "ginger 2 slices",
+        "water 1L",
+        "salt to taste",
+        "white pepper",
+        "scallion"
+      ],
+      "instructions": [
+        "Rinse rice, combine with water and ginger in pot.",
+        "Bring to boil, simmer 35 minutes, stirring occasionally.",
+        "Season pork with salt and white pepper, add to congee with mushrooms.",
+        "Cook 10 minutes more. Garnish with scallion."
+      ],
+      "tags": [
+        "congee",
+        "gentle",
+        "easy-digest",
+        "rest-phase"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-023",
+      "name_en": "Pork Bone Corn Soup",
+      "name_zh": "玉米排骨湯",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 70,
+      "servings": 3,
+      "ingredients": [
+        "pork bones 500g",
+        "corn 2 ears, cut",
+        "carrot 1, chunked",
+        "red dates 4pcs",
+        "ginger 3 slices",
+        "water 1.5L"
+      ],
+      "instructions": [
+        "Blanch pork bones, rinse.",
+        "Combine all ingredients in pot.",
+        "Bring to boil, simmer 1 hour.",
+        "Season with salt."
+      ],
+      "tags": [
+        "soup",
+        "sweet",
+        "nourishing"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-024",
+      "name_en": "Braised Lion's Head Meatballs",
+      "name_zh": "紅燒獅子頭",
+      "protein": "pork",
+      "phase": [
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 50,
+      "servings": 3,
+      "ingredients": [
+        "ground pork 300g",
+        "water chestnut 4pcs, diced",
+        "egg 1",
+        "soy sauce 2 tbsp",
+        "cornstarch 2 tsp",
+        "napa cabbage 200g",
+        "ginger 3 slices",
+        "chicken broth 400ml"
+      ],
+      "instructions": [
+        "Mix pork, water chestnut, egg, 1 tbsp soy sauce, cornstarch. Form 4 large balls.",
+        "Pan-fry meatballs until golden.",
+        "Line pot with cabbage, place meatballs on top.",
+        "Add broth, remaining soy sauce, ginger. Simmer covered 30 minutes."
+      ],
+      "tags": [
+        "braised",
+        "hearty",
+        "comforting"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-025",
+      "name_en": "Steamed Spare Ribs with Pumpkin",
+      "name_zh": "南瓜蒸排骨",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "spare ribs 250g",
+        "pumpkin 200g, cubed",
+        "garlic 2 cloves",
+        "fermented black beans 1 tbsp",
+        "soy sauce 1 tbsp",
+        "cornstarch 1 tsp",
+        "oil 1 tsp"
+      ],
+      "instructions": [
+        "Marinate ribs with garlic, black beans, soy sauce, cornstarch, oil.",
+        "Spread pumpkin cubes on plate.",
+        "Place marinated ribs on pumpkin.",
+        "Steam 25 minutes until ribs are tender."
+      ],
+      "tags": [
+        "steamed",
+        "gentle"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-026",
+      "name_en": "Papaya Fish Soup",
+      "name_zh": "木瓜鯽魚湯",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 50,
+      "servings": 3,
+      "ingredients": [
+        "crucian carp 1 (300g)",
+        "green papaya half, cubed",
+        "ginger 5 slices",
+        "red dates 4pcs",
+        "water 1L",
+        "salt to taste",
+        "oil 1 tbsp"
+      ],
+      "instructions": [
+        "Pan-fry fish with ginger until both sides golden.",
+        "Add boiling water (must be hot for milky soup).",
+        "Add papaya and dates, bring to boil.",
+        "Simmer 30 minutes until soup is milky white. Season with salt."
+      ],
+      "tags": [
+        "soup",
+        "lactation",
+        "milky",
+        "traditional"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-027",
+      "name_en": "Steamed Sea Bass with Ginger",
+      "name_zh": "清蒸鱸魚",
+      "protein": "fish",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "sea bass fillet 250g",
+        "ginger 10 slices, julienned",
+        "scallion 2, julienned",
+        "light soy sauce 2 tbsp",
+        "sesame oil 1 tsp",
+        "hot oil 1 tbsp"
+      ],
+      "instructions": [
+        "Place fish on plate with ginger underneath and on top.",
+        "Steam over high heat 10 minutes.",
+        "Discard steaming liquid, top with fresh scallion and ginger.",
+        "Pour hot oil over, then drizzle soy sauce and sesame oil."
+      ],
+      "tags": [
+        "steamed",
+        "light",
+        "quick",
+        "gentle"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-028",
+      "name_en": "Teriyaki Mackerel",
+      "name_zh": "照燒汁香煎鯖魚",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "mackerel fillet 2pcs",
+        "soy sauce 2 tbsp",
+        "mirin 2 tbsp",
+        "sugar 1 tsp",
+        "ginger 2 slices",
+        "oil 1 tbsp"
+      ],
+      "instructions": [
+        "Score fish skin, pan-fry skin-side down until crispy.",
+        "Flip and cook 2 minutes.",
+        "Mix soy sauce, mirin, sugar. Pour into pan with ginger.",
+        "Simmer until sauce glazes the fish."
+      ],
+      "tags": [
+        "pan-fried",
+        "quick",
+        "omega-3"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-029",
+      "name_en": "Fish Congee",
+      "name_zh": "魚片粥",
+      "protein": "fish",
+      "phase": [
+        "rest"
+      ],
+      "prepTime": 45,
+      "servings": 2,
+      "ingredients": [
+        "white fish fillet 150g, sliced thin",
+        "rice 100g",
+        "ginger 3 slices, julienned",
+        "water 1L",
+        "salt to taste",
+        "white pepper",
+        "scallion, cilantro"
+      ],
+      "instructions": [
+        "Cook rice congee base: rice + water, boil then simmer 30 minutes.",
+        "Season fish slices with salt and white pepper.",
+        "When congee is thick, add fish and ginger. Cook 3 minutes.",
+        "Garnish with scallion and cilantro."
+      ],
+      "tags": [
+        "congee",
+        "gentle",
+        "rest-phase"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-030",
+      "name_en": "Milky Fish Head Tofu Soup",
+      "name_zh": "魚頭豆腐湯",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 40,
+      "servings": 3,
+      "ingredients": [
+        "fish head 1 (bighead carp)",
+        "soft tofu 1 block, cubed",
+        "ginger 5 slices",
+        "scallion 2",
+        "water 1L",
+        "white pepper",
+        "salt"
+      ],
+      "instructions": [
+        "Pan-fry fish head with ginger until golden both sides.",
+        "Add boiling water immediately for milky effect.",
+        "Bring to rolling boil, then add tofu.",
+        "Simmer 20 minutes. Season with salt and white pepper."
+      ],
+      "tags": [
+        "soup",
+        "lactation",
+        "calcium-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-031",
+      "name_en": "Red Date Goji Fish Soup",
+      "name_zh": "紅棗枸杞魚湯",
+      "protein": "fish",
+      "phase": [
+        "warm"
+      ],
+      "prepTime": 35,
+      "servings": 2,
+      "ingredients": [
+        "snapper fillet 200g",
+        "red dates 6pcs",
+        "goji berries 15g",
+        "ginger 3 slices",
+        "water 800ml",
+        "rice wine 1 tbsp",
+        "salt"
+      ],
+      "instructions": [
+        "Pan-fry fish briefly with ginger.",
+        "Add water and red dates, bring to boil.",
+        "Simmer 20 minutes.",
+        "Add goji and rice wine in last 5 minutes."
+      ],
+      "tags": [
+        "soup",
+        "nourishing",
+        "gentle"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-032",
+      "name_en": "Steamed Salmon with Black Bean",
+      "name_zh": "豆豉蒸三文魚",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "salmon fillet 200g",
+        "fermented black beans 1 tbsp",
+        "garlic 2 cloves, minced",
+        "ginger 3 slices",
+        "soy sauce 1 tbsp",
+        "scallion 1"
+      ],
+      "instructions": [
+        "Place salmon on plate with ginger.",
+        "Top with black beans and garlic.",
+        "Steam 12 minutes.",
+        "Garnish with scallion and drizzle soy sauce."
+      ],
+      "tags": [
+        "steamed",
+        "omega-3",
+        "quick"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-033",
+      "name_en": "Tomato Fish Soup",
+      "name_zh": "番茄魚湯",
+      "protein": "fish",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "white fish fillet 200g",
+        "tomatoes 2, quartered",
+        "tofu 100g, cubed",
+        "ginger 2 slices",
+        "water 800ml",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Sauté ginger and tomatoes until soft.",
+        "Add water, bring to boil.",
+        "Add tofu, simmer 10 minutes.",
+        "Add fish slices, cook gently 5 minutes. Season."
+      ],
+      "tags": [
+        "soup",
+        "light",
+        "vitamin-c"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-034",
+      "name_en": "Braised Fish with Tofu",
+      "name_zh": "紅燒魚豆腐",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 35,
+      "servings": 2,
+      "ingredients": [
+        "whole tilapia 1",
+        "firm tofu 1 block, sliced",
+        "ginger 4 slices",
+        "scallion 2",
+        "soy sauce 2 tbsp",
+        "sugar 1 tsp",
+        "rice wine 1 tbsp",
+        "water 200ml"
+      ],
+      "instructions": [
+        "Pan-fry fish until golden both sides.",
+        "Add ginger, scallion, soy sauce, sugar, wine and water.",
+        "Add tofu slices around fish.",
+        "Braise covered 15 minutes, basting occasionally."
+      ],
+      "tags": [
+        "braised",
+        "protein-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-035",
+      "name_en": "Wine-Poached Fish Fillet",
+      "name_zh": "清蒸原條時魚",
+      "protein": "fish",
+      "phase": [
+        "rest"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "sole or flounder fillet 200g",
+        "rice wine 2 tbsp",
+        "ginger 3 slices",
+        "salt pinch",
+        "scallion 1, julienned",
+        "sesame oil 1 tsp"
+      ],
+      "instructions": [
+        "Place fish on plate, drizzle with rice wine, top with ginger.",
+        "Steam 8-10 minutes until just cooked.",
+        "Discard liquid, top with scallion.",
+        "Drizzle with sesame oil."
+      ],
+      "tags": [
+        "steamed",
+        "light",
+        "delicate",
+        "rest-phase"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-036",
+      "name_en": "Clam and Ginger Soup",
+      "name_zh": "薑絲蛤蜊湯",
+      "protein": "fish",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "clams 300g, cleaned",
+        "ginger 20g, julienned",
+        "rice wine 1 tbsp",
+        "water 600ml",
+        "scallion 1",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak clams in salted water 30 minutes to purge sand.",
+        "Bring water and ginger to boil.",
+        "Add clams and rice wine, cover.",
+        "Cook until all clams open, about 5 minutes. Garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "light",
+        "quick",
+        "zinc-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-037",
+      "name_en": "Sweet Vinegar Pig Trotter with Ginger",
+      "name_zh": "薑醋豬腳",
+      "protein": "pork",
+      "phase": [
+        "major"
+      ],
+      "prepTime": 120,
+      "servings": 4,
+      "ingredients": [
+        "pig trotter 1, chopped",
+        "old ginger 200g, smashed",
+        "sweet black vinegar 500ml",
+        "eggs 4, hard-boiled",
+        "brown sugar 100g",
+        "water 300ml"
+      ],
+      "instructions": [
+        "Cook ginger in dry wok until dried out.",
+        "Blanch pig trotter pieces.",
+        "Combine vinegar, sugar, water, ginger in pot. Bring to boil.",
+        "Add trotter, simmer 2 hours. Add peeled eggs in last 30 minutes."
+      ],
+      "tags": [
+        "traditional",
+        "cantonese",
+        "vinegar",
+        "collagen"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-038",
+      "name_en": "Silken Tofu with Century Egg",
+      "name_zh": "皮蛋豆腐",
+      "protein": "tofu",
+      "phase": [
+        "rest",
+        "maintenance"
+      ],
+      "prepTime": 10,
+      "servings": 2,
+      "ingredients": [
+        "silken tofu 1 block",
+        "century egg 1, diced",
+        "soy sauce 1 tbsp",
+        "sesame oil 1 tsp",
+        "scallion 1, chopped",
+        "chili oil optional"
+      ],
+      "instructions": [
+        "Place cold tofu on plate.",
+        "Top with diced century egg.",
+        "Drizzle with soy sauce and sesame oil.",
+        "Garnish with scallion. Serve cold."
+      ],
+      "tags": [
+        "cold",
+        "quick",
+        "no-cook"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-039",
+      "name_en": "Mapo Tofu (Mild)",
+      "name_zh": "麻婆豆腐",
+      "protein": "tofu",
+      "phase": [
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "soft tofu 1 block, cubed",
+        "ground pork 50g",
+        "garlic 2 cloves",
+        "ginger 2 slices",
+        "doubanjiang 1 tbsp",
+        "soy sauce 1 tsp",
+        "cornstarch slurry",
+        "scallion 1",
+        "Sichuan pepper optional"
+      ],
+      "instructions": [
+        "Blanch tofu cubes 2 minutes, drain.",
+        "Stir-fry pork with garlic and ginger.",
+        "Add doubanjiang, stir until oil turns red.",
+        "Add tofu, soy sauce, small amount of water. Simmer 5 minutes. Thicken with cornstarch."
+      ],
+      "tags": [
+        "spicy-optional",
+        "comforting",
+        "quick"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-040",
+      "name_en": "Tomato Tofu Egg Drop Soup",
+      "name_zh": "番茄豆腐蛋花湯",
+      "protein": "tofu",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "soft tofu 150g, cubed",
+        "tomato 1, diced",
+        "egg 1, beaten",
+        "water 600ml",
+        "salt to taste",
+        "sesame oil",
+        "scallion"
+      ],
+      "instructions": [
+        "Bring water to boil, add tomato and cook 5 minutes.",
+        "Add tofu, simmer 3 minutes.",
+        "Slowly drizzle in beaten egg while stirring gently.",
+        "Season with salt, drizzle sesame oil. Garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "light",
+        "quick",
+        "gentle"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-041",
+      "name_en": "Braised Tofu with Mushrooms",
+      "name_zh": "香菇燒豆腐",
+      "protein": "tofu",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "firm tofu 1 block, sliced",
+        "shiitake mushrooms 6pcs",
+        "soy sauce 1.5 tbsp",
+        "oyster sauce 1 tbsp",
+        "ginger 2 slices",
+        "cornstarch slurry",
+        "scallion"
+      ],
+      "instructions": [
+        "Pan-fry tofu slices until golden both sides.",
+        "Sauté mushrooms and ginger.",
+        "Add soy sauce, oyster sauce and water.",
+        "Add tofu, braise 10 minutes. Thicken sauce with cornstarch."
+      ],
+      "tags": [
+        "braised",
+        "vegetarian-friendly",
+        "umami"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-042",
+      "name_en": "Seaweed Tofu Miso Soup",
+      "name_zh": "海帶豆腐味噌湯",
+      "protein": "tofu",
+      "phase": [
+        "rest",
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "silken tofu 150g, cubed",
+        "dried wakame 5g",
+        "white miso paste 2 tbsp",
+        "dashi or water 600ml",
+        "scallion 1"
+      ],
+      "instructions": [
+        "Bring dashi to gentle simmer.",
+        "Add wakame and tofu.",
+        "Remove from heat, dissolve miso paste into soup.",
+        "Garnish with scallion. Do not boil after adding miso."
+      ],
+      "tags": [
+        "soup",
+        "gentle",
+        "quick",
+        "calcium"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-043",
+      "name_en": "Stuffed Tofu with Shrimp",
+      "name_zh": "蝦仁釀豆腐",
+      "protein": "tofu",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "firm tofu 1 block",
+        "shrimp 150g, minced",
+        "ginger 1 tsp, grated",
+        "egg white 1",
+        "cornstarch 1 tsp",
+        "oyster sauce 1 tbsp",
+        "water 100ml"
+      ],
+      "instructions": [
+        "Cut tofu into triangles, scoop out center.",
+        "Mix shrimp with ginger, egg white, cornstarch. Stuff into tofu.",
+        "Pan-fry stuffed tofu shrimp-side down until golden.",
+        "Add oyster sauce and water, braise 8 minutes."
+      ],
+      "tags": [
+        "pan-fried",
+        "protein-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-044",
+      "name_en": "Black Bean Tofu Stir-Fry",
+      "name_zh": "豆豉炒豆腐",
+      "protein": "tofu",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "firm tofu 1 block, cubed",
+        "fermented black beans 1 tbsp",
+        "garlic 2 cloves",
+        "red pepper 1, diced",
+        "soy sauce 1 tbsp",
+        "oil 2 tbsp"
+      ],
+      "instructions": [
+        "Pan-fry tofu until golden on all sides, set aside.",
+        "Sauté garlic and black beans until fragrant.",
+        "Add red pepper, stir-fry 1 minute.",
+        "Return tofu, add soy sauce, toss well."
+      ],
+      "tags": [
+        "stir-fry",
+        "quick",
+        "savory"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-045",
+      "name_en": "Egg Tofu with Minced Pork",
+      "name_zh": "肉末蒸蛋豆腐",
+      "protein": "tofu",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "egg tofu 2 tubes, sliced",
+        "ground pork 50g",
+        "garlic 1 clove",
+        "soy sauce 1 tbsp",
+        "oyster sauce 1 tsp",
+        "cornstarch slurry",
+        "scallion"
+      ],
+      "instructions": [
+        "Arrange egg tofu slices on plate.",
+        "Steam 8 minutes.",
+        "Meanwhile, stir-fry pork with garlic, soy sauce, oyster sauce.",
+        "Thicken with cornstarch, pour over steamed tofu."
+      ],
+      "tags": [
+        "steamed",
+        "gentle",
+        "easy"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-046",
+      "name_en": "Beef Bone Marrow Soup",
+      "name_zh": "牛骨髓湯",
+      "protein": "beef",
+      "phase": [
+        "major"
+      ],
+      "prepTime": 120,
+      "servings": 4,
+      "ingredients": [
+        "beef marrow bones 500g",
+        "carrot 1",
+        "white radish 200g",
+        "corn 1 ear",
+        "ginger 4 slices",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch beef bones, rinse well.",
+        "Combine bones, ginger and water. Bring to boil, skim foam.",
+        "Add vegetables, simmer 2 hours on low.",
+        "Season with salt. Rich and nourishing."
+      ],
+      "tags": [
+        "soup",
+        "iron-rich",
+        "collagen",
+        "nourishing"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-047",
+      "name_en": "Tomato Beef Brisket Stew",
+      "name_zh": "番茄燉牛腩",
+      "protein": "beef",
+      "phase": [
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 90,
+      "servings": 3,
+      "ingredients": [
+        "beef brisket 400g, cubed",
+        "tomatoes 3, quartered",
+        "potato 1, cubed",
+        "onion 1, diced",
+        "tomato paste 2 tbsp",
+        "bay leaf 1",
+        "water 800ml",
+        "oil 1 tbsp"
+      ],
+      "instructions": [
+        "Brown beef in oil, set aside.",
+        "Sauté onion, add tomato paste and tomatoes.",
+        "Return beef, add potato, bay leaf and water.",
+        "Simmer 1.5 hours until beef is fork-tender."
+      ],
+      "tags": [
+        "stew",
+        "hearty",
+        "iron-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-048",
+      "name_en": "Ginger Scallion Beef Stir-Fry",
+      "name_zh": "薑蔥牛肉",
+      "protein": "beef",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "beef sirloin 200g, sliced thin",
+        "ginger 20g, julienned",
+        "scallion 3 stalks, cut",
+        "soy sauce 1 tbsp",
+        "oyster sauce 1 tbsp",
+        "cornstarch 1 tsp",
+        "oil 2 tbsp",
+        "rice wine 1 tbsp"
+      ],
+      "instructions": [
+        "Marinate beef with soy sauce, cornstarch, rice wine.",
+        "Heat oil, stir-fry ginger until fragrant.",
+        "Add beef, sear on high heat.",
+        "Add scallion and oyster sauce, toss 30 seconds. Serve immediately."
+      ],
+      "tags": [
+        "stir-fry",
+        "quick",
+        "warming"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-049",
+      "name_en": "Beef Congee with Goji",
+      "name_zh": "枸杞牛肉粥",
+      "protein": "beef",
+      "phase": [
+        "warm"
+      ],
+      "prepTime": 50,
+      "servings": 2,
+      "ingredients": [
+        "ground beef 100g",
+        "rice 100g",
+        "goji berries 15g",
+        "ginger 2 slices",
+        "water 1L",
+        "salt to taste",
+        "white pepper",
+        "scallion"
+      ],
+      "instructions": [
+        "Cook rice congee with ginger 35 minutes.",
+        "Season beef with salt and pepper.",
+        "Add beef to congee, stir to separate.",
+        "Cook 10 minutes. Add goji last 5 minutes. Garnish."
+      ],
+      "tags": [
+        "congee",
+        "warming",
+        "nourishing"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-050",
+      "name_en": "Braised Beef Shank",
+      "name_zh": "滷牛腱",
+      "protein": "beef",
+      "phase": [
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 120,
+      "servings": 4,
+      "ingredients": [
+        "beef shank 500g",
+        "soy sauce 4 tbsp",
+        "rock sugar 2 tbsp",
+        "star anise 2",
+        "cinnamon stick 1",
+        "ginger 5 slices",
+        "scallion 2",
+        "rice wine 2 tbsp",
+        "water 800ml"
+      ],
+      "instructions": [
+        "Blanch beef shank, rinse.",
+        "Combine all braising ingredients in pot.",
+        "Bring to boil, add beef shank.",
+        "Simmer 2 hours until tender. Slice to serve."
+      ],
+      "tags": [
+        "braised",
+        "make-ahead",
+        "iron-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-051",
+      "name_en": "Steamed Egg Custard",
+      "name_zh": "蒸水蛋",
+      "protein": "egg",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "eggs 3",
+        "warm water 300ml (1.5x egg volume)",
+        "salt 1/4 tsp",
+        "soy sauce 1 tsp",
+        "sesame oil 1/2 tsp",
+        "scallion"
+      ],
+      "instructions": [
+        "Beat eggs gently, mix with warm water and salt.",
+        "Strain through sieve into heatproof bowl.",
+        "Cover with cling wrap, steam on medium 12-15 minutes.",
+        "Drizzle soy sauce and sesame oil. Garnish with scallion."
+      ],
+      "tags": [
+        "steamed",
+        "gentle",
+        "universal",
+        "easy"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-052",
+      "name_en": "Tomato Egg Stir-Fry",
+      "name_zh": "番茄炒蛋",
+      "protein": "egg",
+      "phase": [
+        "rest",
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 10,
+      "servings": 2,
+      "ingredients": [
+        "eggs 3",
+        "tomatoes 2, wedged",
+        "sugar 1 tsp",
+        "salt to taste",
+        "scallion 1",
+        "oil 2 tbsp"
+      ],
+      "instructions": [
+        "Beat eggs with pinch of salt.",
+        "Scramble eggs in hot oil, set aside when just set.",
+        "Sauté tomatoes with sugar until soft.",
+        "Return eggs, toss together. Garnish with scallion."
+      ],
+      "tags": [
+        "stir-fry",
+        "quick",
+        "classic",
+        "gentle"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-053",
+      "name_en": "Sweet Rice Wine Egg Soup",
+      "name_zh": "醪糟蛋花湯",
+      "protein": "egg",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 10,
+      "servings": 2,
+      "ingredients": [
+        "fermented sweet rice wine (jiu niang) 150g",
+        "egg 2",
+        "goji berries 10g",
+        "brown sugar 1 tbsp",
+        "water 400ml"
+      ],
+      "instructions": [
+        "Bring water to boil, add sweet rice wine.",
+        "Add brown sugar, stir to dissolve.",
+        "Crack eggs in, poach until whites set.",
+        "Add goji berries. Serve warm."
+      ],
+      "tags": [
+        "dessert-soup",
+        "warming",
+        "lactation",
+        "traditional"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-054",
+      "name_en": "Spinach Egg Drop Soup",
+      "name_zh": "菠菜蛋花湯",
+      "protein": "egg",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 10,
+      "servings": 2,
+      "ingredients": [
+        "spinach 100g",
+        "eggs 2, beaten",
+        "chicken broth 600ml",
+        "ginger 2 slices",
+        "salt to taste",
+        "sesame oil"
+      ],
+      "instructions": [
+        "Bring broth and ginger to boil.",
+        "Add spinach, cook 1 minute.",
+        "Slowly drizzle in beaten egg while stirring.",
+        "Season with salt and sesame oil."
+      ],
+      "tags": [
+        "soup",
+        "quick",
+        "iron-rich",
+        "gentle"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-055",
+      "name_en": "Red Date Longan Egg Tea",
+      "name_zh": "紅棗桂圓蛋茶",
+      "protein": "egg",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "eggs 2",
+        "red dates 8pcs",
+        "dried longan 15g",
+        "brown sugar 2 tbsp",
+        "ginger 2 slices",
+        "water 600ml"
+      ],
+      "instructions": [
+        "Boil eggs, peel.",
+        "Bring water, dates, longan, ginger to boil.",
+        "Simmer 15 minutes until dates are plump.",
+        "Add peeled eggs and brown sugar. Simmer 5 more minutes."
+      ],
+      "tags": [
+        "dessert-soup",
+        "warming",
+        "nourishing",
+        "blood-building"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-056",
+      "name_en": "Red Date Goji Tea",
+      "name_zh": "紅棗枸杞茶",
+      "protein": "other",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 10,
+      "servings": 2,
+      "ingredients": [
+        "red dates 10pcs",
+        "goji berries 15g",
+        "brown sugar 1 tbsp",
+        "water 500ml"
+      ],
+      "instructions": [
+        "Slice red dates, combine with goji in pot.",
+        "Add water, bring to boil.",
+        "Simmer 10 minutes.",
+        "Add brown sugar, stir. Drink warm."
+      ],
+      "tags": [
+        "tea",
+        "nourishing",
+        "universal",
+        "blood-building"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-057",
+      "name_en": "Sesame Oil Rice Vermicelli",
+      "name_zh": "麻油麵線",
+      "protein": "other",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 15,
+      "servings": 1,
+      "ingredients": [
+        "thin rice vermicelli 1 bundle",
+        "sesame oil 2 tbsp",
+        "old ginger 20g, sliced",
+        "rice wine 2 tbsp",
+        "water 300ml"
+      ],
+      "instructions": [
+        "Cook vermicelli until just done, drain.",
+        "Heat sesame oil, fry ginger until curled and fragrant.",
+        "Add water and rice wine, bring to boil.",
+        "Add vermicelli, toss well. Serve hot."
+      ],
+      "tags": [
+        "noodles",
+        "quick",
+        "warming",
+        "rest-phase"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-058",
+      "name_en": "Red Bean Soup with Tangerine Peel",
+      "name_zh": "陳皮紅豆沙",
+      "protein": "other",
+      "phase": [
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 90,
+      "servings": 4,
+      "ingredients": [
+        "red beans 200g",
+        "dried tangerine peel 1 piece",
+        "rock sugar 80g",
+        "water 1.5L"
+      ],
+      "instructions": [
+        "Soak red beans overnight or 4 hours.",
+        "Soak tangerine peel until soft, scrape off white pith.",
+        "Combine beans, peel and water. Bring to boil.",
+        "Simmer 1.5 hours until beans are soft. Add sugar."
+      ],
+      "tags": [
+        "dessert",
+        "traditional",
+        "cantonese"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-059",
+      "name_en": "Black Sesame Rice Porridge",
+      "name_zh": "黑芝麻糙米粥",
+      "protein": "other",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 45,
+      "servings": 2,
+      "ingredients": [
+        "brown rice 80g",
+        "black sesame powder 2 tbsp",
+        "red dates 4pcs",
+        "water 800ml",
+        "honey or brown sugar to taste"
+      ],
+      "instructions": [
+        "Rinse rice, combine with water and dates.",
+        "Bring to boil, simmer 35 minutes until thick.",
+        "Stir in black sesame powder.",
+        "Sweeten to taste."
+      ],
+      "tags": [
+        "porridge",
+        "calcium",
+        "iron-rich"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "cn-060",
+      "name_en": "Papaya Snow Fungus Sweet Soup",
+      "name_zh": "木瓜雪耳糖水",
+      "protein": "other",
+      "phase": [
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 60,
+      "servings": 3,
+      "ingredients": [
+        "snow fungus (white fungus) 1 piece",
+        "ripe papaya half, cubed",
+        "red dates 6pcs",
+        "goji berries 10g",
+        "rock sugar 40g",
+        "water 1L"
+      ],
+      "instructions": [
+        "Soak snow fungus 30 minutes, tear into pieces.",
+        "Combine fungus, dates and water. Boil then simmer 40 minutes.",
+        "Add papaya and sugar, cook 10 minutes.",
+        "Add goji last 3 minutes."
+      ],
+      "tags": [
+        "dessert",
+        "collagen",
+        "lactation"
+      ],
+      "cuisine": "chinese"
+    },
+    {
+      "id": "jp-001",
+      "name_en": "Miso Glazed Salmon",
+      "name_ja": "味噌サーモン",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "salmon fillet 2pcs",
+        "white miso paste 2 tbsp",
+        "mirin 1 tbsp",
+        "sake 1 tbsp",
+        "sugar 1 tsp"
+      ],
+      "instructions": [
+        "Mix miso, mirin, sake and sugar into paste.",
+        "Coat salmon fillets, marinate 30 minutes (or overnight).",
+        "Wipe off excess marinade.",
+        "Grill or broil 8-10 minutes until caramelized."
+      ],
+      "tags": [
+        "grilled",
+        "omega-3",
+        "easy"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-002",
+      "name_en": "Simmered Yellowtail (Buri Daikon)",
+      "name_ja": "ぶり大根",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 45,
+      "servings": 2,
+      "ingredients": [
+        "yellowtail fillet 200g",
+        "daikon radish 200g, chunked",
+        "ginger 3 slices",
+        "soy sauce 2 tbsp",
+        "sake 2 tbsp",
+        "mirin 2 tbsp",
+        "sugar 1 tbsp",
+        "dashi 300ml"
+      ],
+      "instructions": [
+        "Blanch fish briefly, rinse.",
+        "Pre-cook daikon in water 10 minutes.",
+        "Combine dashi, sake, mirin, sugar and soy sauce in pot.",
+        "Add daikon and fish, simmer 25 minutes until daikon is translucent."
+      ],
+      "tags": [
+        "nimono",
+        "traditional",
+        "warming"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-003",
+      "name_en": "Grilled Mackerel with Salt",
+      "name_ja": "鯖の塩焼き",
+      "protein": "fish",
+      "phase": [
+        "rest",
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "mackerel fillet 2pcs",
+        "salt 1 tsp",
+        "lemon wedge",
+        "grated daikon 2 tbsp"
+      ],
+      "instructions": [
+        "Sprinkle mackerel with salt, rest 10 minutes.",
+        "Pat dry with paper towel.",
+        "Grill skin-side up under broiler 8-10 minutes.",
+        "Serve with grated daikon and lemon."
+      ],
+      "tags": [
+        "grilled",
+        "simple",
+        "omega-3",
+        "DHA"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-004",
+      "name_en": "Salmon and Vegetable Miso Soup",
+      "name_ja": "鮭のあら汁",
+      "protein": "fish",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "salmon 150g, cubed",
+        "daikon 100g, diced",
+        "carrot 50g, diced",
+        "tofu 100g, cubed",
+        "miso paste 2 tbsp",
+        "dashi 600ml",
+        "scallion 1"
+      ],
+      "instructions": [
+        "Bring dashi to simmer, add daikon and carrot.",
+        "Cook 10 minutes until vegetables tender.",
+        "Add salmon and tofu, cook 5 minutes.",
+        "Remove from heat, dissolve miso. Garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "gentle",
+        "nourishing"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-005",
+      "name_en": "Simmered Flounder (Karei Nitsuke)",
+      "name_ja": "カレイの煮付け",
+      "protein": "fish",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "flounder fillet 2pcs",
+        "soy sauce 2 tbsp",
+        "sake 2 tbsp",
+        "mirin 2 tbsp",
+        "sugar 1 tbsp",
+        "ginger 3 slices",
+        "water 100ml"
+      ],
+      "instructions": [
+        "Score fish skin with shallow cuts.",
+        "Combine sauce ingredients and ginger in shallow pan, bring to boil.",
+        "Place fish in simmering liquid.",
+        "Cover with drop lid (otoshibuta), simmer 12 minutes. Baste occasionally."
+      ],
+      "tags": [
+        "nimono",
+        "gentle",
+        "traditional"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-006",
+      "name_en": "Clam Miso Soup (Asari)",
+      "name_ja": "あさりの味噌汁",
+      "protein": "fish",
+      "phase": [
+        "rest",
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "Manila clams 200g",
+        "dashi 600ml",
+        "miso paste 1.5 tbsp",
+        "scallion 1",
+        "sake 1 tbsp"
+      ],
+      "instructions": [
+        "Purge clams in salted water 30 minutes.",
+        "Bring dashi and sake to simmer, add clams.",
+        "Cook until clams open.",
+        "Remove from heat, stir in miso. Garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "quick",
+        "iron-rich",
+        "traditional"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-007",
+      "name_en": "Sardine Tsumire Soup",
+      "name_ja": "いわしのつみれ汁",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 30,
+      "servings": 2,
+      "ingredients": [
+        "fresh sardines 4, filleted",
+        "ginger 1 tsp, grated",
+        "miso 1 tsp",
+        "egg white 1",
+        "cornstarch 1 tsp",
+        "dashi 600ml",
+        "soy sauce 1 tbsp",
+        "tofu 100g",
+        "scallion"
+      ],
+      "instructions": [
+        "Mince sardine fillets, mix with ginger, miso, egg white, cornstarch.",
+        "Bring dashi and soy sauce to simmer.",
+        "Form fish balls with two spoons, drop into broth.",
+        "Add tofu, cook 5 minutes. Garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "calcium",
+        "DHA"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-008",
+      "name_en": "Steamed Cod with Ponzu",
+      "name_ja": "タラのポン酢蒸し",
+      "protein": "fish",
+      "phase": [
+        "rest"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "cod fillet 200g",
+        "kombu 1 small piece",
+        "sake 1 tbsp",
+        "ponzu sauce 2 tbsp",
+        "scallion 1",
+        "grated daikon 2 tbsp"
+      ],
+      "instructions": [
+        "Place kombu on plate, set cod on top.",
+        "Sprinkle with sake.",
+        "Steam 10 minutes until fish flakes.",
+        "Serve with ponzu, grated daikon and scallion."
+      ],
+      "tags": [
+        "steamed",
+        "light",
+        "gentle",
+        "rest-phase"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-009",
+      "name_en": "Salmon Rice Bowl (Sake Don)",
+      "name_ja": "鮭丼",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 1,
+      "ingredients": [
+        "salmon fillet 150g",
+        "soy sauce 1 tbsp",
+        "sake 1 tbsp",
+        "mirin 1 tbsp",
+        "steamed rice 1 bowl",
+        "nori strips",
+        "sesame seeds",
+        "pickled ginger"
+      ],
+      "instructions": [
+        "Glaze salmon with soy sauce, sake, mirin mixture.",
+        "Pan-fry or grill until cooked, flake.",
+        "Place over hot rice.",
+        "Top with nori, sesame seeds and pickled ginger."
+      ],
+      "tags": [
+        "rice-bowl",
+        "quick",
+        "satisfying"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-010",
+      "name_en": "Shrimp and Vegetable Kakiage",
+      "name_ja": "海老と野菜のかき揚げ",
+      "protein": "fish",
+      "phase": [
+        "maintenance"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "shrimp 100g, chopped",
+        "sweet potato 50g, julienned",
+        "onion half, sliced",
+        "flour 50g",
+        "ice water 60ml",
+        "egg 1",
+        "oil for frying",
+        "tentsuyu dipping sauce"
+      ],
+      "instructions": [
+        "Mix flour, egg and ice water loosely (lumpy is fine).",
+        "Toss shrimp and vegetables in batter.",
+        "Drop spoonfuls into 170°C oil.",
+        "Fry until golden, about 3 minutes. Serve with tentsuyu."
+      ],
+      "tags": [
+        "fried",
+        "crispy",
+        "treat"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-011",
+      "name_en": "Chicken and Egg Rice Bowl (Oyakodon)",
+      "name_ja": "親子丼",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 1,
+      "ingredients": [
+        "chicken thigh 150g, sliced",
+        "eggs 2",
+        "onion half, sliced",
+        "dashi 100ml",
+        "soy sauce 2 tbsp",
+        "mirin 2 tbsp",
+        "sugar 1 tsp",
+        "steamed rice 1 bowl",
+        "mitsuba or scallion"
+      ],
+      "instructions": [
+        "Simmer onion in dashi, soy sauce, mirin, sugar.",
+        "Add chicken, cook 5 minutes.",
+        "Pour beaten eggs over, cover.",
+        "Cook until eggs are just set. Slide over rice."
+      ],
+      "tags": [
+        "rice-bowl",
+        "comforting",
+        "classic",
+        "quick"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-012",
+      "name_en": "Chicken Meatball Soup (Tsukune Jiru)",
+      "name_ja": "つくね汁",
+      "protein": "chicken",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "ground chicken 200g",
+        "ginger 1 tsp, grated",
+        "scallion 1, minced",
+        "egg 1",
+        "cornstarch 1 tbsp",
+        "dashi 700ml",
+        "soy sauce 1 tbsp",
+        "mirin 1 tbsp",
+        "leafy greens 100g"
+      ],
+      "instructions": [
+        "Mix chicken, ginger, scallion, egg, cornstarch.",
+        "Bring dashi, soy sauce, mirin to simmer.",
+        "Form small meatballs, drop into broth.",
+        "Add greens, cook 5 minutes until meatballs float."
+      ],
+      "tags": [
+        "soup",
+        "gentle",
+        "protein-rich"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-013",
+      "name_en": "Simmered Chicken and Root Vegetables (Chikuzenni)",
+      "name_ja": "筑前煮",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 40,
+      "servings": 3,
+      "ingredients": [
+        "chicken thigh 200g",
+        "lotus root 100g",
+        "carrot 1",
+        "burdock root 50g",
+        "konnyaku 100g",
+        "shiitake 4pcs",
+        "dashi 300ml",
+        "soy sauce 3 tbsp",
+        "mirin 2 tbsp",
+        "sugar 1 tbsp",
+        "oil 1 tbsp"
+      ],
+      "instructions": [
+        "Cut all ingredients into bite-sized pieces.",
+        "Sauté chicken in oil, add vegetables.",
+        "Add dashi, soy sauce, mirin, sugar.",
+        "Simmer with drop lid 25 minutes until vegetables are tender and liquid reduced."
+      ],
+      "tags": [
+        "nimono",
+        "traditional",
+        "fiber-rich",
+        "hearty"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-014",
+      "name_en": "Ginger Chicken Porridge (Tori Zosui)",
+      "name_ja": "鶏雑炊",
+      "protein": "chicken",
+      "phase": [
+        "rest"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "cooked rice 200g",
+        "chicken breast 100g, shredded",
+        "egg 1, beaten",
+        "dashi 600ml",
+        "soy sauce 1 tbsp",
+        "salt to taste",
+        "ginger 1 tsp, grated",
+        "scallion 1",
+        "nori"
+      ],
+      "instructions": [
+        "Bring dashi to boil, add chicken.",
+        "Cook 5 minutes, add rice.",
+        "Simmer 5 minutes until slightly thick.",
+        "Drizzle in egg, add ginger. Garnish with scallion and nori."
+      ],
+      "tags": [
+        "porridge",
+        "gentle",
+        "comforting",
+        "rest-phase"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-015",
+      "name_en": "Teriyaki Chicken",
+      "name_ja": "照り焼きチキン",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "chicken thigh 2pcs",
+        "soy sauce 2 tbsp",
+        "mirin 2 tbsp",
+        "sake 1 tbsp",
+        "sugar 1 tbsp",
+        "oil 1 tsp"
+      ],
+      "instructions": [
+        "Score chicken skin. Pan-fry skin-side down until crispy.",
+        "Flip, cook 5 minutes more.",
+        "Mix sauce ingredients, pour into pan.",
+        "Simmer until sauce thickens and glazes chicken. Slice to serve."
+      ],
+      "tags": [
+        "pan-fried",
+        "classic",
+        "savory"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-016",
+      "name_en": "Chicken and Burdock Rice (Tori Gohan)",
+      "name_ja": "鶏ごぼうご飯",
+      "protein": "chicken",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 45,
+      "servings": 3,
+      "ingredients": [
+        "rice 2 cups",
+        "chicken thigh 150g, diced",
+        "burdock root 50g, shaved",
+        "carrot 30g, diced",
+        "soy sauce 2 tbsp",
+        "sake 1 tbsp",
+        "mirin 1 tbsp",
+        "dashi 400ml"
+      ],
+      "instructions": [
+        "Rinse rice, soak 30 minutes.",
+        "Combine dashi, soy sauce, sake, mirin.",
+        "Layer chicken, burdock, carrot on rice in rice cooker.",
+        "Pour seasoned dashi over, cook normally."
+      ],
+      "tags": [
+        "rice",
+        "fiber",
+        "one-pot"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-017",
+      "name_en": "Agedashi Tofu",
+      "name_ja": "揚げ出し豆腐",
+      "protein": "tofu",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "firm tofu 1 block",
+        "cornstarch 3 tbsp",
+        "oil for frying",
+        "dashi 200ml",
+        "soy sauce 1 tbsp",
+        "mirin 1 tbsp",
+        "grated daikon",
+        "grated ginger",
+        "scallion"
+      ],
+      "instructions": [
+        "Press tofu, cut into 6 pieces, coat in cornstarch.",
+        "Deep-fry at 180°C until golden and crispy.",
+        "Heat dashi, soy sauce, mirin for sauce.",
+        "Serve tofu in sauce, top with daikon, ginger, scallion."
+      ],
+      "tags": [
+        "fried",
+        "classic",
+        "comforting"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-018",
+      "name_en": "Hiyayakko (Cold Tofu)",
+      "name_ja": "冷奴",
+      "protein": "tofu",
+      "phase": [
+        "rest",
+        "maintenance"
+      ],
+      "prepTime": 5,
+      "servings": 2,
+      "ingredients": [
+        "silken tofu 1 block",
+        "soy sauce 1 tbsp",
+        "grated ginger 1 tsp",
+        "bonito flakes",
+        "scallion 1, sliced",
+        "myoga optional"
+      ],
+      "instructions": [
+        "Place cold tofu on serving dish.",
+        "Top with ginger, scallion and bonito flakes.",
+        "Drizzle with soy sauce.",
+        "Serve immediately."
+      ],
+      "tags": [
+        "cold",
+        "no-cook",
+        "quick",
+        "gentle"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-019",
+      "name_en": "Tofu Steak with Mushroom Sauce",
+      "name_ja": "豆腐ステーキ",
+      "protein": "tofu",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "firm tofu 1 block",
+        "flour 2 tbsp",
+        "butter 1 tbsp",
+        "shimeji mushrooms 100g",
+        "soy sauce 1.5 tbsp",
+        "mirin 1 tbsp",
+        "sake 1 tbsp"
+      ],
+      "instructions": [
+        "Press tofu, cut into thick steaks. Dust with flour.",
+        "Pan-fry in butter until golden both sides.",
+        "Sauté mushrooms in same pan.",
+        "Add soy sauce, mirin, sake. Simmer until sauce thickens. Pour over tofu."
+      ],
+      "tags": [
+        "pan-fried",
+        "satisfying",
+        "umami"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-020",
+      "name_en": "Niku Dofu (Meat and Tofu Simmer)",
+      "name_ja": "肉豆腐",
+      "protein": "tofu",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "thinly sliced beef 150g",
+        "firm tofu 1 block, cubed",
+        "onion 1, sliced",
+        "dashi 200ml",
+        "soy sauce 2 tbsp",
+        "mirin 2 tbsp",
+        "sugar 1 tbsp",
+        "scallion"
+      ],
+      "instructions": [
+        "Combine dashi, soy sauce, mirin, sugar in pot.",
+        "Add onion, simmer 5 minutes.",
+        "Add tofu and beef slices.",
+        "Simmer 10 minutes. Garnish with scallion."
+      ],
+      "tags": [
+        "nimono",
+        "comforting",
+        "protein-rich"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-021",
+      "name_en": "Mabo Tofu (Japanese Style)",
+      "name_ja": "麻婆豆腐",
+      "protein": "tofu",
+      "phase": [
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "soft tofu 1 block, cubed",
+        "ground pork 100g",
+        "garlic 1 clove",
+        "ginger 1 tsp",
+        "tobanjan (chili paste) 1 tsp",
+        "miso 1 tbsp",
+        "soy sauce 1 tbsp",
+        "dashi 150ml",
+        "cornstarch slurry",
+        "scallion"
+      ],
+      "instructions": [
+        "Stir-fry pork with garlic, ginger, tobanjan.",
+        "Add miso, soy sauce, dashi.",
+        "Add tofu, simmer 5 minutes.",
+        "Thicken with cornstarch. Garnish with scallion."
+      ],
+      "tags": [
+        "spicy-mild",
+        "comforting",
+        "quick"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-022",
+      "name_en": "Tofu and Wakame Miso Soup",
+      "name_ja": "豆腐とわかめの味噌汁",
+      "protein": "tofu",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 10,
+      "servings": 2,
+      "ingredients": [
+        "silken tofu 150g, cubed",
+        "dried wakame 3g",
+        "dashi 600ml",
+        "miso paste 2 tbsp",
+        "scallion 1"
+      ],
+      "instructions": [
+        "Bring dashi to gentle simmer.",
+        "Add tofu and wakame.",
+        "Remove from heat, dissolve miso paste.",
+        "Garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "classic",
+        "universal",
+        "daily"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-023",
+      "name_en": "Pork and Ginger Stir-Fry (Shogayaki)",
+      "name_ja": "豚の生姜焼き",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "pork loin slices 200g",
+        "ginger 2 tbsp, grated",
+        "soy sauce 2 tbsp",
+        "mirin 1 tbsp",
+        "sake 1 tbsp",
+        "onion half, sliced",
+        "oil 1 tsp",
+        "shredded cabbage for serving"
+      ],
+      "instructions": [
+        "Mix ginger, soy sauce, mirin, sake for marinade.",
+        "Marinate pork 10 minutes.",
+        "Pan-fry onion, then pork on high heat.",
+        "Pour remaining marinade over, cook until glazed. Serve on cabbage."
+      ],
+      "tags": [
+        "pan-fried",
+        "classic",
+        "quick",
+        "warming"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-024",
+      "name_en": "Pork Belly Kakuni",
+      "name_ja": "豚の角煮",
+      "protein": "pork",
+      "phase": [
+        "major"
+      ],
+      "prepTime": 120,
+      "servings": 4,
+      "ingredients": [
+        "pork belly 500g",
+        "dashi 400ml",
+        "soy sauce 3 tbsp",
+        "sake 100ml",
+        "mirin 2 tbsp",
+        "sugar 2 tbsp",
+        "ginger 3 slices",
+        "hard-boiled eggs 2"
+      ],
+      "instructions": [
+        "Cut pork into large cubes, boil 30 minutes with ginger. Drain.",
+        "Combine fresh dashi, sake, soy sauce, mirin, sugar in pot.",
+        "Add pork, simmer on low 1.5 hours.",
+        "Add eggs in last 30 minutes. Pork should be melt-in-mouth tender."
+      ],
+      "tags": [
+        "braised",
+        "rich",
+        "collagen",
+        "traditional"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-025",
+      "name_en": "Pork Miso Soup (Tonjiru)",
+      "name_ja": "豚汁",
+      "protein": "pork",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 30,
+      "servings": 3,
+      "ingredients": [
+        "pork belly slices 100g",
+        "daikon 100g",
+        "carrot 50g",
+        "potato 1",
+        "burdock root 30g",
+        "konnyaku 50g",
+        "dashi 800ml",
+        "miso paste 3 tbsp",
+        "sesame oil 1 tsp",
+        "scallion"
+      ],
+      "instructions": [
+        "Sauté pork in sesame oil.",
+        "Add diced vegetables, stir-fry 2 minutes.",
+        "Add dashi, bring to boil. Simmer 20 minutes.",
+        "Remove from heat, stir in miso. Garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "hearty",
+        "warming",
+        "fiber"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-026",
+      "name_en": "Steamed Pork with Ponzu",
+      "name_ja": "豚しゃぶ",
+      "protein": "pork",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "pork loin thin slices 200g",
+        "ponzu sauce 3 tbsp",
+        "scallion 1, sliced",
+        "grated daikon 2 tbsp",
+        "sesame seeds 1 tsp",
+        "lettuce leaves for wrapping"
+      ],
+      "instructions": [
+        "Bring pot of water to gentle simmer.",
+        "Swish pork slices in hot water until just pink.",
+        "Drain and arrange on plate with lettuce.",
+        "Serve with ponzu, daikon and sesame."
+      ],
+      "tags": [
+        "shabu",
+        "light",
+        "gentle",
+        "quick"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-027",
+      "name_en": "Pork and Kimchi Stir-Fry",
+      "name_ja": "豚キムチ",
+      "protein": "pork",
+      "phase": [
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "pork belly slices 150g",
+        "kimchi 150g",
+        "tofu 100g, cubed",
+        "sesame oil 1 tsp",
+        "soy sauce 1 tsp",
+        "scallion 1",
+        "sesame seeds"
+      ],
+      "instructions": [
+        "Stir-fry pork in sesame oil until browned.",
+        "Add kimchi, stir-fry 2 minutes.",
+        "Add tofu, soy sauce, cook 3 minutes.",
+        "Garnish with scallion and sesame seeds."
+      ],
+      "tags": [
+        "stir-fry",
+        "fermented",
+        "spicy",
+        "probiotic"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-028",
+      "name_en": "Tamagoyaki (Japanese Omelette)",
+      "name_ja": "卵焼き",
+      "protein": "egg",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 10,
+      "servings": 2,
+      "ingredients": [
+        "eggs 3",
+        "dashi 2 tbsp",
+        "sugar 1 tsp",
+        "soy sauce 1/2 tsp",
+        "mirin 1 tsp",
+        "oil for pan"
+      ],
+      "instructions": [
+        "Beat eggs with dashi, sugar, soy sauce, mirin.",
+        "Heat tamagoyaki pan with thin oil layer.",
+        "Pour thin layer of egg, roll up when half-set.",
+        "Repeat 3-4 times, rolling each layer. Slice to serve."
+      ],
+      "tags": [
+        "classic",
+        "universal",
+        "bento",
+        "gentle"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-029",
+      "name_en": "Chawanmushi (Steamed Egg Custard)",
+      "name_ja": "茶碗蒸し",
+      "protein": "egg",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 25,
+      "servings": 2,
+      "ingredients": [
+        "eggs 2",
+        "dashi 300ml (cooled)",
+        "soy sauce 1 tsp",
+        "mirin 1 tsp",
+        "chicken 30g, diced",
+        "shrimp 2pcs",
+        "shiitake 1, sliced",
+        "mitsuba sprig"
+      ],
+      "instructions": [
+        "Beat eggs gently, mix with cooled dashi, soy sauce, mirin.",
+        "Strain into cups. Place chicken, shrimp, mushroom in cups.",
+        "Cover with foil, steam on low 15 minutes.",
+        "Garnish with mitsuba. Custard should be silky."
+      ],
+      "tags": [
+        "steamed",
+        "delicate",
+        "gentle",
+        "traditional"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-030",
+      "name_en": "Egg Drop Udon",
+      "name_ja": "かきたまうどん",
+      "protein": "egg",
+      "phase": [
+        "rest",
+        "warm"
+      ],
+      "prepTime": 15,
+      "servings": 1,
+      "ingredients": [
+        "udon noodles 1 serving",
+        "egg 1, beaten",
+        "dashi 400ml",
+        "soy sauce 1 tbsp",
+        "mirin 1 tbsp",
+        "cornstarch slurry 1 tbsp",
+        "scallion 1",
+        "grated ginger"
+      ],
+      "instructions": [
+        "Bring dashi, soy sauce, mirin to boil.",
+        "Add cornstarch slurry to thicken slightly.",
+        "Cook udon, place in bowl.",
+        "Pour broth over, drizzle egg into hot broth. Top with scallion and ginger."
+      ],
+      "tags": [
+        "noodle",
+        "gentle",
+        "comforting",
+        "quick"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-031",
+      "name_en": "Soft-Boiled Egg on Rice (Tamago Kake Gohan)",
+      "name_ja": "卵かけご飯",
+      "protein": "egg",
+      "phase": [
+        "rest",
+        "maintenance"
+      ],
+      "prepTime": 5,
+      "servings": 1,
+      "ingredients": [
+        "hot steamed rice 1 bowl",
+        "egg 1 (pasteurized)",
+        "soy sauce 1 tsp",
+        "bonito flakes optional",
+        "scallion optional",
+        "furikake optional"
+      ],
+      "instructions": [
+        "Place hot rice in bowl.",
+        "Crack egg on top.",
+        "Drizzle soy sauce.",
+        "Mix vigorously. Add toppings as desired."
+      ],
+      "tags": [
+        "quick",
+        "simple",
+        "no-cook",
+        "daily"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-032",
+      "name_en": "Beef and Potato Stew (Nikujaga)",
+      "name_ja": "肉じゃが",
+      "protein": "beef",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 40,
+      "servings": 3,
+      "ingredients": [
+        "thinly sliced beef 200g",
+        "potatoes 2, chunked",
+        "carrot 1",
+        "onion 1, wedged",
+        "shirataki noodles 100g",
+        "dashi 300ml",
+        "soy sauce 3 tbsp",
+        "mirin 2 tbsp",
+        "sugar 1 tbsp",
+        "sake 1 tbsp"
+      ],
+      "instructions": [
+        "Sauté beef and onion in oil.",
+        "Add potatoes, carrot, shirataki.",
+        "Pour in dashi, sake, sugar, soy sauce, mirin.",
+        "Cover with drop lid, simmer 25 minutes until potatoes are tender."
+      ],
+      "tags": [
+        "nimono",
+        "comfort-food",
+        "hearty",
+        "classic"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-033",
+      "name_en": "Gyudon (Beef Rice Bowl)",
+      "name_ja": "牛丼",
+      "protein": "beef",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 1,
+      "ingredients": [
+        "thinly sliced beef 150g",
+        "onion 1, sliced",
+        "dashi 100ml",
+        "soy sauce 2 tbsp",
+        "mirin 2 tbsp",
+        "sugar 1 tsp",
+        "sake 1 tbsp",
+        "steamed rice 1 bowl",
+        "pickled ginger"
+      ],
+      "instructions": [
+        "Combine dashi, soy sauce, mirin, sugar, sake in pan.",
+        "Add onion, simmer 5 minutes.",
+        "Add beef, cook until just done.",
+        "Serve over rice with pickled ginger."
+      ],
+      "tags": [
+        "rice-bowl",
+        "quick",
+        "classic",
+        "satisfying"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-034",
+      "name_en": "Sukiyaki",
+      "name_ja": "すき焼き",
+      "protein": "beef",
+      "phase": [
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 30,
+      "servings": 3,
+      "ingredients": [
+        "thinly sliced beef 300g",
+        "tofu 1 block, cubed",
+        "napa cabbage 200g",
+        "shiitake 4pcs",
+        "scallion 2",
+        "shirataki noodles 100g",
+        "soy sauce 4 tbsp",
+        "sugar 3 tbsp",
+        "sake 3 tbsp",
+        "mirin 2 tbsp",
+        "raw egg for dipping"
+      ],
+      "instructions": [
+        "Heat pan, sear a few beef slices with sugar.",
+        "Add soy sauce, sake, mirin mixture.",
+        "Add vegetables, tofu, noodles.",
+        "Simmer together. Dip in beaten raw egg to eat."
+      ],
+      "tags": [
+        "hot-pot",
+        "rich",
+        "traditional",
+        "celebration"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-035",
+      "name_en": "Simmered Beef and Burdock (Kinpira Style)",
+      "name_ja": "牛肉とごぼうのきんぴら",
+      "protein": "beef",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "thinly sliced beef 100g",
+        "burdock root 100g, julienned",
+        "carrot 50g, julienned",
+        "soy sauce 1.5 tbsp",
+        "mirin 1 tbsp",
+        "sugar 1 tsp",
+        "sesame oil 1 tbsp",
+        "sesame seeds",
+        "chili flakes optional"
+      ],
+      "instructions": [
+        "Sauté burdock and carrot in sesame oil 3 minutes.",
+        "Add beef, stir-fry until browned.",
+        "Add soy sauce, mirin, sugar.",
+        "Cook until liquid evaporates. Sprinkle sesame seeds."
+      ],
+      "tags": [
+        "stir-fry",
+        "fiber",
+        "iron-rich"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-036",
+      "name_en": "Hijiki Seaweed Salad",
+      "name_ja": "ひじきの煮物",
+      "protein": "other",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 25,
+      "servings": 3,
+      "ingredients": [
+        "dried hijiki 15g",
+        "carrot 50g, julienned",
+        "aburaage (fried tofu skin) 1",
+        "edamame 30g",
+        "dashi 200ml",
+        "soy sauce 1.5 tbsp",
+        "mirin 1 tbsp",
+        "sugar 1 tsp",
+        "sesame oil 1 tsp"
+      ],
+      "instructions": [
+        "Soak hijiki 20 minutes, drain.",
+        "Sauté hijiki, carrot and sliced aburaage in sesame oil.",
+        "Add dashi, soy sauce, mirin, sugar.",
+        "Simmer 15 minutes until liquid absorbed. Add edamame."
+      ],
+      "tags": [
+        "iron-rich",
+        "calcium",
+        "universal",
+        "traditional",
+        "side-dish"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-037",
+      "name_en": "Kinpira Gobo (Braised Burdock)",
+      "name_ja": "きんぴらごぼう",
+      "protein": "other",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 2,
+      "ingredients": [
+        "burdock root 150g, julienned",
+        "carrot 50g, julienned",
+        "soy sauce 1.5 tbsp",
+        "mirin 1 tbsp",
+        "sugar 1 tsp",
+        "sesame oil 1 tbsp",
+        "chili flakes pinch",
+        "sesame seeds"
+      ],
+      "instructions": [
+        "Soak burdock in water 5 minutes to prevent browning.",
+        "Sauté burdock and carrot in sesame oil 3 minutes.",
+        "Add soy sauce, mirin, sugar, chili.",
+        "Cook until liquid evaporates. Top with sesame seeds."
+      ],
+      "tags": [
+        "side-dish",
+        "fiber",
+        "traditional",
+        "crunchy"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-038",
+      "name_en": "Spinach Ohitashi",
+      "name_ja": "ほうれん草のおひたし",
+      "protein": "other",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 10,
+      "servings": 2,
+      "ingredients": [
+        "spinach 200g",
+        "dashi 3 tbsp",
+        "soy sauce 1 tbsp",
+        "mirin 1 tsp",
+        "bonito flakes",
+        "sesame seeds"
+      ],
+      "instructions": [
+        "Blanch spinach in boiling water 30 seconds, plunge into ice water.",
+        "Squeeze dry, cut into 3cm lengths.",
+        "Mix dashi, soy sauce, mirin. Pour over spinach.",
+        "Top with bonito flakes and sesame seeds."
+      ],
+      "tags": [
+        "side-dish",
+        "iron-rich",
+        "quick",
+        "universal"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-039",
+      "name_en": "Sweet Potato Miso Soup",
+      "name_ja": "さつまいもの味噌汁",
+      "protein": "other",
+      "phase": [
+        "warm",
+        "major"
+      ],
+      "prepTime": 20,
+      "servings": 2,
+      "ingredients": [
+        "sweet potato 150g, cubed",
+        "dashi 600ml",
+        "miso paste 2 tbsp",
+        "scallion 1",
+        "wakame 3g"
+      ],
+      "instructions": [
+        "Bring dashi to boil, add sweet potato.",
+        "Simmer 12 minutes until soft.",
+        "Remove from heat, dissolve miso.",
+        "Add wakame and garnish with scallion."
+      ],
+      "tags": [
+        "soup",
+        "comforting",
+        "fiber",
+        "vitamin-A"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-040",
+      "name_en": "Natto Rice Bowl",
+      "name_ja": "納豆ご飯",
+      "protein": "other",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 5,
+      "servings": 1,
+      "ingredients": [
+        "natto 1 pack",
+        "steamed rice 1 bowl",
+        "soy sauce 1 tsp",
+        "karashi mustard optional",
+        "scallion 1",
+        "raw egg yolk optional"
+      ],
+      "instructions": [
+        "Stir natto vigorously with included sauce until stringy.",
+        "Place over hot rice.",
+        "Add soy sauce, scallion, mustard.",
+        "Top with egg yolk if desired."
+      ],
+      "tags": [
+        "probiotic",
+        "quick",
+        "no-cook",
+        "calcium",
+        "vitamin-K"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-041",
+      "name_en": "Kabocha Nimono (Simmered Pumpkin)",
+      "name_ja": "かぼちゃの煮物",
+      "protein": "other",
+      "phase": [
+        "rest",
+        "warm",
+        "major",
+        "maintenance"
+      ],
+      "prepTime": 25,
+      "servings": 3,
+      "ingredients": [
+        "kabocha pumpkin 300g, chunked",
+        "dashi 200ml",
+        "soy sauce 1 tbsp",
+        "mirin 1 tbsp",
+        "sugar 1 tbsp",
+        "sake 1 tbsp"
+      ],
+      "instructions": [
+        "Cut kabocha with skin on into bite-sized pieces.",
+        "Place skin-side down in pot.",
+        "Add dashi, soy sauce, mirin, sugar, sake.",
+        "Cover with drop lid, simmer 15 minutes until tender."
+      ],
+      "tags": [
+        "nimono",
+        "gentle",
+        "universal",
+        "vitamin-A",
+        "side-dish"
+      ],
+      "cuisine": "japanese"
+    },
+    {
+      "id": "jp-042",
+      "name_en": "Brown Rice Onigiri with Salmon",
+      "name_ja": "鮭おにぎり",
+      "protein": "fish",
+      "phase": [
+        "warm",
+        "maintenance"
+      ],
+      "prepTime": 15,
+      "servings": 3,
+      "ingredients": [
+        "cooked brown rice 300g",
+        "cooked salmon 50g, flaked",
+        "salt 1 tsp",
+        "nori sheets 3",
+        "umeboshi (pickled plum) optional"
+      ],
+      "instructions": [
+        "Wet hands with salted water.",
+        "Place rice in palm, add salmon filling.",
+        "Shape into triangle or ball.",
+        "Wrap with nori strip. Great for snacking while nursing."
+      ],
+      "tags": [
+        "snack",
+        "portable",
+        "omega-3",
+        "easy"
+      ],
+      "cuisine": "japanese"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#4d6b52"/>
+  <g transform="translate(256,240)">
+    <!-- Burrito wrap (outer) -->
+    <ellipse cx="0" cy="20" rx="150" ry="108" fill="#f5e6c8" stroke="#d4a574" stroke-width="6"/>
+    <!-- Tortilla fold line -->
+    <path d="M-108,-28 Q0,-80 108,-28" fill="none" stroke="#d4a574" stroke-width="5" stroke-linecap="round"/>
+    <!-- Filling peeking out top -->
+    <ellipse cx="-32" cy="-22" rx="28" ry="18" fill="#e05c5c" opacity="0.85"/>
+    <ellipse cx="28" cy="-16" rx="24" ry="16" fill="#85a389" opacity="0.85"/>
+    <ellipse cx="0" cy="-6" rx="22" ry="14" fill="#f4b4b4" opacity="0.7"/>
+    <!-- Wrap bottom fold -->
+    <path d="M-80,76 Q0,128 80,76" fill="none" stroke="#d4a574" stroke-width="4" stroke-linecap="round"/>
+    <!-- Baby swaddle detail - sparkles -->
+    <g transform="translate(88,-76)" fill="#f4f7f4" opacity="0.9">
+      <polygon points="0,-16 4,-4 16,0 4,4 0,16 -4,4 -16,0 -4,-4"/>
+    </g>
+    <g transform="translate(-96,64)" fill="#f4f7f4" opacity="0.7">
+      <polygon points="0,-12 3,-3 12,0 3,3 0,12 -3,3 -12,0 -3,-3"/>
+    </g>
+    <g transform="translate(64,56)" fill="#f4f7f4" opacity="0.6">
+      <polygon points="0,-8 2,-2 8,0 2,2 0,8 -2,2 -8,0 -2,-2"/>
+    </g>
+  </g>
+  <!-- Text -->
+  <text x="256" y="450" text-anchor="middle" font-family="system-ui, sans-serif" font-size="40" font-weight="700" fill="#f4f7f4">Operation Burrito</text>
+</svg>

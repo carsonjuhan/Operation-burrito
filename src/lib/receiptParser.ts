@@ -84,35 +84,56 @@ export function parseReceiptText(raw: string): ParsedReceiptItem[] {
   return items;
 }
 
-export async function ocrImageFile(file: File): Promise<string> {
+export type ProgressCallback = (pct: number, message: string) => void;
+
+export async function ocrImageFile(
+  file: File,
+  onProgress?: ProgressCallback
+): Promise<string> {
+  onProgress?.(0, "Loading OCR engine...");
   const { createWorker } = await import("tesseract.js");
+  onProgress?.(5, "Initializing OCR worker...");
   const worker = await createWorker("eng", 1, {
-    // suppress verbose progress logs
-    logger: () => {},
+    logger: (m: { status: string; progress: number }) => {
+      if (m.status === "recognizing text") {
+        // Map 0-1 progress to 10-95% range (leaving room for init and cleanup)
+        const pct = Math.round(10 + m.progress * 85);
+        onProgress?.(pct, "Recognizing text...");
+      }
+    },
   });
   try {
     const {
       data: { text },
     } = await worker.recognize(file);
+    onProgress?.(95, "Finishing up...");
     return text;
   } finally {
     await worker.terminate();
   }
 }
 
-export async function extractPdfText(file: File): Promise<string> {
+export async function extractPdfText(
+  file: File,
+  onProgress?: ProgressCallback
+): Promise<string> {
+  onProgress?.(0, "Loading PDF engine...");
   const arrayBuffer = await file.arrayBuffer();
   const pdfjsLib = await import("pdfjs-dist");
 
-  // Worker: use unpkg CDN so we don't need to copy files to /public
+  // Worker: use local copy from public/ so PDF parsing works offline
   if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+    const basePath = process.env.NODE_ENV === 'production' ? '/Operation-burrito' : '';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `${basePath}/pdf.worker.min.mjs`;
   }
 
+  onProgress?.(10, "Opening PDF...");
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   let full = "";
 
   for (let i = 1; i <= pdf.numPages; i++) {
+    const pct = Math.round(10 + ((i - 1) / pdf.numPages) * 85);
+    onProgress?.(pct, `Extracting page ${i} of ${pdf.numPages}...`);
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
     const pageText = content.items
@@ -121,17 +142,20 @@ export async function extractPdfText(file: File): Promise<string> {
     full += pageText + "\n";
   }
 
+  onProgress?.(95, "Finishing up...");
   return full;
 }
 
 export async function parseReceiptFile(
-  file: File
+  file: File,
+  onProgress?: ProgressCallback
 ): Promise<ParsedReceiptItem[]> {
   let text = "";
   if (file.type === "application/pdf") {
-    text = await extractPdfText(file);
+    text = await extractPdfText(file, onProgress);
   } else {
-    text = await ocrImageFile(file);
+    text = await ocrImageFile(file, onProgress);
   }
+  onProgress?.(100, "Parsing items...");
   return parseReceiptText(text);
 }

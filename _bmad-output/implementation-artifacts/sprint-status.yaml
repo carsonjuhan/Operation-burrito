@@ -1,0 +1,490 @@
+project: Operation Burrito
+created: 2026-04-21
+updated: 2026-04-21
+current_sprint: 5
+total_planned_points: 156
+total_sprints: 8
+
+sprints:
+  - id: 1
+    name: "Sprint 1 — Foundation & Quality Gates"
+    goal: "Establish testing infrastructure, CI/CD quality gates, error boundaries, and core UX infrastructure (loading states, empty states, toast notifications)"
+    status: complete
+    completion_notes: "All 156 tests passing. Fixed build error (tsconfig target: es2017). Created .eslintrc.json for lint configuration."
+    points: 20
+    stories:
+      - id: S-001
+        title: "Add Testing Framework and Configuration"
+        epic: E-001
+        points: 3
+        status: complete
+        tasks:
+          - Install Vitest (or Jest) and React Testing Library
+          - Configure path aliases and TypeScript support in test config
+          - Add test script to package.json
+          - Write a single smoke test to prove setup works
+      - id: S-004
+        title: "Add Lint and Test Steps to CI Pipeline"
+        epic: E-001
+        points: 2
+        status: complete
+        dependency: S-001
+        tasks:
+          - Add npm run lint step before build in deploy.yml
+          - Add npm test step before build in deploy.yml
+          - Ensure pipeline fails on lint or test errors
+      - id: S-005
+        title: "Add React Error Boundaries"
+        epic: E-001
+        points: 3
+        status: complete
+        tasks:
+          - Create reusable ErrorBoundary component in src/components/
+          - Wrap each page route with an error boundary
+          - Add fallback UI with friendly message and Reload button
+          - Ensure sidebar and navigation remain functional on page crash
+      - id: S-006
+        title: "Add localStorage Size Monitoring"
+        epic: E-001
+        points: 2
+        status: complete
+        tasks:
+          - Calculate approximate localStorage size after each store save
+          - Show warning badge in sidebar when usage exceeds 80%
+          - Display current data size in Settings page
+      - id: S-009
+        title: "JSON Data Export"
+        epic: E-002
+        points: 2
+        status: complete
+        tasks:
+          - Add Export Data button to Settings page
+          - Trigger JSON file download with timestamped filename
+          - Export full AppStore in same format as Gist sync
+      - id: S-012
+        title: "Consistent Loading States Across All Pages"
+        epic: E-003
+        points: 3
+        status: complete
+        tasks:
+          - Create shared Skeleton component in src/components/
+          - Replace Loading text on each page with layout-matching skeletons
+          - Ensure no layout shift when real content replaces skeleton
+      - id: S-013
+        title: "Enhanced Empty States"
+        epic: E-003
+        points: 2
+        status: complete
+        tasks:
+          - Audit all pages for missing empty states
+          - Ensure every list page shows EmptyState with icon, message, and CTA
+          - Handle fully-empty dashboard gracefully for new users
+      - id: S-017
+        title: "Toast Notification System"
+        epic: E-003
+        points: 3
+        status: complete
+        tasks:
+          - Create reusable Toast component with success/error/warning/info variants
+          - Implement fixed-position toast container with stacking
+          - Add auto-dismiss (3-5 seconds) with close button
+          - Wire toasts to key actions (item add/delete, sync, import, export)
+
+  - id: 2
+    name: "Sprint 2 — Test Coverage & Data Reliability"
+    goal: "Achieve comprehensive test coverage for utilities and critical flows, and improve data reliability for sync operations"
+    status: complete
+    completion_notes: "All 232 tests passing across 16 test files. Added sync validation, JSON import/export, toast notifications, sync error handling with retry, and page transition animations."
+    points: 21
+    stories:
+      - id: S-002
+        title: "Unit Tests for Utility Libraries"
+        epic: E-001
+        points: 5
+        status: complete
+        dependency: S-001
+        tasks:
+          - Write tests for csvImporter.ts (CSV parsing, column mapping, edge cases)
+          - Write tests for receiptParser.ts (text parsing, price extraction)
+          - Write tests for inventoryMatching.ts (exact/normalized/unmatched)
+          - Write tests for importParsers.ts (ICS, vCard, EML)
+          - Write tests for gistSync.ts (mocked API calls, PAT helpers)
+      - id: S-003
+        title: "Component Tests for Critical Flows"
+        epic: E-001
+        points: 5
+        status: complete
+        dependency: S-001
+        tasks:
+          - Write Dashboard rendering test with mock store data
+          - Write Items page test (add, purchase, delete)
+          - Write Birth plan auto-save test
+          - Write Contraction timer test (start/stop, 5-1-1 rule)
+          - Write Settings sync UI states test
+          - Create mock StoreContext provider for tests
+      - id: S-007
+        title: "Data Validation on Sync Pull"
+        epic: E-002
+        points: 3
+        status: complete
+        tasks:
+          - Validate pulled data against AppStore schema shape
+          - Fill missing fields with defaults for backward compatibility
+          - Show error on invalid JSON instead of silently corrupting state
+          - Save pre-pull snapshot to separate localStorage key for recovery
+      - id: S-010
+        title: "JSON Data Import"
+        epic: E-002
+        points: 3
+        status: complete
+        dependency: S-007
+        tasks:
+          - Add Import Data button to Settings page with file picker
+          - Validate imported JSON against AppStore schema (reuse S-007 validation)
+          - Show confirmation dialog before replacing local data
+          - Display success/error messages
+      - id: S-011
+        title: "Auto-Sync Error Handling and Retry"
+        epic: E-002
+        points: 3
+        status: complete
+        tasks:
+          - Surface sync failures via toast/sidebar indicator
+          - Pause auto-sync after 3 consecutive failures with persistent warning
+          - Allow manual retry or dismiss
+          - Differentiate network vs. auth error messages
+      - id: S-016
+        title: "Page Transition Animations"
+        epic: E-003
+        points: 2
+        status: complete
+        tasks:
+          - Add fade-in animation on route change
+          - Add staggered reveal for list items
+          - Add smooth transitions for toggle actions
+          - Respect prefers-reduced-motion media query
+
+  - id: 3
+    name: "Sprint 3 — Sync Safety, Accessibility & PWA Foundation"
+    goal: "Complete sync conflict detection, run accessibility audit with fixes, and begin PWA with service worker implementation"
+    status: complete
+    completion_notes: "294 tests passing across 19 test files. Added sync conflict detection, comprehensive accessibility fixes (WCAG AA), keyboard shortcuts with help overlay, and service worker with offline caching."
+    points: 21
+    stories:
+      - id: S-008
+        title: "Conflict Detection for Sync"
+        epic: E-002
+        points: 5
+        status: complete
+        dependency: S-007
+        tasks:
+          - Track lastModifiedAt timestamp on every local mutation
+          - On pull compare local lastModifiedAt with lastSynced, show confirmation if diverged
+          - On push fetch Gist updated_at and compare with lastSynced
+          - Add confirmation dialogs with proceed/cancel for both cases
+      - id: S-014
+        title: "Accessibility Audit and Fixes"
+        epic: E-003
+        points: 5
+        status: complete
+        tasks:
+          - Run axe-core / Lighthouse accessibility audit
+          - Fix keyboard accessibility (Tab, Enter, Escape) for all interactive elements
+          - Add labels and aria-label to all form inputs
+          - Fix color contrast to WCAG 2.1 AA standards
+          - Ensure 44x44px minimum touch targets on mobile
+          - Add focus trapping for modals and mobile sidebar drawer
+      - id: S-015
+        title: "Keyboard Shortcuts"
+        epic: E-003
+        points: 3
+        status: complete
+        tasks:
+          - Implement Cmd/Ctrl+K for global search
+          - Escape closes any open modal
+          - Arrow key navigation for sidebar
+          - Add keyboard shortcut help overlay via ? key
+      - id: S-018
+        title: "Service Worker and Caching Strategy"
+        epic: E-004
+        points: 8
+        status: complete
+        tasks:
+          - Implement service worker registration on first visit
+          - Cache static shell (HTML, JS, CSS, icons) on install
+          - Use cache-first strategy for static assets
+          - Use network-first for Gist API calls
+          - Queue sync operations when offline
+          - Update cache on new version deploy (stale-while-revalidate)
+          - Disable service worker in development mode
+
+  - id: 4
+    name: "Sprint 4 — PWA Completion & Export Features"
+    goal: "Complete PWA with install prompt and offline indicator, implement birth plan PDF export, CSV export, and print features"
+    status: complete
+    completion_notes: "333 tests passing across 24 test files. PWA complete with manifest, install banner, offline indicator. Birth plan PDF export, CSV export, printable hospital bag, local PDF worker."
+    points: 21
+    stories:
+      - id: S-019
+        title: "Web App Manifest and Install Prompt"
+        epic: E-004
+        points: 3
+        status: complete
+        dependency: S-018
+        tasks:
+          - Create manifest.json with name, icons, theme_color, display standalone
+          - Generate app icons in multiple sizes with burrito theme
+          - Implement custom install banner via beforeinstallprompt event
+          - Add Apple meta tags for iOS support
+      - id: S-020
+        title: "Offline Indicator and Sync Queue"
+        epic: E-004
+        points: 3
+        status: complete
+        dependency: S-018
+        tasks:
+          - Show banner/badge when browser goes offline
+          - Queue sync operations attempted while offline
+          - Execute queued syncs when connectivity returns
+          - Persist queue in localStorage
+      - id: S-021
+        title: "Birth Plan PDF Export"
+        epic: E-005
+        points: 8
+        status: complete
+        tasks:
+          - Add Export as PDF button to Birth Plan page
+          - Generate clean, readable PDF layout with all completed sections
+          - Include header with patient name, due date, generation date
+          - Format for letter/A4 paper using jsPDF or html2pdf.js
+          - Omit or mark empty sections as Not specified
+      - id: S-022
+        title: "CSV Export for Baby Items"
+        epic: E-005
+        points: 3
+        status: complete
+        tasks:
+          - Add Export CSV button to Items page
+          - Include all relevant columns with proper CSV escaping
+          - Support export from both All Items and My Tracked Items views
+          - Generate timestamped filename
+      - id: S-023
+        title: "Printable Hospital Bag Checklist"
+        epic: E-005
+        points: 2
+        status: complete
+        tasks:
+          - Add Print Checklist button to Hospital Bag page
+          - Create @media print CSS layout with categories and checkboxes
+          - Show packed items as checked, unpacked as empty
+          - Hide navigation and non-essential UI in print view
+      - id: S-025
+        title: "Bundle pdfjs-dist Worker Locally"
+        epic: E-005
+        points: 2
+        status: complete
+        tasks:
+          - Copy PDF.js worker to public/ directory at build time
+          - Update receiptParser.ts to reference local worker path
+          - Verify PDF parsing works offline after initial load
+
+  - id: 5
+    name: "Sprint 5 — Performance & Sharing (Part 1)"
+    goal: "Optimize store context performance, improve receipt scanner UX, implement shareable birth plan link, and add list virtualization"
+    status: complete
+    completion_notes: "342 tests passing across 25 test files. Split store into 10 domain-specific contexts with memoization. Receipt scanner with progress bar and editable table. Shareable birth plan via URL hash encoding. List virtualization with useShowMore pagination."
+    points: 19
+    stories:
+      - id: S-033
+        title: "Split Store Context by Domain"
+        epic: E-009
+        points: 8
+        status: complete
+        tasks:
+          - Split store into domain-specific contexts (items, notes, birthPlan, settings) or migrate to Zustand
+          - Ensure components only re-render when their specific data changes
+          - Maintain localStorage persistence behavior
+          - Verify auto-sync to Gist still works across all domains
+          - Measure re-render improvements
+      - id: S-024
+        title: "Improve Receipt Scanner UX"
+        epic: E-005
+        points: 3
+        status: complete
+        tasks:
+          - Add progress bar for OCR/PDF parsing
+          - Display parsed items in editable table before import
+          - Allow user to correct names/prices and deselect items
+          - Improve error messages for unsupported files
+      - id: S-026
+        title: "Shareable Read-Only Birth Plan Link"
+        epic: E-006
+        points: 5
+        status: complete
+        tasks:
+          - Add Share Birth Plan button
+          - Generate read-only link using Gist raw URL or hash approach
+          - Create clean styled view without editing controls
+          - Implement link revocation via regeneration
+      - id: S-034
+        title: "List Virtualization for Large Collections"
+        epic: E-009
+        points: 3
+        status: complete
+        tasks:
+          - Add react-window or @tanstack/virtual
+          - Virtualize baby items list when count exceeds threshold (50+)
+          - Ensure filtering, grouping, and inline edit work with virtualized list
+
+  - id: 6
+    name: "Sprint 6 — Sharing, Performance & Dark Mode"
+    goal: "Complete sharing features, finish performance optimizations, and implement dark mode and milestone timeline"
+    status: complete
+    completion_notes: "391 tests passing across 29 test files. Shareable registry via URL hash. Lazy-loaded checklist data with caching hook. useMemo audit across 5 pages. Full dark mode with FOUC prevention. Milestone timeline on dashboard."
+    points: 20
+    stories:
+      - id: S-027
+        title: "Shareable Registry/Checklist View"
+        epic: E-006
+        points: 5
+        status: complete
+        tasks:
+          - Add Share List button to generate read-only link
+          - Create shared view grouped by category with purchased/needed status
+          - Disable editing in shared view
+          - Optional: allow viewer to claim items
+      - id: S-035
+        title: "Lazy-Load Checklist and Registry Reference Data"
+        epic: E-009
+        points: 3
+        status: complete
+        tasks:
+          - Convert checklist data to dynamic import() on Items page first visit
+          - Convert registry data to on-demand loading
+          - Add loading state while data loads
+          - Cache after first load
+      - id: S-036
+        title: "Consistent useMemo for Expensive Computations"
+        epic: E-009
+        points: 2
+        status: complete
+        tasks:
+          - Audit all pages for expensive computations without useMemo
+          - Wrap filtered/grouped/sorted views in useMemo
+          - Ensure no useMemo hooks appear after early return statements
+      - id: S-030
+        title: "Dark Mode"
+        epic: E-008
+        points: 5
+        status: complete
+        tasks:
+          - Add theme toggle in sidebar footer or Settings
+          - Apply Tailwind dark: variants across all pages
+          - Create dark mode equivalents for sage-* and blush-* palettes
+          - Persist preference in localStorage and respect prefers-color-scheme
+          - Prevent flash of wrong theme on page load
+      - id: S-031
+        title: "Due Date Milestone Timeline"
+        epic: E-008
+        points: 5
+        status: complete
+        tasks:
+          - Add timeline widget to Dashboard with key milestones
+          - Highlight current position based on today's date
+          - Mark completed milestones based on app data
+          - Make responsive (horizontal desktop, vertical mobile)
+          - Link milestones to relevant pages
+
+  - id: 7
+    name: "Sprint 7 — Photos, Undo & Notifications (Part 1)"
+    goal: "Add photo attachments for items and notes, implement undo for delete actions, and begin appointment reminder notifications"
+    status: complete
+    completion_notes: "438 tests passing across 32 test files. Photo attachments with resize/thumbnails for items and notes. Undo delete across all 7 entity pages with 5s timer. Appointment reminder notifications with 5-min polling."
+    points: 18
+    stories:
+      - id: S-032
+        title: "Photo Attachments for Items and Notes"
+        epic: E-008
+        points: 8
+        status: complete
+        tasks:
+          - Add Attach Photo button to items and notes
+          - Resize photos client-side to max 800px
+          - Display thumbnails in list views and full-size in detail views
+          - Include photos in AppStore and Gist sync
+          - Account for photo storage in localStorage size warning (S-006)
+      - id: S-050
+        title: "Undo for Delete Actions"
+        epic: E-011
+        points: 5
+        status: complete
+        dependency: S-017
+        tasks:
+          - Show Undo toast for 5 seconds after any entity deletion
+          - Restore deleted entity on Undo click
+          - Make deletion permanent after toast expires
+          - Handle multiple consecutive deletes independently
+          - Ensure undo works correctly with Gist auto-sync
+      - id: S-028
+        title: "Appointment Reminder Notifications"
+        epic: E-007
+        points: 5
+        status: complete
+        dependency: S-018
+        tasks:
+          - Add enable/disable reminders toggle in Settings
+          - Request notification permission when reminders enabled
+          - Fire reminders 1 day before and morning of each appointment
+          - Include appointment details in notification
+          - Handle notification click to open Appointments page
+
+  - id: 8
+    name: "Sprint 8 — Milestones, History & Internationalization"
+    goal: "Complete notification milestones, implement action history, and set up internationalization with first translation"
+    status: complete
+    completion_notes: "505 tests passing across 36 test files. Milestone countdown notifications integrated into reminder scheduler. Action history with in-memory 20-entry buffer and revert. i18n framework with 272 English keys and complete French translation."
+    points: 16
+    stories:
+      - id: S-029
+        title: "Due Date Countdown Milestones"
+        epic: E-007
+        points: 3
+        status: complete
+        dependency: S-018
+        tasks:
+          - Trigger milestone notifications at 12, 8, 4, 2, 1 weeks and due date
+          - Include contextual messages linking to relevant pages
+          - Show milestone timeline widget on dashboard
+          - Mark passed milestones as complete
+      - id: S-051
+        title: "Action History Log"
+        epic: E-011
+        points: 5
+        status: complete
+        tasks:
+          - Store last 20 state snapshots in memory
+          - Add History panel in Settings with timestamped action descriptions
+          - Allow revert to any previous state
+          - Clear history on page refresh
+      - id: S-052
+        title: "i18n Framework Setup"
+        epic: E-012
+        points: 5
+        status: complete
+        tasks:
+          - Install and configure i18n library (next-intl or react-i18next)
+          - Extract all hardcoded UI strings to translation files
+          - Add language selector in Settings
+          - Persist selected language in localStorage
+          - Verify static export compatibility
+      - id: S-053
+        title: "Add French Translation"
+        epic: E-012
+        points: 3
+        status: complete
+        dependency: S-052
+        tasks:
+          - Create complete French translation file
+          - Verify all pages render correctly in French
+          - Handle date and number formatting for French locale
+          - Ensure runtime language switching works without reload

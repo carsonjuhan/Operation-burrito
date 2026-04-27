@@ -3,10 +3,13 @@
 import { useState, useMemo } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { Note, NoteCategory } from "@/types";
+import { useUndoDelete } from "@/hooks/useUndoDelete";
 import { Modal } from "@/components/Modal";
 import { EmptyState } from "@/components/EmptyState";
 import { Plus, Pencil, Trash2, Pin, Search } from "lucide-react";
 import clsx from "clsx";
+import { PageTransition } from "@/components/PageTransition";
+import { PhotoAttachment, PhotoThumbnails } from "@/components/PhotoAttachment";
 
 const CATEGORIES: NoteCategory[] = [
   "Appointment", "Milestone", "Question for Doctor", "Hospital Bag", "Postpartum Plan", "General",
@@ -26,10 +29,12 @@ const DEFAULT_FORM = {
   content: "",
   category: "General" as NoteCategory,
   pinned: false,
+  photos: [] as string[],
 };
 
 export default function NotesPage() {
-  const { store, loaded, addNote, updateNote, deleteNote } = useStoreContext();
+  const { store, loaded, addNote, updateNote, deleteNote, restoreNote } = useStoreContext();
+  const { handleDelete: handleUndoDelete } = useUndoDelete<Note>(deleteNote, restoreNote, (n) => n.title);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Note | null>(null);
   const [form, setForm] = useState(DEFAULT_FORM);
@@ -47,14 +52,21 @@ export default function NotesPage() {
     });
   }, [store.notes, search, filterCategory]);
 
+  const pinned = useMemo(
+    () => filtered.filter((n) => n.pinned),
+    [filtered]
+  );
+
+  const unpinned = useMemo(
+    () => filtered
+      .filter((n) => !n.pinned)
+      .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1)),
+    [filtered]
+  );
+
   if (!loaded) return null;
 
   const { notes } = store;
-
-  const pinned = filtered.filter((n) => n.pinned);
-  const unpinned = filtered
-    .filter((n) => !n.pinned)
-    .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1));
 
   function openAdd() {
     setEditing(null);
@@ -69,6 +81,7 @@ export default function NotesPage() {
       content: note.content,
       category: note.category,
       pinned: note.pinned,
+      photos: note.photos ?? [],
     });
     setShowModal(true);
   }
@@ -80,6 +93,7 @@ export default function NotesPage() {
       content: form.content.trim(),
       category: form.category,
       pinned: form.pinned,
+      photos: form.photos.length > 0 ? form.photos : undefined,
     };
     if (editing) {
       updateNote(editing.id, payload);
@@ -90,7 +104,7 @@ export default function NotesPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <PageTransition className="max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
@@ -106,12 +120,13 @@ export default function NotesPage() {
       {notes.length > 0 && (
         <div className="card p-4 mb-6 flex flex-wrap gap-3 items-center">
           <div className="flex items-center gap-2 flex-1 min-w-[180px]">
-            <Search size={14} className="text-stone-400 shrink-0" />
+            <Search size={14} className="text-stone-400 shrink-0" aria-hidden="true" />
             <input
               className="text-sm bg-transparent focus:outline-none w-full"
               placeholder="Search notes…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search notes"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -120,6 +135,7 @@ export default function NotesPage() {
               className="text-xs border border-stone-200 rounded-md px-2 py-1 bg-white focus:outline-none"
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value as NoteCategory | "All")}
+              aria-label="Filter by category"
             >
               <option value="All">All</option>
               {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
@@ -151,7 +167,7 @@ export default function NotesPage() {
                   note={note}
                   onTogglePin={() => updateNote(note.id, { pinned: !note.pinned })}
                   onEdit={() => openEdit(note)}
-                  onDelete={() => deleteNote(note.id)}
+                  onDelete={() => handleUndoDelete(note)}
                 />
               ))}
             </Section>
@@ -164,7 +180,7 @@ export default function NotesPage() {
                   note={note}
                   onTogglePin={() => updateNote(note.id, { pinned: !note.pinned })}
                   onEdit={() => openEdit(note)}
-                  onDelete={() => deleteNote(note.id)}
+                  onDelete={() => handleUndoDelete(note)}
                 />
               ))}
             </Section>
@@ -206,6 +222,10 @@ export default function NotesPage() {
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
               />
             </div>
+            <PhotoAttachment
+              photos={form.photos}
+              onChange={(photos) => setForm({ ...form, photos })}
+            />
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -226,7 +246,7 @@ export default function NotesPage() {
           </form>
         </Modal>
       )}
-    </div>
+    </PageTransition>
   );
 }
 
@@ -262,27 +282,28 @@ function NoteCard({
           {note.content && (
             <p className="text-sm text-stone-500 whitespace-pre-wrap">{note.content}</p>
           )}
-          <p className="text-xs text-stone-300 mt-2">
+          <PhotoThumbnails photos={note.photos} />
+          <p className="text-xs text-stone-500 mt-2">
             {new Date(note.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
           </p>
         </div>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity shrink-0">
           <button
             onClick={onTogglePin}
             className={clsx(
-              "p-1.5 rounded transition-colors",
+              "p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded transition-colors",
               note.pinned
                 ? "text-amber-500 hover:bg-amber-100"
                 : "text-stone-400 hover:bg-stone-100"
             )}
-            title={note.pinned ? "Unpin" : "Pin"}
+            aria-label={note.pinned ? `Unpin ${note.title}` : `Pin ${note.title}`}
           >
             <Pin size={14} />
           </button>
-          <button onClick={onEdit} className="p-1.5 rounded hover:bg-stone-100 text-stone-400">
+          <button onClick={onEdit} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-stone-100 text-stone-400" aria-label={`Edit ${note.title}`}>
             <Pencil size={14} />
           </button>
-          <button onClick={onDelete} className="p-1.5 rounded hover:bg-red-50 text-stone-400 hover:text-red-500">
+          <button onClick={onDelete} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-red-50 text-stone-400 hover:text-red-500" aria-label={`Delete ${note.title}`}>
             <Trash2 size={14} />
           </button>
         </div>

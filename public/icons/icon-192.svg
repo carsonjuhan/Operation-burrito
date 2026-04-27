@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="32" fill="#4d6b52"/>
+  <g transform="translate(96,96)">
+    <!-- Burrito wrap (outer) -->
+    <ellipse cx="0" cy="8" rx="56" ry="40" fill="#f5e6c8" stroke="#d4a574" stroke-width="3"/>
+    <!-- Tortilla fold line -->
+    <path d="M-40,-10 Q0,-30 40,-10" fill="none" stroke="#d4a574" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Filling peeking out top -->
+    <ellipse cx="-12" cy="-8" rx="10" ry="7" fill="#e05c5c" opacity="0.85"/>
+    <ellipse cx="10" cy="-6" rx="9" ry="6" fill="#85a389" opacity="0.85"/>
+    <ellipse cx="0" cy="-2" rx="8" ry="5" fill="#f4b4b4" opacity="0.7"/>
+    <!-- Wrap bottom fold -->
+    <path d="M-30,28 Q0,48 30,28" fill="none" stroke="#d4a574" stroke-width="2" stroke-linecap="round"/>
+    <!-- Baby swaddle detail - small star/sparkle -->
+    <g transform="translate(32,-28)" fill="#f4f7f4" opacity="0.9">
+      <polygon points="0,-8 2,-2 8,0 2,2 0,8 -2,2 -8,0 -2,-2"/>
+    </g>
+    <g transform="translate(-36,24)" fill="#f4f7f4" opacity="0.7">
+      <polygon points="0,-5 1.5,-1.5 5,0 1.5,1.5 0,5 -1.5,1.5 -5,0 -1.5,-1.5"/>
+    </g>
+  </g>
+  <!-- Text -->
+  <text x="96" y="168" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#f4f7f4">OB</text>
+</svg>
