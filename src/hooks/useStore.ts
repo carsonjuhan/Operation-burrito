@@ -122,6 +122,7 @@ export const DEFAULT_STORE: AppStore = {
   checklistAlreadyHave: [],
   hospitalChecklistPacked: [],
   hospitalChecklistSkipped: [],
+  postBirthChecked: [],
 };
 
 // ── Persistence ────────────────────────────────────────────────────────────
@@ -261,7 +262,7 @@ export interface CoreContextValue {
   setSyncSuccessCallback: (cb: () => void) => void;
   registryUrl: string;
   updateRegistryUrl: (url: string) => void;
-  updateChecklistState: (key: "checklistSkipped" | "checklistAlreadyHave" | "hospitalChecklistPacked" | "hospitalChecklistSkipped", ids: string[]) => void;
+  updateChecklistState: (key: "checklistSkipped" | "checklistAlreadyHave" | "hospitalChecklistPacked" | "hospitalChecklistSkipped" | "postBirthChecked", ids: string[]) => void;
   loadFromExternal: (incoming: AppStore) => void;
 }
 
@@ -510,7 +511,7 @@ export function useStore() {
   }, [update]);
 
   const updateChecklistState = useCallback((
-    key: "checklistSkipped" | "checklistAlreadyHave" | "hospitalChecklistPacked" | "hospitalChecklistSkipped",
+    key: "checklistSkipped" | "checklistAlreadyHave" | "hospitalChecklistPacked" | "hospitalChecklistSkipped" | "postBirthChecked",
     ids: string[]
   ) => {
     update((s) => ({ ...s, [key]: ids }));

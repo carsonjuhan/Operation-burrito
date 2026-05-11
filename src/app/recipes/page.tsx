@@ -36,6 +36,7 @@ export default function RecipesPage() {
   const [selectedProteins, setSelectedProteins] = useState<Set<RecipeProtein>>(new Set());
   const [selectedCuisines, setSelectedCuisines] = useState<Set<RecipeCuisine>>(new Set());
   const [selectedPhases, setSelectedPhases] = useState<Set<RecipePhase>>(new Set());
+  const [menuRefOnly, setMenuRefOnly] = useState(false);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const toggleFilter = <T,>(set: Set<T>, value: T, setter: (s: Set<T>) => void) => {
@@ -51,6 +52,7 @@ export default function RecipesPage() {
       if (selectedProteins.size > 0 && !selectedProteins.has(r.protein)) return false;
       if (selectedCuisines.size > 0 && !selectedCuisines.has(r.cuisine)) return false;
       if (selectedPhases.size > 0 && !r.phase.some((p) => selectedPhases.has(p))) return false;
+      if (menuRefOnly && !(r.tags ?? []).includes("MenuReference")) return false;
       if (q) {
         const haystack = [
           r.name_en, r.name_zh ?? "", r.name_ja ?? "",
@@ -60,15 +62,16 @@ export default function RecipesPage() {
       }
       return true;
     });
-  }, [query, selectedProteins, selectedCuisines, selectedPhases]);
+  }, [query, selectedProteins, selectedCuisines, selectedPhases, menuRefOnly]);
 
-  const hasFilters = query.trim() || selectedProteins.size > 0 || selectedCuisines.size > 0 || selectedPhases.size > 0;
+  const hasFilters = query.trim() || selectedProteins.size > 0 || selectedCuisines.size > 0 || selectedPhases.size > 0 || menuRefOnly;
 
   const clearAll = () => {
     setQuery("");
     setSelectedProteins(new Set());
     setSelectedCuisines(new Set());
     setSelectedPhases(new Set());
+    setMenuRefOnly(false);
   };
 
   const toggleExpanded = (id: string) => {
@@ -178,6 +181,22 @@ export default function RecipesPage() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Source */}
+        <div>
+          <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 mb-1.5 uppercase tracking-wide">Source</p>
+          <button
+            onClick={() => setMenuRefOnly(!menuRefOnly)}
+            className={clsx(
+              "px-3 py-1.5 rounded-full text-xs font-medium transition-colors border",
+              menuRefOnly
+                ? "bg-sage-100 border-sage-300 text-sage-800 dark:bg-sage-900 dark:border-sage-700 dark:text-sage-200"
+                : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-700"
+            )}
+          >
+            Menu Reference
+          </button>
         </div>
       </div>
 

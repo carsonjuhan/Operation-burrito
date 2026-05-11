@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { useChecklistData } from "@/hooks/useChecklistData";
 import {
   ShoppingCart, GraduationCap, BookOpen, Heart, StickyNote,
-  CheckCircle2, Circle, Calendar, Briefcase, Baby, ExternalLink,
+  CheckCircle2, Circle, Calendar, Briefcase, Baby, ExternalLink, ClipboardCheck,
 } from "lucide-react";
 import { PageTransition } from "@/components/PageTransition";
 import { MilestoneTimeline, type MilestoneCompletionData } from "@/components/MilestoneTimeline";
@@ -21,7 +21,7 @@ function getDaysUntil(dateStr: string): number | null {
 }
 
 export default function DashboardPage() {
-  const { store, loaded } = useStoreContext();
+  const { store, loaded, updateChecklistState } = useStoreContext();
   const { data: checklistData } = useChecklistData();
 
   const { items, classes, materials, birthPlan, notes, hospitalBag, appointments, registryUrl } = store;
@@ -154,6 +154,18 @@ export default function DashboardPage() {
       mustHaveRemaining: checklistStats.needed,
     };
   }, [items, classes, hospitalBag, birthPlanFilled, birthPlanTotal, checklistData, checklistStats.needed]);
+
+  // ── Post-birth checklist ──────────────────────────────────────────────────
+  const postBirthChecked = useMemo(
+    () => new Set(store.postBirthChecked ?? []),
+    [store.postBirthChecked]
+  );
+
+  const togglePostBirth = useCallback((id: string) => {
+    const current = store.postBirthChecked ?? [];
+    const next = current.includes(id) ? current.filter((x) => x !== id) : [...current, id];
+    updateChecklistState("postBirthChecked", next);
+  }, [store.postBirthChecked, updateChecklistState]);
 
   if (!loaded) {
     return (
@@ -301,6 +313,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Post-birth checklist */}
+      <PostBirthChecklist checked={postBirthChecked} onToggle={togglePostBirth} />
+
       {/* Lower grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
@@ -406,5 +421,71 @@ function StatCard({ href, icon, bg, label, value, sub, percent, color, staggerIn
         </div>
       )}
     </Link>
+  );
+}
+
+// ── Post-Birth Checklist ──────────────────────────────────────────────────
+
+const POST_BIRTH_ITEMS = [
+  { id: "pb-1", label: "Register the Birth", note: "Usually done online before you leave the hospital or soon after." },
+  { id: "pb-2", label: "Apply for Baby Health Card", note: "So doctor visits are covered." },
+  { id: "pb-3", label: "Get the Birth Certificate", note: "You'll need this for passport, school and other required documents." },
+  { id: "pb-4", label: "Apply for Baby's SIN", note: "Social Insurance Number — needed for RESP." },
+  { id: "pb-5", label: "Apply for Canada Child Benefit (CCB)", note: "Monthly money from the government." },
+  { id: "pb-6", label: "Open RESP", note: "Start saving for your child's education early." },
+  { id: "pb-7", label: "Apply for Passport", note: "Only if you are planning to travel with baby." },
+  { id: "pb-8", label: "Book Baby's First Doctor Visit", note: "Usually within 1–3 days after leaving the hospital." },
+  { id: "pb-9", label: "Add Baby to Private Insurance", note: "If you have workplace or personal insurance." },
+];
+
+function PostBirthChecklist({ checked, onToggle }: { checked: Set<string>; onToggle: (id: string) => void }) {
+  const doneCount = POST_BIRTH_ITEMS.filter((i) => checked.has(i.id)).length;
+
+  return (
+    <div className="card p-5 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <ClipboardCheck size={18} className="text-sky-600" />
+          <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-200">
+            After Birth Checklist
+            <span className="text-stone-400 font-normal ml-1">({doneCount}/{POST_BIRTH_ITEMS.length})</span>
+          </h2>
+        </div>
+        {doneCount === POST_BIRTH_ITEMS.length && (
+          <span className="text-xs text-emerald-600 font-medium">All done!</span>
+        )}
+      </div>
+      <div className="mb-3 h-1.5 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all bg-sky-400"
+          style={{ width: `${POST_BIRTH_ITEMS.length > 0 ? Math.round((doneCount / POST_BIRTH_ITEMS.length) * 100) : 0}%` }}
+        />
+      </div>
+      <ul className="space-y-1">
+        {POST_BIRTH_ITEMS.map((item) => {
+          const done = checked.has(item.id);
+          return (
+            <li key={item.id}>
+              <button
+                onClick={() => onToggle(item.id)}
+                className="w-full flex items-start gap-3 p-2 rounded-lg text-left hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
+              >
+                {done ? (
+                  <CheckCircle2 size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                ) : (
+                  <Circle size={16} className="text-stone-300 shrink-0 mt-0.5" />
+                )}
+                <div className="min-w-0">
+                  <p className={`text-sm font-medium ${done ? "text-stone-400 line-through" : "text-stone-700 dark:text-stone-200"}`}>
+                    {item.label}
+                  </p>
+                  <p className="text-xs text-stone-400 dark:text-stone-500">{item.note}</p>
+                </div>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

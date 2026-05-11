@@ -7,7 +7,7 @@ import {
   LayoutDashboard, ShoppingCart, GraduationCap, BookOpen,
   Heart, StickyNote, Settings, Github, Briefcase, Calendar,
   Phone, Timer, Search, X, Menu, PiggyBank, AlertTriangle,
-  RefreshCw, XCircle, WifiOff, UtensilsCrossed,
+  RefreshCw, XCircle, WifiOff, UtensilsCrossed, ChevronRight,
 } from "lucide-react";
 import clsx from "clsx";
 import { getPAT, getGistId, getLastSynced } from "@/lib/gistSync";
@@ -17,25 +17,61 @@ import { useToast } from "@/contexts/ToastContext";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-const NAV_ITEMS = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/items", label: "Baby Items & Checklist", icon: ShoppingCart },
-  { href: "/budget", label: "Budget", icon: PiggyBank },
-  { href: "/hospital-bag", label: "Hospital Bag & Prep", icon: Briefcase },
-  { href: "/appointments", label: "Appointments", icon: Calendar },
-  { href: "/contacts", label: "Contacts", icon: Phone },
-  { href: "/classes", label: "Classes", icon: GraduationCap },
-  { href: "/materials", label: "Materials", icon: BookOpen },
-  { href: "/birth-plan", label: "Birth Plan", icon: Heart },
-  { href: "/recipes", label: "Postpartum Recipes", icon: UtensilsCrossed },
-  { href: "/notes", label: "Notes", icon: StickyNote },
-  { href: "/timer", label: "Contraction Timer", icon: Timer },
-  { href: "/search", label: "Search", icon: Search },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ElementType;
+}
+
+interface NavSection {
+  heading?: string;
+  items: NavItem[];
+}
+
+const NAV_SECTIONS: NavSection[] = [
+  {
+    items: [
+      { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    heading: "Preparation",
+    items: [
+      { href: "/items", label: "Baby Items & Checklist", icon: ShoppingCart },
+      { href: "/budget", label: "Budget", icon: PiggyBank },
+      { href: "/hospital-bag", label: "Hospital Bag & Prep", icon: Briefcase },
+      { href: "/birth-plan", label: "Birth Plan", icon: Heart },
+    ],
+  },
+  {
+    heading: "Schedule",
+    items: [
+      { href: "/appointments", label: "Appointments", icon: Calendar },
+      { href: "/contacts", label: "Contacts", icon: Phone },
+      { href: "/classes", label: "Classes", icon: GraduationCap },
+    ],
+  },
+  {
+    heading: "Resources",
+    items: [
+      { href: "/recipes", label: "Postpartum Recipes", icon: UtensilsCrossed },
+      { href: "/materials", label: "Materials", icon: BookOpen },
+      { href: "/notes", label: "Notes", icon: StickyNote },
+    ],
+  },
+  {
+    heading: "Tools",
+    items: [
+      { href: "/timer", label: "Contraction Timer", icon: Timer },
+      { href: "/search", label: "Search", icon: Search },
+    ],
+  },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
   const [syncState, setSyncState] = useState({ connected: false, lastSynced: "" });
   const [storageWarning, setStorageWarning] = useState(false);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -150,23 +186,61 @@ export function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto" aria-label="Main navigation" data-sidebar-nav>
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href;
+      <nav className="flex-1 px-3 py-3 overflow-y-auto" aria-label="Main navigation" data-sidebar-nav>
+        {NAV_SECTIONS.map((section, si) => {
+          const hasHeading = !!section.heading;
+          const sectionActive = section.items.some((item) => pathname === item.href);
+          const isCollapsed = hasHeading && collapsedSections.has(section.heading!) && !sectionActive;
+
+          const toggleCollapse = () => {
+            if (!hasHeading) return;
+            setCollapsedSections((prev) => {
+              const next = new Set(prev);
+              if (next.has(section.heading!)) next.delete(section.heading!);
+              else next.add(section.heading!);
+              return next;
+            });
+          };
+
           return (
-            <Link
-              key={href}
-              href={href}
-              data-nav-item
-              className={clsx(
-                "flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-medium transition-colors",
-                active ? "bg-sage-100 text-sage-700 dark:bg-sage-900 dark:text-sage-300" : "text-stone-500 hover:bg-stone-50 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-200"
+            <div key={si} className={si > 0 ? "mt-3" : ""}>
+              {hasHeading && (
+                <button
+                  onClick={toggleCollapse}
+                  className="w-full flex items-center gap-1.5 px-3 mb-1 text-xs font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
+                  aria-expanded={!isCollapsed}
+                >
+                  <ChevronRight
+                    size={12}
+                    className={clsx("transition-transform duration-200", !isCollapsed && "rotate-90")}
+                    aria-hidden="true"
+                  />
+                  {section.heading}
+                </button>
               )}
-              aria-current={active ? "page" : undefined}
-            >
-              <Icon size={18} aria-hidden="true" />
-              {label}
-            </Link>
+              {!isCollapsed && (
+                <div className="space-y-0.5">
+                  {section.items.map(({ href, label, icon: Icon }) => {
+                    const active = pathname === href;
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        data-nav-item
+                        className={clsx(
+                          "flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-medium transition-colors",
+                          active ? "bg-sage-100 text-sage-700 dark:bg-sage-900 dark:text-sage-300" : "text-stone-500 hover:bg-stone-50 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-200"
+                        )}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        <Icon size={18} aria-hidden="true" />
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           );
         })}
       </nav>

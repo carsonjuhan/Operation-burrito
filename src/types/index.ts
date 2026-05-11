@@ -311,6 +311,7 @@ export interface AppStore {
   checklistAlreadyHave?: string[];
   hospitalChecklistPacked?: string[];
   hospitalChecklistSkipped?: string[];
+  postBirthChecked?: string[];
 }
 
 // ── Postpartum Recipes ────────────────────────────────────────────────────
