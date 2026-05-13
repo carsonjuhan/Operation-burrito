@@ -142,7 +142,7 @@ export default function BirthPlanPage() {
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-stone-800">Birth Plan</h1>
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Birth Plan</h1>
             <p className="text-sm text-stone-400 mt-1">
               {filledFields} fields filled
               {plan.updatedAt && (
@@ -625,7 +625,7 @@ function BirthPlanPrintView({ plan }: { plan: BirthPlan }) {
     <div className="hidden print:block birth-plan-print-view">
       {/* Print Header */}
       <div className="mb-6 pb-4 border-b-2 border-stone-800">
-        <h1 className="text-2xl font-bold text-stone-900">Birth Plan</h1>
+        <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-900">Birth Plan</h1>
         {pi.legalName && (
           <p className="text-lg mt-1 text-stone-800">
             {pi.legalName}{pi.preferredName ? ` (${pi.preferredName})` : ""}

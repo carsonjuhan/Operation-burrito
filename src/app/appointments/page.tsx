@@ -164,7 +164,7 @@ export default function AppointmentsPage() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Appointments</h1>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Appointments</h1>
           <p className="text-sm text-stone-400 mt-1">
             {appointments.length} appointment{appointments.length !== 1 ? "s" : ""}
           </p>

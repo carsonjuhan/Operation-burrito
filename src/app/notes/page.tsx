@@ -108,7 +108,7 @@ export default function NotesPage() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Notes</h1>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Notes</h1>
           <p className="text-sm text-stone-400 mt-1">{notes.length} note{notes.length !== 1 ? "s" : ""}</p>
         </div>
         <button onClick={openAdd} className="btn-primary">

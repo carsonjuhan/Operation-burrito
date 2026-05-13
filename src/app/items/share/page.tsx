@@ -80,7 +80,7 @@ export default function SharedRegistryPage() {
         <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-6 mb-6">
           <div className="flex items-center gap-2 mb-2">
             <ShoppingBag size={20} className="text-sage-600" />
-            <h1 className="text-2xl font-bold text-stone-800">Baby Registry</h1>
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Baby Registry</h1>
           </div>
 
           {/* Read-only banner */}

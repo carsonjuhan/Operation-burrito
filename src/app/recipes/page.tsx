@@ -89,7 +89,7 @@ export default function RecipesPage() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
           <UtensilsCrossed size={20} className="text-sage-600" />
-          <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">Postpartum Recipes</h1>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800 dark:text-stone-100">Postpartum Recipes</h1>
         </div>
         <p className="text-sm text-stone-400 dark:text-stone-500">
           {ALL_RECIPES.length} traditional Chinese & Japanese recovery recipes across 4 postpartum phases.

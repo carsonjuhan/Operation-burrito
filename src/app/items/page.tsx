@@ -384,7 +384,7 @@ export default function ItemsPage() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Baby Items & Checklist</h1>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Baby Items & Checklist</h1>
           <p className="text-sm text-stone-400 mt-1">
             {viewMode === "all"
               ? `${totalChecklist} checklist · ${matchedToChecklist} matched · ${uniqueItemsImported} unique · `

@@ -120,7 +120,7 @@ export default function MaterialsPage() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Materials</h1>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Materials</h1>
           <p className="text-sm text-stone-400 mt-1">{materials.length} saved resources</p>
         </div>
         <button onClick={openAdd} className="btn-primary">

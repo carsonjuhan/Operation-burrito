@@ -210,7 +210,7 @@ export default function DashboardPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">Dashboard</h1>
+        <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800 dark:text-stone-100">Dashboard</h1>
         <p className="text-sm text-stone-400 dark:text-stone-500 mt-1">Your baby prep command center.</p>
       </div>
 
@@ -235,18 +235,18 @@ export default function DashboardPage() {
 
       {/* Budget strip */}
       {budget.estimatedTotal > 0 && (
-        <Link href="/budget" className="card p-4 mb-6 grid grid-cols-3 divide-x divide-stone-100 dark:divide-stone-700 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors">
+        <Link href="/budget" className="card p-5 mb-6 grid grid-cols-3 divide-x divide-stone-100 dark:divide-stone-700 group">
           <div className="px-4 first:pl-0">
-            <p className="text-xs text-stone-400 dark:text-stone-500">Estimated Total</p>
-            <p className="text-lg font-bold text-stone-800 dark:text-stone-100">${budget.estimatedTotal.toFixed(0)}</p>
+            <p className="text-xs text-stone-400 dark:text-stone-500 font-medium">Estimated Total</p>
+            <p className="text-xl font-bold text-stone-800 dark:text-stone-100 mt-0.5">${budget.estimatedTotal.toFixed(0)}</p>
           </div>
           <div className="px-4">
-            <p className="text-xs text-stone-400 dark:text-stone-500">Spent So Far</p>
-            <p className="text-lg font-bold text-emerald-700">${budget.actualSpent.toFixed(0)}</p>
+            <p className="text-xs text-stone-400 dark:text-stone-500 font-medium">Spent So Far</p>
+            <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">${budget.actualSpent.toFixed(0)}</p>
           </div>
           <div className="px-4">
-            <p className="text-xs text-stone-400 dark:text-stone-500">Still Needed</p>
-            <p className="text-lg font-bold text-amber-700">${budget.remaining.toFixed(0)}</p>
+            <p className="text-xs text-stone-400 dark:text-stone-500 font-medium">Still Needed</p>
+            <p className="text-xl font-bold text-amber-600 dark:text-amber-400 mt-0.5">${budget.remaining.toFixed(0)}</p>
           </div>
         </Link>
       )}
@@ -409,15 +409,22 @@ interface StatCardProps {
 }
 
 function StatCard({ href, icon, bg, label, value, sub, percent, color, staggerIndex }: StatCardProps) {
+  const glowClass = color.includes("emerald") ? "stat-card-emerald" :
+    color.includes("orange") ? "stat-card-orange" :
+    color.includes("rose") ? "stat-card-rose" : "stat-card-violet";
+  const progressClass = color.includes("emerald") ? "progress-gradient-emerald" :
+    color.includes("orange") ? "progress-gradient-orange" :
+    color.includes("rose") ? "progress-gradient-rose" : "progress-gradient-violet";
+
   return (
-    <Link href={href} className="card p-4 hover:shadow-md transition-shadow block animate-stagger-item" style={{ "--stagger-index": staggerIndex ?? 0 } as React.CSSProperties}>
-      <div className={`inline-flex p-2 rounded-lg ${bg} mb-3`}>{icon}</div>
-      <p className="text-xs text-stone-400 dark:text-stone-500 mb-0.5">{label}</p>
+    <Link href={href} className={`card p-4 block animate-stagger-item ${glowClass}`} style={{ "--stagger-index": staggerIndex ?? 0 } as React.CSSProperties}>
+      <div className={`inline-flex p-2.5 rounded-xl ${bg} dark:bg-opacity-20 mb-3`}>{icon}</div>
+      <p className="text-xs text-stone-400 dark:text-stone-500 mb-0.5 font-medium">{label}</p>
       <p className="text-lg font-bold text-stone-800 dark:text-stone-100">{value}</p>
       <p className="text-xs text-stone-400 dark:text-stone-500 mt-0.5">{sub}</p>
       {percent !== null && (
-        <div className="mt-3 h-1.5 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${Math.min(percent, 100)}%` }} />
+        <div className="mt-3 h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+          <div className={`h-full rounded-full transition-all duration-500 ease-out ${progressClass}`} style={{ width: `${Math.min(percent, 100)}%` }} />
         </div>
       )}
     </Link>
@@ -455,9 +462,9 @@ function PostBirthChecklist({ checked, onToggle }: { checked: Set<string>; onTog
           <span className="text-xs text-emerald-600 font-medium">All done!</span>
         )}
       </div>
-      <div className="mb-3 h-1.5 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+      <div className="mb-3 h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
         <div
-          className="h-full rounded-full transition-all bg-sky-400"
+          className="h-full rounded-full transition-all duration-500 ease-out progress-gradient-sky"
           style={{ width: `${POST_BIRTH_ITEMS.length > 0 ? Math.round((doneCount / POST_BIRTH_ITEMS.length) * 100) : 0}%` }}
         />
       </div>

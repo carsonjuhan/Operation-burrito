@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ["'DM Serif Display'", "Georgia", "serif"],
+        body: ["'Inter'", "system-ui", "sans-serif"],
+      },
       colors: {
         sage: {
           50: "#f4f7f4",
@@ -51,11 +55,21 @@ const config: Config = {
           from: { opacity: "0", transform: "translateY(8px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        scaleIn: {
+          from: { opacity: "0", transform: "scale(0.95)" },
+          to: { opacity: "1", transform: "scale(1)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% center" },
+          "100%": { backgroundPosition: "200% center" },
+        },
       },
       animation: {
         shake: "shake 0.5s ease-in-out",
         "fade-in": "fadeIn 0.3s ease-out both",
         "slide-up": "slideUp 0.35s ease-out both",
+        "scale-in": "scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both",
+        shimmer: "shimmer 3s linear infinite",
       },
     },
   },

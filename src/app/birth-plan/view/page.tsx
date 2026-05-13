@@ -75,7 +75,7 @@ function ReadOnlyBirthPlan({ plan }: { plan: BirthPlan }) {
       <div className="mb-6 pb-4 border-b-2 border-stone-300">
         <div className="flex items-center gap-2 mb-2">
           <Heart size={20} className="text-rose-400" />
-          <h1 className="text-2xl font-bold text-stone-800">Birth Plan</h1>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Birth Plan</h1>
         </div>
         {pi.legalName && (
           <p className="text-lg text-stone-700">

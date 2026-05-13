@@ -167,12 +167,14 @@ export function Sidebar() {
   const navContent = (
     <>
       {/* Header */}
-      <div className="px-6 py-5 border-b border-stone-100 dark:border-stone-800 flex items-center justify-between">
+      <div className="px-6 py-5 border-b border-stone-100 dark:border-stone-800 flex items-center justify-between bg-gradient-to-r from-sage-50/50 to-transparent dark:from-sage-900/30 dark:to-transparent">
         <div className="flex items-center gap-3">
-          <span className="text-2xl" aria-hidden="true">🌯</span>
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-sm shadow-sage-500/20">
+            <span className="text-lg" aria-hidden="true">🌯</span>
+          </div>
           <div>
-            <h1 className="text-base font-bold text-stone-800 dark:text-stone-100 leading-tight">Operation Burrito</h1>
-            <p className="text-xs text-stone-500 dark:text-stone-400">Baby Prep Tracker</p>
+            <h1 className="text-base font-display font-bold text-stone-800 dark:text-stone-100 leading-tight">Operation Burrito</h1>
+            <p className="text-xs text-stone-400 dark:text-stone-500">Baby Prep Tracker</p>
           </div>
         </div>
         <button
@@ -228,8 +230,8 @@ export function Sidebar() {
                         href={href}
                         data-nav-item
                         className={clsx(
-                          "flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-medium transition-colors",
-                          active ? "bg-sage-100 text-sage-700 dark:bg-sage-900 dark:text-sage-300" : "text-stone-500 hover:bg-stone-50 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-200"
+                          "flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-lg text-sm font-medium transition-all duration-200",
+                          active ? "bg-sage-100/80 text-sage-700 dark:bg-sage-900/60 dark:text-sage-300 shadow-sm nav-active-pill" : "text-stone-500 hover:bg-stone-50 hover:text-stone-700 hover:translate-x-0.5 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-200"
                         )}
                         aria-current={active ? "page" : undefined}
                       >

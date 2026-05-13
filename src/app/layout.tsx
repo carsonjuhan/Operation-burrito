@@ -37,6 +37,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem("theme");var d=t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme:dark)").matches);if(d)document.documentElement.classList.add("dark")}catch(e){}})()`,
@@ -60,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="flex flex-1">
                   <Sidebar />
                   {/* On mobile: full width. On desktop: offset by sidebar width */}
-                  <main id="main-content" className="flex-1 w-full md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
+                  <main id="main-content" className="flex-1 w-full md:ml-64 p-4 md:p-8 pb-24 md:pb-8 mesh-bg">
                     {children}
                   </main>
                 </div>

@@ -74,7 +74,7 @@ export default function BudgetPage() {
     <PageTransition className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-stone-800">Budget & Analytics</h1>
+        <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Budget & Analytics</h1>
         <p className="text-sm text-stone-400 mt-1">
           {store.items.length} items tracked ·{" "}
           {store.items.filter((i) => i.purchased).length} purchased

@@ -158,7 +158,7 @@ export default function TimerPage() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
           <Activity size={20} className="text-sage-600" />
-          <h1 className="text-2xl font-bold text-stone-800">Contraction Timer</h1>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Contraction Timer</h1>
         </div>
         <p className="text-sm text-stone-400">
           Track the frequency and duration of contractions
