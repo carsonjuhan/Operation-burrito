@@ -6,6 +6,7 @@ import {
   verifyPAT,
   pushToGist,
   pullFromGist,
+  loadGist,
   getPAT,
   setPAT,
   getGistId,
@@ -54,12 +55,23 @@ import { useActionHistory } from "@/hooks/useActionHistory";
 
 type SyncStatus = "idle" | "loading" | "success" | "error";
 
+function buildPullSummary(s: import("@/types").AppStore): string {
+  const parts: string[] = [];
+  if (s.items?.length) parts.push(`${s.items.length} items`);
+  if (s.checklistItems?.length) parts.push(`${s.checklistItems.length} checklist tasks`);
+  if (s.appointments?.length) parts.push(`${s.appointments.length} appointments`);
+  if (s.meals?.length) parts.push(`${s.meals.length} meals`);
+  if (s.budgetItems?.length) parts.push(`${s.budgetItems.length} budget entries`);
+  return parts.length ? parts.join(", ") : "data";
+}
+
 export default function SettingsPage() {
   const { store, loadFromExternal, updateRegistryUrl, storageInfo } = useStoreContext();
   const { history, revertTo, clearHistory: clearActionHistory } = useActionHistory(loadFromExternal);
 
   const [pat, setPATState] = useState("");
   const [gistId, setGistIdState] = useState("");
+  const [gistIdInput, setGistIdInput] = useState("");
   const [username, setUsername] = useState("");
   const [lastSynced, setLastSyncedState] = useState("");
   const [connected, setConnected] = useState(false);
@@ -67,6 +79,7 @@ export default function SettingsPage() {
   const [verifyStatus, setVerifyStatus] = useState<SyncStatus>("idle");
   const [pushStatus, setPushStatus] = useState<SyncStatus>("idle");
   const [pullStatus, setPullStatus] = useState<SyncStatus>("idle");
+  const [pullSummary, setPullSummary] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [confirmPull, setConfirmPull] = useState(false);
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
@@ -220,13 +233,14 @@ export default function SettingsPage() {
       const remoteStore = await pullFromGist(getPAT());
       loadFromExternal(remoteStore);
       setLastSyncedState(new Date().toISOString());
+      setPullSummary(buildPullSummary(remoteStore));
       setPullStatus("success");
-      // Clear snapshot on successful pull after a delay
       setTimeout(() => {
         setPullStatus("idle");
+        setPullSummary("");
         clearPrePullSnapshot();
         setHasSnapshot(false);
-      }, 5000);
+      }, 8000);
     } catch (e) {
       setErrorMsg((e as Error).message);
       setPullStatus("error");
@@ -252,8 +266,34 @@ export default function SettingsPage() {
 
   // ── Manual Gist ID entry ──────────────────────────────────────────────────
 
-  function handleSaveGistId() {
-    setGistId(gistId.trim());
+  async function handleSaveGistId() {
+    const trimmed = gistIdInput.trim();
+    if (!trimmed) return;
+    setGistId(trimmed);
+    setGistIdState(trimmed);
+    setGistIdInput("");
+
+    // Immediately pull from the entered Gist ID
+    setPullStatus("loading");
+    setErrorMsg("");
+    try {
+      savePrePullSnapshot(store);
+      setHasSnapshot(true);
+      const remoteStore = await loadGist(getPAT(), trimmed);
+      loadFromExternal(remoteStore);
+      setLastSyncedState(new Date().toISOString());
+      setPullSummary(buildPullSummary(remoteStore));
+      setPullStatus("success");
+      setTimeout(() => {
+        setPullStatus("idle");
+        setPullSummary("");
+        clearPrePullSnapshot();
+        setHasSnapshot(false);
+      }, 8000);
+    } catch (e) {
+      setErrorMsg((e as Error).message);
+      setPullStatus("error");
+    }
   }
 
   // ── Export ────────────────────────────────────────────────────────────────
@@ -450,6 +490,12 @@ export default function SettingsPage() {
               )}
             </button>
           </div>
+
+          {pullStatus === "success" && pullSummary && (
+            <p className="text-xs text-emerald-600 mt-2 flex items-center gap-1">
+              <CheckCircle2 size={13} /> Loaded: {pullSummary}
+            </p>
+          )}
 
           {/* Conflict: local changes on pull (S-008) */}
           {pullConflict && !confirmPull && (
@@ -716,11 +762,12 @@ export default function SettingsPage() {
             <input
               className="input flex-1 font-mono text-xs"
               placeholder="e.g. a1b2c3d4e5f6..."
-              value={gistId}
-              onChange={(e) => setGistIdState(e.target.value)}
+              value={gistIdInput}
+              onChange={(e) => setGistIdInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSaveGistId()}
             />
-            <button onClick={handleSaveGistId} className="btn-secondary shrink-0" disabled={!gistId.trim()}>
-              Save ID
+            <button onClick={handleSaveGistId} className="btn-primary shrink-0" disabled={!gistIdInput.trim() || pullStatus === "loading"}>
+              {pullStatus === "loading" ? <><Loader2 size={16} className="animate-spin" /> Loading…</> : "Load & Pull"}
             </button>
           </div>
         </div>
