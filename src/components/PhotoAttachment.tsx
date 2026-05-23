@@ -84,6 +84,7 @@ export function PhotoAttachment({
             key={idx}
             className="relative group w-16 h-16 rounded-lg overflow-hidden border border-stone-200 dark:border-stone-600 shrink-0"
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photo}
               alt={`Photo ${idx + 1}`}
@@ -151,6 +152,7 @@ export function PhotoAttachment({
             className="relative max-w-3xl max-h-[85vh]"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photos[viewIndex]}
               alt={`Photo ${viewIndex + 1} full size`}
@@ -198,6 +200,7 @@ export function PhotoThumbnails({ photos }: { photos?: string[] }) {
             className="w-8 h-8 rounded overflow-hidden border border-stone-200 dark:border-stone-600 shrink-0 hover:ring-2 hover:ring-sage-300 transition-shadow"
             aria-label={`View photo ${idx + 1}`}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photo}
               alt=""
@@ -225,6 +228,7 @@ export function PhotoThumbnails({ photos }: { photos?: string[] }) {
             className="relative max-w-3xl max-h-[85vh]"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photos[viewIndex]}
               alt={`Photo ${viewIndex + 1} full size`}

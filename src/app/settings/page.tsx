@@ -58,10 +58,10 @@ type SyncStatus = "idle" | "loading" | "success" | "error";
 function buildPullSummary(s: import("@/types").AppStore): string {
   const parts: string[] = [];
   if (s.items?.length) parts.push(`${s.items.length} items`);
-  if (s.checklistItems?.length) parts.push(`${s.checklistItems.length} checklist tasks`);
   if (s.appointments?.length) parts.push(`${s.appointments.length} appointments`);
-  if (s.meals?.length) parts.push(`${s.meals.length} meals`);
-  if (s.budgetItems?.length) parts.push(`${s.budgetItems.length} budget entries`);
+  if (s.classes?.length) parts.push(`${s.classes.length} classes`);
+  if (s.contacts?.length) parts.push(`${s.contacts.length} contacts`);
+  if (s.notes?.length) parts.push(`${s.notes.length} notes`);
   return parts.length ? parts.join(", ") : "data";
 }
 
