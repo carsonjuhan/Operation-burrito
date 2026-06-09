@@ -201,6 +201,86 @@
       "completed": false
     },
     {
+      "title": "Complete Jane Consent Form — Tsawwassen Midwife",
+      "type": "Admin / Legal",
+      "date": "2026-06-12",
+      "time": "",
+      "provider": "Tsawwassen Midwife",
+      "location": "",
+      "notes": "You'll receive a separate link to a Jane consent form so the midwife can obtain your health records. Complete before birth.",
+      "completed": false
+    },
+    {
+      "title": "Email Midwife After Hospital Discharge",
+      "type": "OB / Midwife",
+      "date": "2026-06-21",
+      "time": "",
+      "provider": "Tsawwassen Midwife",
+      "location": "",
+      "notes": "Email the midwife at Tsawwassen Clinic as soon as you are discharged from the hospital to schedule home visits.",
+      "completed": false
+    },
+    {
+      "title": "Midwife Home Visit #1",
+      "type": "OB / Midwife",
+      "date": "2026-06-22",
+      "time": "",
+      "provider": "Tsawwassen Midwife",
+      "location": "Home",
+      "notes": "First home visit in the first 2 weeks postpartum. Midwife provides lab requisitions, prescriptions, assessments and referrals.",
+      "completed": false
+    },
+    {
+      "title": "Midwife Home Visit #2",
+      "type": "OB / Midwife",
+      "date": "2026-06-27",
+      "time": "",
+      "provider": "Tsawwassen Midwife",
+      "location": "Home",
+      "notes": "Second home visit in the first 2 weeks postpartum.",
+      "completed": false
+    },
+    {
+      "title": "Midwife Office / Virtual Visit (3–4 weeks)",
+      "type": "OB / Midwife",
+      "date": "2026-07-11",
+      "time": "",
+      "provider": "Tsawwassen Midwife",
+      "location": "Tsawwassen Clinic",
+      "notes": "Office or virtual visit at 3–4 weeks postpartum.",
+      "completed": false
+    },
+    {
+      "title": "Midwife Final Visit (5–6 weeks) + Transfer to Family Doctor",
+      "type": "OB / Midwife",
+      "date": "2026-07-25",
+      "time": "",
+      "provider": "Tsawwassen Midwife",
+      "location": "Tsawwassen Clinic",
+      "notes": "Final midwife visit at 5–6 weeks. Midwife will provide a full records package and transfer care back to your family doctor / NP.",
+      "completed": false
+    },
+    {
+      "title": "Notify JaNa Photography — Birth Date & Weight",
+      "type": "Other",
+      "date": "2026-06-21",
+      "time": "",
+      "provider": "JaNa Photography",
+      "location": "",
+      "notes": "Email JaNa Photography on day 1 or 2 after birth with actual delivery date and baby's birth weight. Optimal newborn session window is within first 2–3 weeks. Any delay risks waitlist. Contact: jana photography email.",
+      "completed": false
+    },
+    {
+      "title": "JaNa Newborn Photography Session (TBD)",
+      "type": "Other",
+      "date": "2026-07-04",
+      "time": "10:30",
+      "provider": "JaNa Photography",
+      "location": "2465 Kingsway, Vancouver",
+      "notes": "Session tips:\n• Feed baby fully right before session\n• Bath 1 hour before\n• Dress baby in button-up/zip-up sleeper (easy to remove without waking)\n• Bring pacifier (even if rarely used)\n• Bring extra diapers, wipes, and spare outfit for parents\n• Studio will be HOT — dress light\n• Bring laptop/book — sessions run 2–3 hours\n• Avoid spicy/gassy food day before if nursing\n• Studio closed on long weekends and stat holidays\n• Morning sessions ~10:30 AM, afternoon ~2:00 PM\n• Send inspiration photos from portfolio before session\n• Grandparents extra charge; siblings included in Classic/Premium",
+      "completed": false
+    },
+    {
       "title": "First Paediatrician Visit",
       "type": "Well-Baby Visit",
       "date": "2026-06-24",
