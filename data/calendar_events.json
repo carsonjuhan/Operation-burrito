@@ -199,6 +199,146 @@
       "location": "",
       "notes": "Reminder to pack hospital bag",
       "completed": false
+    },
+    {
+      "title": "First Paediatrician Visit",
+      "type": "Well-Baby Visit",
+      "date": "2026-06-24",
+      "time": "",
+      "provider": "",
+      "location": "Tsawwassen Clinic",
+      "notes": "3–5 days after birth — weight check, jaundice, feeding assessment. Book before discharge.",
+      "completed": false
+    },
+    {
+      "title": "2-Week Well-Baby Check",
+      "type": "Well-Baby Visit",
+      "date": "2026-07-04",
+      "time": "",
+      "provider": "",
+      "location": "Tsawwassen Clinic",
+      "notes": "Growth check, feeding, umbilical cord. ~2 weeks after birth.",
+      "completed": false
+    },
+    {
+      "title": "Register Baby with BC MSP (Health Card)",
+      "type": "Admin / Legal",
+      "date": "2026-07-04",
+      "time": "",
+      "provider": "Service BC",
+      "location": "",
+      "notes": "Add newborn to provincial health coverage online at gov.bc.ca/msp. Do within 2 weeks of birth.",
+      "completed": false
+    },
+    {
+      "title": "Apply for Birth Certificate",
+      "type": "Admin / Legal",
+      "date": "2026-07-10",
+      "time": "",
+      "provider": "Vital Statistics Agency BC",
+      "location": "",
+      "notes": "Apply within 30 days of birth. Available online at vs.gov.bc.ca. Need both parents' info and signatures.",
+      "completed": false
+    },
+    {
+      "title": "Add Baby to Extended Health Insurance",
+      "type": "Admin / Legal",
+      "date": "2026-07-15",
+      "time": "",
+      "provider": "",
+      "location": "",
+      "notes": "Must be done within 31 days of birth or may require medical evidence. Contact your plan provider.",
+      "completed": false
+    },
+    {
+      "title": "Apply for SIN (Social Insurance Number)",
+      "type": "Admin / Legal",
+      "date": "2026-07-20",
+      "time": "",
+      "provider": "Service Canada",
+      "location": "",
+      "notes": "Apply online at canada.ca or at a Service Canada office. Need birth certificate. No strict deadline but best to do early.",
+      "completed": false
+    },
+    {
+      "title": "1-Month Well-Baby Check",
+      "type": "Well-Baby Visit",
+      "date": "2026-07-20",
+      "time": "",
+      "provider": "",
+      "location": "Tsawwassen Clinic",
+      "notes": "Weight, length, head circumference. Feeding and development check.",
+      "completed": false
+    },
+    {
+      "title": "Apply for Canada Child Benefit (CCB)",
+      "type": "Admin / Legal",
+      "date": "2026-07-25",
+      "time": "",
+      "provider": "CRA",
+      "location": "",
+      "notes": "Apply at canada.ca via My Account or mail RC66 form. Do within 60 days of birth. Monthly payments up to ~$648/month for under 6.",
+      "completed": false
+    },
+    {
+      "title": "Apply for BC Family Benefit",
+      "type": "Admin / Legal",
+      "date": "2026-08-01",
+      "time": "",
+      "provider": "CRA / BC Gov",
+      "location": "",
+      "notes": "Automatic once CCB is approved — just verify CRA has updated your return. Adds ~$133/month BC top-up.",
+      "completed": false
+    },
+    {
+      "title": "2-Month Immunisations",
+      "type": "Well-Baby Visit",
+      "date": "2026-08-20",
+      "time": "",
+      "provider": "",
+      "location": "Tsawwassen Clinic",
+      "notes": "DTaP-IPV-Hib, PCV13, Men-C-ACYW, Rotavirus (oral). Baby may be fussy/have low fever. Give infant Tylenol if needed.",
+      "completed": false
+    },
+    {
+      "title": "Apply for CCB — Confirm Received",
+      "type": "Admin / Legal",
+      "date": "2026-08-20",
+      "time": "",
+      "provider": "CRA",
+      "location": "",
+      "notes": "Check that first CCB payment arrived (~6–8 weeks after application). Call CRA 1-800-387-1193 if not received.",
+      "completed": false
+    },
+    {
+      "title": "Open RESP (Education Savings)",
+      "type": "Admin / Legal",
+      "date": "2026-09-01",
+      "time": "",
+      "provider": "Bank / Investment Firm",
+      "location": "",
+      "notes": "Open a Registered Education Savings Plan to receive Canada Education Savings Grant (CESG) — 20% match up to $500/year. Can open anytime in baby's first year. BC also offers $1,200 BCTESG at age 6 but register early.",
+      "completed": false
+    },
+    {
+      "title": "Update Will & Beneficiaries",
+      "type": "Admin / Legal",
+      "date": "2026-09-15",
+      "time": "",
+      "provider": "",
+      "location": "",
+      "notes": "Add baby as beneficiary on life insurance, RRSPs, and update will to appoint a guardian. Consider a lawyer or notary in BC.",
+      "completed": false
+    },
+    {
+      "title": "4-Month Well-Baby Check & Immunisations",
+      "type": "Well-Baby Visit",
+      "date": "2026-10-20",
+      "time": "",
+      "provider": "",
+      "location": "Tsawwassen Clinic",
+      "notes": "Second round of DTaP-IPV-Hib, PCV13, Men-C-ACYW, Rotavirus. Also growth and developmental check.",
+      "completed": false
     }
   ],
   "classes": [

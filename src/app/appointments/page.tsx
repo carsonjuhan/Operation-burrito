@@ -7,7 +7,7 @@ import { Modal } from "@/components/Modal";
 import { IcsImportModal } from "@/components/IcsImportModal";
 import { EmptyState } from "@/components/EmptyState";
 import { useUndoDelete } from "@/hooks/useUndoDelete";
-import { Plus, Pencil, Trash2, MapPin, CheckCircle2, Circle, CalendarPlus, Download } from "lucide-react";
+import { Plus, Pencil, Trash2, MapPin, CheckCircle2, Circle, CalendarPlus, Download, ChevronDown, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
 import calendarData from "../../../data/calendar_events.json";
@@ -19,6 +19,8 @@ const APPOINTMENT_TYPES: AppointmentType[] = [
   "Hospital Tour",
   "Dentist",
   "Specialist",
+  "Well-Baby Visit",
+  "Admin / Legal",
   "Other",
 ];
 
@@ -29,6 +31,8 @@ const TYPE_COLORS: Record<AppointmentType, string> = {
   "Hospital Tour": "bg-emerald-100 text-emerald-700",
   "Dentist": "bg-amber-100 text-amber-700",
   "Specialist": "bg-rose-100 text-rose-700",
+  "Well-Baby Visit": "bg-teal-100 text-teal-700",
+  "Admin / Legal": "bg-blue-100 text-blue-700",
   "Other": "bg-stone-100 text-stone-600",
 };
 
@@ -212,7 +216,7 @@ export default function AppointmentsPage() {
             </Section>
           )}
           {past.length > 0 && (
-            <Section title="Past">
+            <CollapsibleSection title="Past" count={past.length} defaultCollapsed>
               {past.map((appt) => (
                 <AppointmentCard
                   key={appt.id}
@@ -224,7 +228,7 @@ export default function AppointmentsPage() {
                   onDelete={() => handleUndoDelete(appt)}
                 />
               ))}
-            </Section>
+            </CollapsibleSection>
           )}
         </div>
       )}
@@ -353,6 +357,38 @@ function Section({ title, children }: { title: string; children: React.ReactNode
         {title}
       </h2>
       <div className="card divide-y divide-stone-100">{children}</div>
+    </div>
+  );
+}
+
+function CollapsibleSection({
+  title,
+  count,
+  defaultCollapsed = false,
+  children,
+}: {
+  title: string;
+  count: number;
+  defaultCollapsed?: boolean;
+  children: React.ReactNode;
+}) {
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
+  return (
+    <div>
+      <button
+        onClick={() => setCollapsed(c => !c)}
+        className="flex items-center gap-2 mb-2 px-1 group"
+      >
+        <span className="text-xs font-semibold text-stone-400 uppercase tracking-wide group-hover:text-stone-600 transition-colors">
+          {title}
+        </span>
+        <span className="text-xs text-stone-300">({count})</span>
+        {collapsed
+          ? <ChevronRight size={12} className="text-stone-300 group-hover:text-stone-500" />
+          : <ChevronDown size={12} className="text-stone-300 group-hover:text-stone-500" />
+        }
+      </button>
+      {!collapsed && <div className="card divide-y divide-stone-100">{children}</div>}
     </div>
   );
 }

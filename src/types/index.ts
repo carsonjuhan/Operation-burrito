@@ -245,6 +245,8 @@ export type AppointmentType =
   | "Hospital Tour"
   | "Dentist"
   | "Specialist"
+  | "Well-Baby Visit"
+  | "Admin / Legal"
   | "Other";
 
 export interface Appointment {
