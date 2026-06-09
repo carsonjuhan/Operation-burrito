@@ -6,7 +6,7 @@ import { Note, NoteCategory } from "@/types";
 import { useUndoDelete } from "@/hooks/useUndoDelete";
 import { Modal } from "@/components/Modal";
 import { EmptyState } from "@/components/EmptyState";
-import { Plus, Pencil, Trash2, Pin, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, Pin, Search, ClipboardPaste, X } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
 import { PhotoAttachment, PhotoThumbnails } from "@/components/PhotoAttachment";
@@ -32,6 +32,51 @@ const DEFAULT_FORM = {
   photos: [] as string[],
 };
 
+// ── Paste import parser ────────────────────────────────────────────────────
+
+interface ParsedNote {
+  title: string;
+  content: string;
+  category: NoteCategory;
+}
+
+// Matches lines that are purely a date: "06/09", "5/26", "05/24/26", etc.
+const DATE_LINE_RE = /^\s*(\d{1,2}[\/\-]\d{1,2}(?:[\/\-]\d{2,4})?)\s*$/;
+
+function guessCategory(text: string): NoteCategory {
+  const t = text.toLowerCase();
+  if (/\bdr\.|\bdoctor\b|\bappointment\b|\bclinic\b|\bmidwife\b|\bhospital\b|\bnoakes\b/.test(t))
+    return "Appointment";
+  if (/\?|question|ask|wondering|should i|what is|what are/.test(t))
+    return "Question for Doctor";
+  return "General";
+}
+
+function parseNotesFromText(raw: string): ParsedNote[] {
+  const lines = raw.split("\n");
+  const sections: { header: string | null; body: string[] }[] = [];
+  let current: { header: string | null; body: string[] } = { header: null, body: [] };
+
+  for (const line of lines) {
+    const m = line.match(DATE_LINE_RE);
+    if (m) {
+      if (current.body.some(l => l.trim()) || current.header) sections.push(current);
+      current = { header: m[1], body: [] };
+    } else {
+      current.body.push(line);
+    }
+  }
+  if (current.body.some(l => l.trim()) || current.header) sections.push(current);
+
+  return sections
+    .filter(s => s.body.some(l => l.trim()))
+    .map(s => {
+      const content = s.body.join("\n").trim();
+      const title = s.header ? `Notes — ${s.header}` : "Imported Notes";
+      return { title, content, category: guessCategory(content) };
+    });
+}
+
 export default function NotesPage() {
   const { store, loaded, addNote, updateNote, deleteNote, restoreNote } = useStoreContext();
   const { handleDelete: handleUndoDelete } = useUndoDelete<Note>(deleteNote, restoreNote, (n) => n.title);
@@ -40,6 +85,9 @@ export default function NotesPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState<NoteCategory | "All">("All");
+  const [showPasteModal, setShowPasteModal] = useState(false);
+  const [pasteText, setPasteText] = useState("");
+  const [pastePreview, setPastePreview] = useState<ParsedNote[]>([]);
 
   const filtered = useMemo(() => {
     return store.notes.filter((n) => {
@@ -86,6 +134,21 @@ export default function NotesPage() {
     setShowModal(true);
   }
 
+  function handlePasteChange(text: string) {
+    setPasteText(text);
+    setPastePreview(text.trim() ? parseNotesFromText(text) : []);
+  }
+
+  function handlePasteImport() {
+    const now = new Date().toISOString();
+    for (const n of pastePreview) {
+      addNote({ title: n.title, content: n.content, category: n.category, pinned: false });
+    }
+    setPasteText("");
+    setPastePreview([]);
+    setShowPasteModal(false);
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const payload = {
@@ -111,9 +174,14 @@ export default function NotesPage() {
           <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Notes</h1>
           <p className="text-sm text-stone-400 mt-1">{notes.length} note{notes.length !== 1 ? "s" : ""}</p>
         </div>
-        <button onClick={openAdd} className="btn-primary">
-          <Plus size={16} /> Add Note
-        </button>
+        <div className="flex gap-2">
+          <button onClick={() => setShowPasteModal(true)} className="btn-secondary">
+            <ClipboardPaste size={16} /> Paste & Import
+          </button>
+          <button onClick={openAdd} className="btn-primary">
+            <Plus size={16} /> Add Note
+          </button>
+        </div>
       </div>
 
       {/* Search + filter */}
@@ -186,6 +254,67 @@ export default function NotesPage() {
             </Section>
           )}
         </div>
+      )}
+
+      {/* Paste & Import modal */}
+      {showPasteModal && (
+        <Modal title="Paste & Import Notes" onClose={() => { setShowPasteModal(false); setPasteText(""); setPastePreview([]); }}>
+          <div className="space-y-4">
+            <p className="text-sm text-stone-500">
+              Paste raw text from Apple Notes. Sections starting with a date like <code className="bg-stone-100 px-1 rounded text-xs">06/09</code> or <code className="bg-stone-100 px-1 rounded text-xs">05/26</code> will each become a separate note.
+            </p>
+            <div>
+              <label className="label">Paste text here</label>
+              <textarea
+                className="textarea"
+                rows={10}
+                placeholder={"06/09\n- Water break signs\n- Head position\n\n05/26\n- Friend's baby had hand foot mouth\n- Private room?"}
+                value={pasteText}
+                onChange={e => handlePasteChange(e.target.value)}
+                autoFocus
+              />
+            </div>
+
+            {pastePreview.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">
+                  Preview — {pastePreview.length} note{pastePreview.length !== 1 ? "s" : ""} will be created
+                </p>
+                <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                  {pastePreview.map((n, i) => (
+                    <div key={i} className="flex items-start gap-2 px-3 py-2 bg-stone-50 rounded-lg">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-stone-700 truncate">{n.title}</p>
+                        <p className="text-xs text-stone-400 truncate">{n.content.slice(0, 80)}{n.content.length > 80 ? "…" : ""}</p>
+                      </div>
+                      <span className={`badge shrink-0 ${CATEGORY_COLORS[n.category]}`}>{n.category}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {pasteText.trim() && pastePreview.length === 0 && (
+              <p className="text-sm text-stone-400">No sections detected — will create 1 note with all content.</p>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={handlePasteImport}
+                disabled={!pasteText.trim()}
+                className="btn-primary flex-1 justify-center disabled:opacity-40"
+              >
+                Import {pastePreview.length > 0 ? `${pastePreview.length} note${pastePreview.length !== 1 ? "s" : ""}` : ""}
+              </button>
+              <button
+                onClick={() => { setShowPasteModal(false); setPasteText(""); setPastePreview([]); }}
+                className="btn-secondary flex-1 justify-center"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {/* Modal */}
