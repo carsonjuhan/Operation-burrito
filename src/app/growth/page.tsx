@@ -121,7 +121,7 @@ export default function GrowthTrackerPage() {
                   type="date"
                   value={date}
                   onChange={e => setDate(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300"
+                  className="w-full px-3 py-2 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300 text-[16px]"
                 />
               </div>
               <div>
@@ -133,7 +133,7 @@ export default function GrowthTrackerPage() {
                   placeholder="e.g. 3.45"
                   value={weightKg}
                   onChange={e => setWeightKg(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300"
+                  className="w-full px-3 py-2 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300 text-[16px]"
                 />
               </div>
               <div>
@@ -145,7 +145,7 @@ export default function GrowthTrackerPage() {
                   placeholder="e.g. 51.5"
                   value={lengthCm}
                   onChange={e => setLengthCm(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300"
+                  className="w-full px-3 py-2 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300 text-[16px]"
                 />
               </div>
               <div>
@@ -157,7 +157,7 @@ export default function GrowthTrackerPage() {
                   placeholder="e.g. 34.5"
                   value={headCm}
                   onChange={e => setHeadCm(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300"
+                  className="w-full px-3 py-2 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300 text-[16px]"
                 />
               </div>
               <div>
@@ -167,7 +167,7 @@ export default function GrowthTrackerPage() {
                   placeholder="Optional note"
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300"
+                  className="w-full px-3 py-2 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-300 text-[16px]"
                 />
               </div>
             </div>
@@ -198,53 +198,59 @@ export default function GrowthTrackerPage() {
           </div>
         )}
 
-        {/* Entries table */}
+        {/* Entries — card layout */}
         {entries.length > 0 ? (
-          <div className="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
-            <div className="grid grid-cols-[1fr_80px_72px_72px_36px] gap-0 px-3 py-2 bg-neutral-50 dark:bg-neutral-700/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">
-              <span>Date</span>
-              <span className="text-center">Weight</span>
-              <span className="text-center">Length</span>
-              <span className="text-center">Head</span>
-              <span />
-            </div>
-            <div className="divide-y divide-neutral-100 dark:divide-neutral-700">
-              {entries.map(e => (
-                <div key={e.id}>
-                  <div className="grid grid-cols-[1fr_80px_72px_72px_36px] gap-0 px-3 py-3 items-center">
-                    <div>
-                      <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">{formatDate(e.date)}</p>
-                      {e.notes && <p className="text-xs text-neutral-400 mt-0.5">{e.notes}</p>}
+          <div className="space-y-2">
+            {entries.map(e => (
+              <div key={e.id} className="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 px-4 py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200">{formatDate(e.date)}</p>
+                    {e.notes && <p className="text-xs text-neutral-400 mt-0.5">{e.notes}</p>}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {e.weightKg != null && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-medium">
+                          ⚖️ {e.weightKg} kg
+                        </span>
+                      )}
+                      {e.lengthCm != null && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 text-xs font-medium">
+                          📏 {e.lengthCm} cm
+                        </span>
+                      )}
+                      {e.headCm != null && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-medium">
+                          👤 {e.headCm} cm
+                        </span>
+                      )}
                     </div>
-                    <p className="text-sm text-center text-neutral-700 dark:text-neutral-300">{e.weightKg != null ? `${e.weightKg}` : "—"}</p>
-                    <p className="text-sm text-center text-neutral-700 dark:text-neutral-300">{e.lengthCm != null ? `${e.lengthCm}` : "—"}</p>
-                    <p className="text-sm text-center text-neutral-700 dark:text-neutral-300">{e.headCm != null ? `${e.headCm}` : "—"}</p>
+                  </div>
+                  <button
+                    onClick={() => setDeleteId(deleteId === e.id ? null : e.id)}
+                    className="p-2.5 text-neutral-300 hover:text-red-500 dark:text-neutral-600 dark:hover:text-red-400 transition-colors rounded-lg active:bg-red-50 dark:active:bg-red-950/30 shrink-0"
+                    aria-label="Delete entry"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                {deleteId === e.id && (
+                  <div className="flex gap-2 mt-2 pt-2 border-t border-neutral-100 dark:border-neutral-700">
                     <button
-                      onClick={() => setDeleteId(deleteId === e.id ? null : e.id)}
-                      className="text-neutral-300 hover:text-red-500 dark:text-neutral-600 dark:hover:text-red-400 transition-colors flex items-center justify-center"
+                      onClick={() => deleteEntry(e.id)}
+                      className="px-3 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors"
                     >
-                      <Trash2 size={14} />
+                      Delete entry
+                    </button>
+                    <button
+                      onClick={() => setDeleteId(null)}
+                      className="px-3 py-1.5 text-neutral-500 text-xs hover:text-neutral-700"
+                    >
+                      Cancel
                     </button>
                   </div>
-                  {deleteId === e.id && (
-                    <div className="px-3 pb-3 flex gap-2">
-                      <button
-                        onClick={() => deleteEntry(e.id)}
-                        className="px-3 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-xs font-medium hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
-                      >
-                        Delete entry
-                      </button>
-                      <button
-                        onClick={() => setDeleteId(null)}
-                        className="px-3 py-1.5 text-neutral-500 text-xs hover:text-neutral-700"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            ))}
           </div>
         ) : (
           <div className="text-center py-12 text-neutral-400">

@@ -22,7 +22,8 @@
     @apply bg-white/80 backdrop-blur-sm rounded-xl border border-stone-200/60 shadow-sm hover:shadow-md transition-all duration-200 dark:bg-stone-800/80 dark:border-stone-700/60;
   }
   .input {
-    @apply w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sage-400/50 focus:border-sage-300 bg-white dark:bg-stone-800 dark:border-stone-600 dark:text-stone-100 dark:placeholder-stone-400 transition-all duration-150;
+    @apply w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sage-400/50 focus:border-sage-300 bg-white dark:bg-stone-800 dark:border-stone-600 dark:text-stone-100 dark:placeholder-stone-400 transition-all duration-150;
+    font-size: 16px; /* prevent iOS zoom on focus */
   }
   .label {
     @apply block text-xs font-medium text-stone-500 mb-1 dark:text-stone-400;
@@ -52,6 +53,12 @@
     radial-gradient(ellipse at 15% 10%, rgba(77, 107, 82, 0.12) 0%, transparent 50%),
     radial-gradient(ellipse at 85% 90%, rgba(236, 133, 133, 0.06) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 50%, rgba(99, 134, 104, 0.05) 0%, transparent 40%);
+}
+
+/* ── Safe area utilities ────────────────────────────────────────────────── */
+
+.safe-top {
+  padding-top: max(1rem, env(safe-area-inset-top));
 }
 
 /* ── Glass card variant ─────────────────────────────────────────────────── */

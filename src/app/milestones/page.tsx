@@ -208,12 +208,12 @@ export default function MilestonesPage() {
                         )}
                       >
                         <div className={clsx(
-                          "mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
+                          "mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
                           isAchieved
                             ? "bg-yellow-400 border-yellow-400"
                             : "border-neutral-300 dark:border-neutral-600"
                         )}>
-                          {isAchieved && <span className="text-white text-[9px] font-bold">✓</span>}
+                          {isAchieved && <span className="text-white text-[10px] font-bold">✓</span>}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className={clsx(

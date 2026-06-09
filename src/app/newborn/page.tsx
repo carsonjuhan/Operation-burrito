@@ -308,7 +308,7 @@ function EditModal({
     }
   };
 
-  const inputCls = "w-full px-2.5 py-1.5 text-xs bg-stone-50 dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sage-300 dark:focus:ring-sage-600";
+  const inputCls = "w-full px-2.5 py-2 bg-stone-50 dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sage-300 dark:focus:ring-sage-600" + " text-[16px]"; // 16px prevents iOS zoom
   const labelCls = "text-[10px] font-medium text-stone-400 uppercase tracking-wide mb-1 block";
 
   return (
@@ -714,14 +714,14 @@ function LogRow({
     <div className="flex items-center gap-0.5 shrink-0">
       <button
         onClick={() => onEdit(event)}
-        className="text-stone-300 hover:text-sage-500 dark:text-stone-600 dark:hover:text-sage-400 transition-colors p-1 rounded"
+        className="text-stone-300 hover:text-sage-500 dark:text-stone-600 dark:hover:text-sage-400 transition-colors p-2.5 rounded-lg active:bg-stone-100 dark:active:bg-stone-700"
         aria-label="Edit"
       >
         <Pencil size={11} />
       </button>
       <button
         onClick={() => onDelete(event.id)}
-        className="text-stone-300 hover:text-red-400 dark:text-stone-600 dark:hover:text-red-400 transition-colors p-1 rounded"
+        className="text-stone-300 hover:text-red-400 dark:text-stone-600 dark:hover:text-red-400 transition-colors p-2.5 rounded-lg active:bg-red-50 dark:active:bg-red-950/30"
         aria-label="Delete"
       >
         <X size={12} />

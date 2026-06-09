@@ -371,7 +371,8 @@ export function Sidebar() {
       {/* Mobile hamburger */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-40 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 shadow-sm"
+        className="md:hidden fixed z-40 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 shadow-sm"
+        style={{ top: "max(1rem, env(safe-area-inset-top))", left: "max(1rem, env(safe-area-inset-left))" }}
         aria-label="Open navigation menu"
         aria-expanded={open}
         aria-controls="sidebar-nav"

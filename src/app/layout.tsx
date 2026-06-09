@@ -12,11 +12,13 @@ import { SyncQueueManager } from "@/components/SyncQueueManager";
 import { InstallBanner } from "@/components/InstallBanner";
 import { ReminderScheduler } from "@/components/ReminderScheduler";
 import { I18nProvider } from "@/contexts/I18nContext";
+import { BottomNav } from "@/components/BottomNav";
 
 export const viewport: Viewport = {
   themeColor: "#4d6b52",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
@@ -64,10 +66,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="flex flex-1">
                   <Sidebar />
                   {/* On mobile: full width. On desktop: offset by sidebar width */}
-                  <main id="main-content" className="flex-1 w-full md:ml-64 p-4 md:p-8 pb-24 md:pb-8 mesh-bg">
+                  <main id="main-content" className="flex-1 w-full md:ml-64 p-4 md:p-8 pb-28 md:pb-8 mesh-bg safe-top">
                     {children}
                   </main>
                 </div>
+                <BottomNav />
               </div>
               <ToastContainer />
               <KeyboardShortcutProvider />
