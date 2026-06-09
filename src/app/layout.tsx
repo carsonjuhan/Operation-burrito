@@ -13,23 +13,23 @@ import { InstallBanner } from "@/components/InstallBanner";
 import { ReminderScheduler } from "@/components/ReminderScheduler";
 import { I18nProvider } from "@/contexts/I18nContext";
 
-const basePath = process.env.NODE_ENV === "production" ? "/Operation-burrito" : "";
-
 export const viewport: Viewport = {
   themeColor: "#4d6b52",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export const metadata: Metadata = {
   title: "Operation Burrito",
   description: "Baby preparation tracker",
-  manifest: `${basePath}/manifest.json`,
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "Operation Burrito",
   },
   icons: {
-    apple: `${basePath}/icons/icon-180.svg`,
+    apple: "/icons/apple-touch-icon.png",
   },
 };
 

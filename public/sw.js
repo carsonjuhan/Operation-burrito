@@ -1,21 +1,17 @@
 /* eslint-disable no-restricted-globals */
 
 // ── Cache Configuration ─────────────────────────────────────────────────────
-const CACHE_VERSION = 'ob-v1';
+const CACHE_VERSION = 'ob-v2';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 
-// Static shell files to pre-cache on install.
-// Next.js static export places assets under the basePath.
-const BASE_PATH = '/Operation-burrito';
-
 const PRECACHE_URLS = [
-  `${BASE_PATH}/`,
-  `${BASE_PATH}/index.html`,
-  `${BASE_PATH}/manifest.json`,
-  `${BASE_PATH}/icons/icon-192.svg`,
-  `${BASE_PATH}/icons/icon-512.svg`,
-  `${BASE_PATH}/icons/icon-180.svg`,
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/apple-touch-icon.png',
 ];
 
 // ── Install ─────────────────────────────────────────────────────────────────
