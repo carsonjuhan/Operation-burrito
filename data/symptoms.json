@@ -1,0 +1,214 @@
+{
+  "symptoms": [
+    {
+      "id": "jaundice",
+      "name": "Jaundice",
+      "emoji": "🟡",
+      "description": "Yellowing of the skin and whites of the eyes, caused by bilirubin building up faster than the liver can process it. Extremely common in newborns — affects up to 60% of full-term babies.",
+      "normalRange": "Mild yellowing in the first 2–5 days is common, peaks around days 3–5, and usually clears by 2 weeks in full-term babies. Breastfed babies may have visible jaundice slightly longer (up to 3 weeks).",
+      "callDoctorIf": [
+        "Jaundice appears in the first 24 hours of life",
+        "Yellow colour spreads to the belly, arms, or legs",
+        "Baby is very difficult to wake for feeds",
+        "Baby is not feeding well or producing fewer wet nappies",
+        "Jaundice persists beyond 3 weeks in a full-term baby",
+        "Yellow colour of skin is deepening after day 5"
+      ],
+      "goERIf": [
+        "Baby is limp, unresponsive, or has a high-pitched cry",
+        "Baby develops a high fever with jaundice",
+        "You were discharged with instructions to return if jaundice worsened and it has"
+      ],
+      "ageNote": "Most relevant in the first 2 weeks of life"
+    },
+    {
+      "id": "temperature",
+      "name": "Temperature / Fever",
+      "emoji": "🌡️",
+      "description": "Newborns cannot regulate body temperature well. A fever in a newborn under 3 months is always taken seriously because their immune systems cannot mount a robust response to serious infection.",
+      "normalRange": "Normal temperature: 36.5–37.5°C (97.7–99.5°F) rectally. Axillary (armpit) readings run 0.5–1°C lower.",
+      "callDoctorIf": [
+        "Temperature over 37.5°C (99.5°F) in a baby under 3 months — call immediately, even at night",
+        "Temperature below 36°C — hypothermia in a newborn needs assessment",
+        "Baby feels unusually cold, pale, or mottled (blotchy skin pattern)"
+      ],
+      "goERIf": [
+        "Any fever (38°C or higher rectally) in a baby under 8 weeks — this is a medical emergency",
+        "Baby under 3 months with fever and any of: rash, lethargy, difficulty breathing, not feeding",
+        "You cannot reach your doctor and baby has a fever under 3 months"
+      ],
+      "ageNote": "Fever in babies under 3 months always requires immediate medical attention"
+    },
+    {
+      "id": "umbilical-cord",
+      "name": "Umbilical Cord",
+      "emoji": "🪢",
+      "description": "The stump of the umbilical cord typically dries out and falls off between 1–3 weeks. It changes colour from yellow-green to brown to black as it dries — this is normal.",
+      "normalRange": "Stump falls off between 7–21 days. Slight redness directly on the stump and a small amount of clear or slightly bloody discharge when it falls off is normal.",
+      "callDoctorIf": [
+        "Redness spreading to the skin around the base of the cord (omphalitis)",
+        "Yellow or green pus or foul smell from the cord",
+        "The cord bleeds more than a few drops when it falls off",
+        "Stump has not fallen off after 6 weeks"
+      ],
+      "goERIf": [
+        "Red streaks spreading from the navel area",
+        "Baby has a fever along with cord redness or discharge — this could be a serious infection"
+      ],
+      "ageNote": "Keep cord dry and exposed to air — fold nappy below the stump"
+    },
+    {
+      "id": "weight-loss",
+      "name": "Weight Loss & Gain",
+      "emoji": "⚖️",
+      "description": "Almost all newborns lose weight in the first few days as they pass meconium and adjust to feeding. This is expected and normal — the question is how much and whether they recover.",
+      "normalRange": "Losing up to 7–10% of birth weight in the first 3–5 days is normal. Baby should be back to birth weight by day 10–14. After that, expect a gain of 150–220g (5–8 oz) per week for the first 3 months.",
+      "callDoctorIf": [
+        "Baby loses more than 10% of birth weight",
+        "Not back to birth weight by day 14",
+        "Less than 6 wet nappies per day after day 4",
+        "No dirty nappies for more than 24 hours in the first month",
+        "Consistently gaining less than 150g per week after the first 2 weeks"
+      ],
+      "ageNote": "Weight is checked at the 2-week and 1-month visits — if concerned, ask for a mid-week weight check"
+    },
+    {
+      "id": "nappy-output",
+      "name": "Nappy Output",
+      "emoji": "💛",
+      "description": "Nappy output is one of the most reliable indicators of whether baby is getting enough to eat.",
+      "normalRange": "Day 1: 1+ wet, 1 meconium (black/tarry). Days 2–4: increasing wet nappies, transitional stool (brown/green). Day 5+: at least 6 heavy wet nappies per day, 3+ yellow seedy stools (breastfed) or less frequent but larger stools (formula).",
+      "callDoctorIf": [
+        "Fewer than 6 wet nappies per day after day 5",
+        "Urine looks dark yellow or orange (concentrated)",
+        "No dirty nappy for 3+ days in the first month (breastfed babies can go longer after 6 weeks)",
+        "Bloody or mucousy stool",
+        "White, grey, or chalky stools — possible liver issue"
+      ],
+      "goERIf": [
+        "Bright red blood in the stool (not just a pink tinge)",
+        "Baby appears to be in significant pain when passing stool"
+      ]
+    },
+    {
+      "id": "skin-rashes",
+      "name": "Common Newborn Rashes",
+      "emoji": "🔴",
+      "description": "Newborn skin is adjusting to life outside the womb. Many rashes appear in the first weeks and are completely normal.",
+      "normalRange": "Milia (tiny white bumps on nose/cheeks — blocked pores), erythema toxicum (red blotchy rash with white/yellow centres, appears 1–3 days), baby acne (red pimples 2–4 weeks), stork bites (flat pink/red marks on neck or eyelids) — all harmless and self-resolving.",
+      "callDoctorIf": [
+        "Rash with fever",
+        "Rash that looks like bruising or purple/red dots that don't fade when pressed (petechiae)",
+        "Spreading rash with blistering or open sores",
+        "Cradle cap becoming red, cracked, or extending beyond the scalp — may be seborrhoeic dermatitis"
+      ],
+      "goERIf": [
+        "Non-blanching rash (press a glass to it — if it doesn't fade, this is a medical emergency)",
+        "Rash with high fever and baby seems very unwell"
+      ]
+    },
+    {
+      "id": "breathing",
+      "name": "Breathing Patterns",
+      "emoji": "💨",
+      "description": "Newborn breathing looks very different from adult breathing — irregular rhythms and pauses are common.",
+      "normalRange": "Normal rate: 30–60 breaths per minute. Periodic breathing (pauses of up to 10 seconds followed by several rapid breaths) is normal in newborns. Snuffling and snorting sounds are common due to narrow nasal passages.",
+      "callDoctorIf": [
+        "Breathing consistently faster than 60 breaths per minute",
+        "Nostrils flaring with each breath",
+        "Ribs visible with each breath (retractions)",
+        "Grunting with every breath (not just occasionally)",
+        "Blue-tinged lips or fingertips after the first few hours of life",
+        "Any pause in breathing longer than 20 seconds"
+      ],
+      "goERIf": [
+        "Baby's lips or face turn blue",
+        "Baby stops breathing and doesn't start again within a few seconds",
+        "Baby is working very hard to breathe — nostrils flaring, ribs showing, grunting constantly"
+      ]
+    },
+    {
+      "id": "eye-discharge",
+      "name": "Eye Discharge",
+      "emoji": "👁️",
+      "description": "Sticky or crusty eyes are very common in newborns due to blocked tear ducts.",
+      "normalRange": "Clear or pale yellow discharge that accumulates at the corner of the eye and makes the eye crusty after sleep — this is usually a blocked tear duct (dacryostenosis) and is harmless. Typically resolves by 12 months.",
+      "callDoctorIf": [
+        "Yellow or green discharge that is thick and copious",
+        "Eye is red, swollen, or the eyelid is puffy",
+        "Both eyes affected and discharge is increasing",
+        "Baby seems sensitive to light or keeps eye closed"
+      ],
+      "goERIf": [
+        "Significant eye swelling and discharge in the first day or two of life — this could be a birth-acquired infection"
+      ],
+      "ageNote": "To clean: use a clean cotton ball dampened with sterile saline, wipe from inner corner outward"
+    },
+    {
+      "id": "spit-up",
+      "name": "Spitting Up vs Vomiting",
+      "emoji": "🤢",
+      "description": "Most newborns spit up regularly — it's rarely cause for concern. Vomiting is different in force and volume.",
+      "normalRange": "Spitting up small amounts (tablespoon or less) during or after feeds is normal for the first 6–12 months. The lower oesophageal sphincter is immature — 'a happy spitter' is a real thing.",
+      "callDoctorIf": [
+        "Spitting up blood or material that looks like coffee grounds",
+        "Spit-up has yellow or green bile in it",
+        "Baby seems to be in pain before, during, or after spitting up (could be reflux)",
+        "Baby is not gaining weight adequately due to spit-up volume",
+        "Spit-up is increasing in frequency or volume over time"
+      ],
+      "goERIf": [
+        "Projectile vomiting — vomit shoots out with force across the room, repeatedly — especially from 2–6 weeks (pyloric stenosis)",
+        "Any vomiting with blood, bile (yellow/green), or in a very unwell-looking baby"
+      ]
+    },
+    {
+      "id": "crying-colic",
+      "name": "Excessive Crying / Colic",
+      "emoji": "😭",
+      "description": "Colic is defined as crying for 3+ hours per day, 3+ days per week, for 3+ weeks in an otherwise healthy baby. It typically peaks at 6 weeks and resolves by 3–4 months.",
+      "normalRange": "Some degree of fussiness is universal. A 'fussy period' in the evenings (5–9pm), sometimes called the 'witching hour', is developmentally normal in the first 3 months.",
+      "callDoctorIf": [
+        "Crying is inconsolable and nothing you try makes any difference for extended periods",
+        "Baby seems to be in genuine pain (not just fussy) — consider reflux, cow's milk protein intolerance, or other causes",
+        "Baby's cry has changed in quality — unusually high-pitched or weak",
+        "Crying is accompanied by fever, vomiting, or changes in stool"
+      ],
+      "goERIf": [
+        "You have reached a point where you are afraid you might hurt the baby — put baby safely in the crib and call for help",
+        "Baby cries for hours without any pause and cannot be comforted at all"
+      ],
+      "ageNote": "If you are struggling with a colicky baby, please seek support. This is genuinely very hard."
+    },
+    {
+      "id": "cradle-cap",
+      "name": "Cradle Cap",
+      "emoji": "🧴",
+      "description": "Thick, crusty, yellowish or brownish scaling on the scalp — common from 2 weeks to 6 months.",
+      "normalRange": "Completely harmless seborrhoeic dermatitis of the scalp. Does not itch or bother baby. Usually clears on its own within a few months.",
+      "callDoctorIf": [
+        "Spreading beyond the scalp to the face, ears, or nappy area",
+        "Area becomes red, cracked, or appears infected",
+        "Baby is scratching excessively"
+      ],
+      "ageNote": "Management: massage a small amount of olive oil or coconut oil into scalp, leave for 20–30 minutes, gently brush with a soft baby brush, then wash with baby shampoo. Don't pick at scales."
+    },
+    {
+      "id": "congestion",
+      "name": "Nasal Congestion & Sneezing",
+      "emoji": "🤧",
+      "description": "Newborns are obligate nose-breathers — any congestion can interfere with feeding and sleep. They also sneeze frequently to clear their nasal passages.",
+      "normalRange": "Frequent sneezing is normal and healthy — a way of clearing the nose. Mild snuffling sounds during sleep or feeding are also normal. A visible nasal crust is common.",
+      "callDoctorIf": [
+        "Thick yellow or green nasal discharge (beyond the first 2 days of life)",
+        "Congestion is affecting feeding — baby can't maintain a latch because they can't breathe",
+        "Baby has a fever with the congestion",
+        "Congestion is causing consistent sleep disruption beyond normal newborn waking"
+      ],
+      "goERIf": [
+        "Any sign of breathing difficulty with congestion — fast breathing, retractions, or blue colour"
+      ],
+      "ageNote": "Saline drops before feeds can help clear nasal passages. A bulb syringe can be used if needed but use sparingly."
+    }
+  ]
+}

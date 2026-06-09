@@ -1,0 +1,194 @@
+{
+  "techniques": [
+    {
+      "id": "swaddle",
+      "name": "Swaddle",
+      "emoji": "🫶",
+      "whenToUse": "Any time baby is fussy, especially in the first 6–8 weeks when the Moro reflex is strong",
+      "difficulty": "takes practice",
+      "steps": [
+        "Lay a square muslin flat, folded into a diamond. Fold the top corner down about 15 cm",
+        "Place baby with shoulders at the folded edge — body below, head above",
+        "Take one arm, lay it straight down or slightly bent, wrap that side of the blanket snugly across baby's chest and tuck firmly behind their back",
+        "Fold the bottom corner up over baby's feet — hips must be able to move freely (frog-leg position is fine)",
+        "Bring the remaining side across the front and tuck in securely",
+        "Check: you can fit 2 fingers between blanket and baby's chest, but it won't unravel when lifted"
+      ],
+      "tips": [
+        "Use a velcro swaddle wrap (Halo, Love to Dream) when you're too tired to fold — they stay put and are faster",
+        "Stop swaddling as soon as baby shows any sign of attempting to roll (usually 8–16 weeks)",
+        "A swaddle only works if baby can't break out of it — practice the technique in the daytime first"
+      ]
+    },
+    {
+      "id": "shush-pat",
+      "name": "Shush & Pat",
+      "emoji": "🤫",
+      "whenToUse": "Baby is fussy or overtired but not at peak cry — works well in the crib to avoid picking up",
+      "difficulty": "easy",
+      "steps": [
+        "Place baby on their side (supervised only) or pat through the crib with baby on their back",
+        "Put your mouth close to baby's ear and make a loud 'shhhhhh' — louder than the crying",
+        "Simultaneously pat the upper back or bum rhythmically — firm and steady, like a heartbeat",
+        "Maintain the shush-pat together: both the sound and the touch",
+        "Gradually reduce the intensity as baby calms — slow the pat, lower the shush",
+        "Stop patting once baby is calm — too much stimulation keeps them awake"
+      ],
+      "tips": [
+        "The shush needs to be genuinely loud — a quiet shush does nothing when baby is crying",
+        "Rhythm matters more than force — a metronomic pat is more effective than a random one",
+        "This technique requires a few minutes of persistence — it doesn't work in 5 seconds"
+      ]
+    },
+    {
+      "id": "skin-to-skin",
+      "name": "Skin-to-Skin",
+      "emoji": "🫂",
+      "whenToUse": "Fussy, overstimulated, gassy, or just needing to regulate — works at any age in the early months",
+      "difficulty": "easy",
+      "steps": [
+        "Remove baby's clothes down to the nappy",
+        "Open your shirt and hold baby against your bare chest",
+        "Cover you both with a blanket for warmth",
+        "Let baby hear your heartbeat — the familiar sound is calming",
+        "Breathe slowly and deeply — babies co-regulate with your nervous system"
+      ],
+      "tips": [
+        "Works for dads and partners too — not just mum",
+        "If baby is overstimulated, skin-to-skin in a quiet dark room is one of the most effective resets",
+        "Also excellent for building supply when breastfeeding — prolactin rises during skin-to-skin"
+      ]
+    },
+    {
+      "id": "5s-sway",
+      "name": "Rhythmic Motion (Sway & Jiggle)",
+      "emoji": "🎵",
+      "whenToUse": "Baby is at peak cry — vigorous rhythmic motion is often the fastest way to engage the calming reflex",
+      "difficulty": "easy",
+      "steps": [
+        "Hold baby securely in a slightly upright position, supporting the head",
+        "Sway side-to-side in a smooth, continuous rhythm (like a metronome)",
+        "For very upset babies, add a gentle jiggle — about 1–2 times per second, like you're shaking a salad",
+        "Match the intensity of the motion to the intensity of the cry — faster when they're more upset, slow down as they calm",
+        "Once calm, slow to a gentle rock and eventually still"
+      ],
+      "tips": [
+        "In-arms swaying is more effective than a swing for a peak-cry baby — the physical connection matters",
+        "Walking in a figure-8 pattern while swaying provides more variation and can work when simple swaying doesn't",
+        "Keep your own breathing steady — stressed parents transmit their state to baby"
+      ]
+    },
+    {
+      "id": "white-noise",
+      "name": "White Noise",
+      "emoji": "🔊",
+      "whenToUse": "At sleep time, during fussy periods, or as a constant background to mask household sounds",
+      "difficulty": "easy",
+      "steps": [
+        "Use a white noise machine, phone app, or fan placed at least 2 metres from baby",
+        "Set volume to about 65–70 dB — similar to a running shower (loud enough to hear over light crying)",
+        "For sleeping: leave it on for the full sleep period (not just to fall asleep)",
+        "For calming: bring the sound close and louder to match the crying, then gradually reduce as baby calms"
+      ],
+      "tips": [
+        "Fan noise, 'brown' noise, and 'pink' noise are often more effective than white noise for some babies",
+        "Avoid music or nature sounds with distinct starts and stops — the gaps cause waking",
+        "Consistent white noise throughout sleep helps mask transitions between sleep cycles",
+        "Check your machine's volume at baby's ear level — many machines are louder than they sound at a distance"
+      ]
+    },
+    {
+      "id": "sucking",
+      "name": "Non-Nutritive Sucking",
+      "emoji": "🍬",
+      "whenToUse": "Baby needs comfort between feeds, during nappy changes, after a cry — once breastfeeding is established",
+      "difficulty": "easy",
+      "steps": [
+        "Offer a pacifier — try a few shapes to find what baby accepts",
+        "Or offer your clean pinky finger, nail-side down, at the roof of their mouth",
+        "Allow baby to suck at their own rhythm — don't pump the finger/dummy",
+        "Use in combination with swaddling and white noise for maximum effect"
+      ],
+      "tips": [
+        "Introduce pacifier after breastfeeding is established (3–4 weeks) to avoid nipple confusion",
+        "The sucking reflex is one of the strongest calming mechanisms — use it",
+        "Don't force the pacifier in if baby spits it out repeatedly — some babies never take one and that's okay"
+      ]
+    },
+    {
+      "id": "tummy-massage",
+      "name": "Tummy Massage (Gas Relief)",
+      "emoji": "💆",
+      "whenToUse": "Baby seems gassy, uncomfortable after feeds, pulling up legs, or has a hard tummy",
+      "difficulty": "easy",
+      "steps": [
+        "Lay baby on their back on a firm, flat surface",
+        "Warm your hands by rubbing them together",
+        "Use the 'I Love You' massage: stroke a capital 'I' down baby's left side, then an inverted 'L' across the top and down the left, then a 'U' up the right, across the top, and down the left",
+        "Bicycle legs: hold baby's legs and gently cycle them in a pedalling motion for 30–60 seconds",
+        "Knee-to-chest: gently press both knees to baby's tummy and hold for 10 seconds, then release"
+      ],
+      "tips": [
+        "Do this between feeds, not right after, or you may cause spit-up",
+        "Use a small amount of baby massage oil if the skin is dry",
+        "Warm (not hot) compress on the tummy can be used alongside massage"
+      ]
+    },
+    {
+      "id": "carrier-wrap",
+      "name": "Baby Carrier / Wrap",
+      "emoji": "👶",
+      "whenToUse": "Baby needs constant contact and you need your hands free — great for the 'witching hour' in the evenings",
+      "difficulty": "takes practice",
+      "steps": [
+        "Ensure the carrier is sized correctly and baby is in the TICKS position: Tight, In view, Close enough to kiss, Keep chin off chest, Supported back",
+        "Position baby high enough to kiss their head",
+        "Ensure hips are in a 'frog' or 'M' position — not dangling straight down",
+        "Start with short wear sessions (20–30 min) while you're both learning",
+        "Walk around or do light household activities — the motion and your breathing rhythms are very calming"
+      ],
+      "tips": [
+        "Stretchy wraps (Moby, Solly) are gentler for learning; structured carriers (Ergobaby, Lillebaby) are easier for longer wear",
+        "Many fussy evenings can be resolved entirely by babywearing during the 'witching hour' 5–8pm",
+        "You cannot spoil a newborn by carrying them — this builds security, not dependence"
+      ]
+    },
+    {
+      "id": "warm-bath",
+      "name": "Warm Bath",
+      "emoji": "🛁",
+      "whenToUse": "As a wind-down tool before sleep, or to soothe a particularly fussy or tense baby",
+      "difficulty": "easy",
+      "steps": [
+        "Fill bath to about 5–8 cm depth; test temperature with your wrist or elbow — should feel warm, not hot (37–38°C)",
+        "Support baby's head and neck throughout — never let go",
+        "Pour warm water gently over the chest and tummy to keep baby warm",
+        "Keep the bath short — 5–10 minutes is enough",
+        "Wrap in a warm towel immediately after and do a little skin-to-skin before dressing"
+      ],
+      "tips": [
+        "A daily bath becomes a strong sleep cue once the routine is established",
+        "Some babies find baths stimulating rather than soothing — watch your specific baby's response",
+        "Newborns don't need bathing every day — 2–3 times per week is sufficient until the cord falls off"
+      ]
+    },
+    {
+      "id": "change-of-scene",
+      "name": "Change of Scene / Fresh Air",
+      "emoji": "🌿",
+      "whenToUse": "You've tried everything and nothing is working — a complete environment change often breaks the cry cycle",
+      "difficulty": "easy",
+      "steps": [
+        "Move from inside to outside, or from one room to another",
+        "A short walk with baby in the pram or carrier — even 5–10 minutes",
+        "Stand in front of an open window with cool air on baby's face (cool but not cold)",
+        "Drive in the car — motion and vibration are highly effective (and you can pull over and stay in the car)"
+      ],
+      "tips": [
+        "Cool air on the face stimulates the diving reflex and can interrupt a crying escalation",
+        "This technique also works for you — stepping outside breaks your own stress response",
+        "If nothing is working at 3am, it's okay to put baby safely in the crib and take 5 minutes to breathe"
+      ]
+    }
+  ]
+}

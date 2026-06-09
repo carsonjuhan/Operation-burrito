@@ -9,6 +9,8 @@ import recipesData from "../../../data/postpartum_recipes.json";
 
 const ALL_RECIPES: PostpartumRecipe[] = recipesData.recipes as PostpartumRecipe[];
 
+const ALL_SOURCES = Array.from(new Set(ALL_RECIPES.map(r => r.source).filter(Boolean))) as string[];
+
 const PROTEIN_OPTIONS: { value: RecipeProtein; label: string }[] = [
   { value: "chicken", label: "Chicken" },
   { value: "pork", label: "Pork" },
@@ -24,11 +26,11 @@ const CUISINE_OPTIONS: { value: RecipeCuisine; label: string }[] = [
   { value: "japanese", label: "Japanese" },
 ];
 
-const PHASE_OPTIONS: { value: RecipePhase; label: string; labelZh: string; days: string }[] = [
-  { value: "rest", label: "Rest Period", labelZh: "休養期", days: "Days 0–7" },
-  { value: "warm", label: "Warm Toning", labelZh: "溫補期", days: "Days 8–22" },
-  { value: "major", label: "Major Toning", labelZh: "大補期", days: "Days 23–30" },
-  { value: "maintenance", label: "Maintenance", labelZh: "保養期", days: "Day 31+" },
+const PHASE_OPTIONS: { value: RecipePhase; label: string; labelZh: string; days: string; tooltip: string }[] = [
+  { value: "rest", label: "Rest Period", labelZh: "休養期", days: "Days 0–7", tooltip: "Week 1 — Focus on rest and gentle recovery. Light, easy-to-digest foods. Avoid cold or raw foods." },
+  { value: "warm", label: "Warm Toning", labelZh: "溫補期", days: "Days 8–22", tooltip: "Weeks 2–3 — Begin warming and nourishing the body. Introduce tonifying soups and blood-building ingredients." },
+  { value: "major", label: "Major Toning", labelZh: "大補期", days: "Days 23–30", tooltip: "Week 4 — Stronger tonics to replenish qi, blood, and kidney energy after the body has stabilised." },
+  { value: "maintenance", label: "Maintenance", labelZh: "保養期", days: "Day 31+", tooltip: "Month 2 onwards — Ongoing nourishment and maintenance. Lighter tonics to sustain energy and milk supply." },
 ];
 
 export default function RecipesPage() {
@@ -37,6 +39,7 @@ export default function RecipesPage() {
   const [selectedCuisines, setSelectedCuisines] = useState<Set<RecipeCuisine>>(new Set());
   const [selectedPhases, setSelectedPhases] = useState<Set<RecipePhase>>(new Set());
   const [menuRefOnly, setMenuRefOnly] = useState(false);
+  const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const toggleFilter = <T,>(set: Set<T>, value: T, setter: (s: Set<T>) => void) => {
@@ -53,6 +56,7 @@ export default function RecipesPage() {
       if (selectedCuisines.size > 0 && !selectedCuisines.has(r.cuisine)) return false;
       if (selectedPhases.size > 0 && !r.phase.some((p) => selectedPhases.has(p))) return false;
       if (menuRefOnly && !(r.tags ?? []).includes("MenuReference")) return false;
+      if (selectedSource && r.source !== selectedSource) return false;
       if (q) {
         const haystack = [
           r.name_en, r.name_zh ?? "", r.name_ja ?? "",
@@ -62,9 +66,9 @@ export default function RecipesPage() {
       }
       return true;
     });
-  }, [query, selectedProteins, selectedCuisines, selectedPhases, menuRefOnly]);
+  }, [query, selectedProteins, selectedCuisines, selectedPhases, menuRefOnly, selectedSource]);
 
-  const hasFilters = query.trim() || selectedProteins.size > 0 || selectedCuisines.size > 0 || selectedPhases.size > 0 || menuRefOnly;
+  const hasFilters = query.trim() || selectedProteins.size > 0 || selectedCuisines.size > 0 || selectedPhases.size > 0 || menuRefOnly || selectedSource;
 
   const clearAll = () => {
     setQuery("");
@@ -72,6 +76,7 @@ export default function RecipesPage() {
     setSelectedCuisines(new Set());
     setSelectedPhases(new Set());
     setMenuRefOnly(false);
+    setSelectedSource(null);
   };
 
   const toggleExpanded = (id: string) => {
@@ -128,6 +133,7 @@ export default function RecipesPage() {
               <button
                 key={p.value}
                 onClick={() => toggleFilter(selectedPhases, p.value, setSelectedPhases)}
+                title={`${p.days} — ${p.tooltip}`}
                 className={clsx(
                   "px-3 py-1.5 rounded-full text-xs font-medium transition-colors border",
                   selectedPhases.has(p.value)
@@ -136,6 +142,7 @@ export default function RecipesPage() {
                 )}
               >
                 {p.labelZh} {p.label}
+                <span className="ml-1 opacity-50 text-[10px]">{p.days}</span>
               </button>
             ))}
           </div>
@@ -186,17 +193,22 @@ export default function RecipesPage() {
         {/* Source */}
         <div>
           <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 mb-1.5 uppercase tracking-wide">Source</p>
-          <button
-            onClick={() => setMenuRefOnly(!menuRefOnly)}
-            className={clsx(
-              "px-3 py-1.5 rounded-full text-xs font-medium transition-colors border",
-              menuRefOnly
-                ? "bg-sage-100 border-sage-300 text-sage-800 dark:bg-sage-900 dark:border-sage-700 dark:text-sage-200"
-                : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-700"
-            )}
-          >
-            Menu Reference
-          </button>
+          <div className="flex flex-wrap gap-2">
+            {ALL_SOURCES.map((src) => (
+              <button
+                key={src}
+                onClick={() => setSelectedSource(selectedSource === src ? null : src)}
+                className={clsx(
+                  "px-3 py-1.5 rounded-full text-xs font-medium transition-colors border",
+                  selectedSource === src
+                    ? "bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-900/40 dark:border-amber-700 dark:text-amber-200"
+                    : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-700"
+                )}
+              >
+                {src.replace(" (Traditional Chinese Postnatal Soup Menu)", "")}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -283,9 +295,10 @@ function RecipeCard({
                 return (
                   <span
                     key={p}
-                    className="inline-block px-2 py-0.5 rounded-full text-[10px] font-medium bg-sage-50 text-sage-700 dark:bg-sage-900 dark:text-sage-300"
+                    title={phaseInfo ? `${phaseInfo.days} — ${phaseInfo.tooltip}` : undefined}
+                    className="inline-block px-2 py-0.5 rounded-full text-[10px] font-medium bg-sage-50 text-sage-700 dark:bg-sage-900 dark:text-sage-300 cursor-help"
                   >
-                    {phaseInfo?.labelZh} {phaseInfo?.label}
+                    {phaseInfo?.labelZh} {phaseInfo?.label} · {phaseInfo?.days}
                   </span>
                 );
               })}
@@ -324,6 +337,16 @@ function RecipeCard({
               ))}
             </ol>
           </div>
+
+          {/* Source */}
+          {recipe.source && (
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] text-stone-400 dark:text-stone-500">Source:</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400 border border-amber-100 dark:border-amber-800">
+                {recipe.source}
+              </span>
+            </div>
+          )}
 
           {/* Tags */}
           {recipe.tags && recipe.tags.length > 0 && (

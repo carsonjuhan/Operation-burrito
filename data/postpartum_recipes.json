@@ -4262,6 +4262,576 @@
         "sweet-soup",
         "collagen"
       ]
+    },
+    {
+      "id": "cn-085",
+      "name_en": "Lotus Seed Lily Euryale Chestnut Fig Snow Fungus Red Date Pork Shank Soup",
+      "name_zh": "莲子百合茨实栗子无花果雪耳红枣猪展汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["rest", "warm", "major"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "lotus seeds (莲子) 30g",
+        "lily bulb (百合) 20g, dried",
+        "euryale seeds (茨实/芡实) 30g",
+        "chestnuts (栗子) 8 pcs, peeled",
+        "dried figs (无花果) 4 pcs",
+        "snow fungus (雪耳) 1 piece, soaked and torn",
+        "red dates (红枣) 6 pcs, pitted",
+        "pork shank (猪展) 400g",
+        "tangerine peel (果皮) 1 small piece",
+        "preserved fruits (蜜饯) 2 pcs (e.g. winter melon strips)",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak lotus seeds, lily bulb, euryale seeds, and snow fungus in water for 30 minutes; drain.",
+        "Blanch pork shank in boiling water for 3 minutes, remove and rinse.",
+        "Bring 2L of fresh water to a boil in a large pot.",
+        "Add all ingredients including tangerine peel and preserved fruits.",
+        "Return to boil, then reduce heat to low and simmer for 2–2.5 hours.",
+        "Season with a pinch of salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "nourishing", "soup", "moistening"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-086",
+      "name_en": "Fresh Yam Wolfberry Corn Conch Scallop Apricot Kernel Coconut Lean Pork Soup",
+      "name_zh": "鲜淮山杞子粟米螺头元贝南北杏海底椰廋肉汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["rest", "warm", "major"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "fresh Chinese yam (鲜淮山) 200g, peeled and cut",
+        "wolfberries (杞子) 2 tbsp",
+        "corn (粟米) 1 ear, cut into segments",
+        "dried conch slices (螺头) 30g, soaked",
+        "dried scallops (元贝) 4 pcs, soaked",
+        "south and north apricot kernels (南北杏) 15g",
+        "coconut water flesh (海底椰) 30g, dried",
+        "lean pork (廋肉) 300g",
+        "tangerine peel (果皮) 1 small piece",
+        "preserved fruits (蜜饯) 2 pcs",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak dried conch slices and scallops overnight or for at least 2 hours.",
+        "Blanch lean pork in boiling water for 3 minutes, remove and rinse.",
+        "Bring 2L of fresh water to a boil.",
+        "Add all ingredients except wolfberries.",
+        "Simmer on low heat for 2–2.5 hours.",
+        "Add wolfberries in the last 15 minutes. Season with salt and serve."
+      ],
+      "tags": ["MenuReference", "nourishing", "soup", "cooling"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-087",
+      "name_en": "Lotus Seed Lily Corn Chestnut Fig Apricot Scallop Chicken Feet Pork Rib Soup",
+      "name_zh": "莲子百合粟米栗子无花果南北杏元贝雞脚排骨汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["warm", "major"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "lotus seeds (莲子) 30g",
+        "lily bulb (百合) 20g, dried",
+        "corn (粟米) 1 ear, cut into segments",
+        "chestnuts (栗子) 8 pcs, peeled",
+        "dried figs (无花果) 4 pcs",
+        "south and north apricot kernels (南北杏) 15g",
+        "dried scallops (元贝) 3 pcs, soaked",
+        "chicken feet (雞脚) 4 pcs, trimmed",
+        "pork ribs (排骨) 300g",
+        "tangerine peel (果皮) 1 small piece",
+        "preserved fruits (蜜饯) 2 pcs",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch chicken feet and pork ribs in boiling water 3 minutes; drain and rinse.",
+        "Soak lotus seeds in warm water 20 minutes.",
+        "Bring 2L fresh water to a boil. Add all ingredients.",
+        "Reduce to low heat and simmer 2–2.5 hours.",
+        "Season lightly with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "nourishing", "soup", "collagen"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-088",
+      "name_en": "Lotus Root Carrot Pork Rib Soup",
+      "name_zh": "莲藕红萝葡排骨汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["rest", "warm"],
+      "prepTime": 120,
+      "servings": 4,
+      "ingredients": [
+        "lotus root (莲藕) 400g, peeled and sliced",
+        "carrot (红萝葡) 2 medium, cut into chunks",
+        "pork ribs (排骨) 400g",
+        "tangerine peel (果皮) 1 small piece",
+        "preserved fruits (蜜饯) 2 pcs",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch pork ribs in boiling water 3 minutes; drain and rinse.",
+        "Peel and slice lotus root; cut carrot into chunks.",
+        "Bring 2L fresh water to a boil. Add all ingredients.",
+        "Reduce to low heat and simmer 1.5–2 hours until lotus root is tender.",
+        "Season with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "dampness-removing", "soup", "beginner-friendly"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-089",
+      "name_en": "Euryale Lotus Yam Barley Pig Tail Bone Soup",
+      "name_zh": "茨实莲子淮山意米猪尾骨汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["rest", "warm"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "euryale seeds (茨实/芡实) 30g",
+        "lotus seeds (莲子) 30g",
+        "Chinese yam (淮山) 30g, dried or 150g fresh",
+        "coix seeds / pearl barley (意米/薏米) 30g",
+        "pig tail or pork spine (猪尾骨) 400g",
+        "tangerine peel (果皮) 1 small piece",
+        "preserved fruits (蜜饯) 2 pcs",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak euryale seeds, lotus seeds, and coix seeds in water 30 minutes; drain.",
+        "Blanch pork in boiling water 3 minutes; rinse.",
+        "Bring 2L fresh water to a boil. Add all ingredients.",
+        "Reduce heat, simmer 2–2.5 hours.",
+        "Season with salt and serve."
+      ],
+      "tags": ["MenuReference", "dampness-removing", "spleen-strengthening", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-090",
+      "name_en": "Lima Bean Adzuki Bean Walnut Lotus Root Pork Shank Soup",
+      "name_zh": "眉豆赤小豆合桃莲藕猪展汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["rest", "warm"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "lima beans / eye beans (眉豆) 30g",
+        "adzuki beans (赤小豆) 30g",
+        "walnuts (合桃) 4 pcs, shelled",
+        "lotus root (莲藕) 300g, sliced",
+        "pork shank (猪展) 400g",
+        "tangerine peel (果皮) 1 small piece",
+        "preserved fruits (蜜饯) 2 pcs",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak lima beans and adzuki beans overnight or for 2 hours; drain.",
+        "Blanch pork shank in boiling water 3 minutes; drain and rinse.",
+        "Bring 2L fresh water to a boil. Add all ingredients.",
+        "Reduce to low heat and simmer 2–2.5 hours.",
+        "Season lightly with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "dampness-removing", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-091",
+      "name_en": "Red Bean Kidney Bean Walnut Pork Rib Soup",
+      "name_zh": "红豆红腰豆合桃排骨汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["rest", "warm"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "red beans (红豆) 30g",
+        "red kidney beans (红腰豆) 30g",
+        "walnuts (合桃) 4 pcs, shelled",
+        "pork ribs (排骨) 400g",
+        "tangerine peel (果皮) 1 small piece",
+        "preserved fruits (蜜饯) 2 pcs",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak red beans and kidney beans overnight or for 2 hours; drain.",
+        "Blanch pork ribs in boiling water 3 minutes; drain and rinse.",
+        "Bring 2L fresh water to a boil. Add all ingredients.",
+        "Reduce heat to low and simmer 2–2.5 hours until beans are tender.",
+        "Season with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "dampness-removing", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-092",
+      "name_en": "Eucommia Black Bean Pig Tail Bone Soup",
+      "name_zh": "杜仲黑豆猪尾骨汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["major", "maintenance"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "eucommia bark (杜仲) 20g",
+        "black beans (黑豆) 50g",
+        "pig tail or pork spine (猪尾骨) 400g",
+        "preserved fruits (蜜饯) 2 pcs",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak black beans overnight or for 2 hours; drain.",
+        "Rinse eucommia bark briefly.",
+        "Blanch pork in boiling water 3 minutes; rinse.",
+        "Bring 2L fresh water to a boil. Add all ingredients.",
+        "Reduce heat to low and simmer 2–2.5 hours.",
+        "Season with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "kidney-tonifying", "strengthening", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-093",
+      "name_en": "Black Bean Fo-Ti Black Date Longan Black Chicken Soup",
+      "name_zh": "黑豆何首乌蓝枣圆肉乌雞汤",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": ["major", "maintenance"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "black beans (黑豆) 50g",
+        "he shou wu / fo-ti root (何首乌) 15g",
+        "black dates / blue dates (蓝枣) 8 pcs",
+        "dried longan flesh (圆肉/桂圆肉) 20g",
+        "black chicken (乌雞) half, cut into pieces",
+        "fresh ginger (薑片) 3 slices",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak black beans overnight; drain.",
+        "Blanch black chicken pieces in boiling water 3 minutes; rinse.",
+        "Bring 2L fresh water to a boil. Add all ingredients including ginger.",
+        "Reduce heat and simmer 2–2.5 hours.",
+        "Season with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "kidney-tonifying", "blood-nourishing", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-094",
+      "name_en": "Cordyceps Flower Red Blue Date Yam Wolfberry Conch Chicken Soup",
+      "name_zh": "虫草花红蓝枣淮山杞子螺头雞汤",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": ["warm", "major"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "cordyceps flower (虫草花) 15g",
+        "red dates (红枣) 6 pcs, pitted",
+        "black/blue dates (蓝枣) 6 pcs",
+        "Chinese yam (淮山) 30g, dried",
+        "wolfberries (杞子) 2 tbsp",
+        "dried conch slices (螺头) 20g, soaked",
+        "chicken (雞) half, cut into pieces",
+        "fresh ginger (薑片) 3 slices",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak dried conch slices for 2 hours; drain.",
+        "Blanch chicken in boiling water 3 minutes; rinse.",
+        "Bring 2L fresh water to a boil. Add all ingredients except wolfberries.",
+        "Reduce heat and simmer 2–2.5 hours.",
+        "Add wolfberries in the last 15 minutes.",
+        "Season with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "qi-blood-tonifying", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-095",
+      "name_en": "Yam Wolfberry Lotus Lily Scallop Red Date Black Chicken Soup",
+      "name_zh": "淮山杞子莲子百合元贝红枣乌雞汤",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": ["warm", "major"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "Chinese yam (淮山) 30g, dried",
+        "wolfberries (杞子) 2 tbsp",
+        "lotus seeds (莲子) 30g",
+        "lily bulb (百合) 20g, dried",
+        "dried scallops (元贝) 3 pcs, soaked",
+        "red dates (红枣) 8 pcs, pitted",
+        "black chicken (乌雞) half, cut into pieces",
+        "fresh ginger (薑片) 3 slices",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak lotus seeds 20 minutes; soak dried scallops 1 hour. Drain both.",
+        "Blanch black chicken in boiling water 3 minutes; rinse.",
+        "Bring 2L fresh water to a boil. Add all ingredients except wolfberries.",
+        "Reduce heat to low and simmer 2–2.5 hours.",
+        "Add wolfberries in the last 15 minutes.",
+        "Season with salt and serve."
+      ],
+      "tags": ["MenuReference", "qi-blood-tonifying", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-096",
+      "name_en": "Yam Wolfberry Red Date Longan Scallop Lean Pork Stewed Quail",
+      "name_zh": "淮山杞子红枣圆肉元贝廋肉炖鹌鹑",
+      "cuisine": "chinese",
+      "protein": "other",
+      "phase": ["warm", "major"],
+      "prepTime": 120,
+      "servings": 2,
+      "ingredients": [
+        "Chinese yam (淮山) 20g, dried",
+        "wolfberries (杞子) 1 tbsp",
+        "red dates (红枣) 6 pcs, pitted",
+        "dried longan flesh (圆肉) 15g",
+        "dried scallop (元贝) 2 pcs, soaked",
+        "lean pork (廋肉) 100g",
+        "quail (鹌鹑) 2 whole, cleaned",
+        "tangerine peel (果皮) 1 small piece",
+        "water 600ml",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch quail and lean pork in boiling water 2 minutes; rinse.",
+        "Place all ingredients into a double-boiler stew pot (炖盅).",
+        "Add 600ml of water. Seal with lid.",
+        "Steam in a pot of boiling water (double-boil) for 2–2.5 hours.",
+        "Season lightly with salt. Serve hot directly from the pot."
+      ],
+      "tags": ["MenuReference", "qi-blood-tonifying", "double-boil", "stew"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-097",
+      "name_en": "Cordyceps Conch Scallop Stewed Lean Pork",
+      "name_zh": "冬虫夏草螺头元贝炖廋肉",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["major"],
+      "prepTime": 150,
+      "servings": 2,
+      "ingredients": [
+        "cordyceps (冬虫夏草) 3–5 pcs (or cordyceps flower as substitute)",
+        "dried conch slices (螺头) 20g, soaked",
+        "dried scallops (元贝) 3 pcs, soaked",
+        "lean pork (廋肉) 200g",
+        "water 500ml",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak conch and scallops for 2 hours; drain.",
+        "Blanch lean pork in boiling water 2 minutes; rinse and cut into chunks.",
+        "Place all ingredients in a double-boiler stew pot with 500ml water.",
+        "Double-boil for 2.5–3 hours.",
+        "Season with a pinch of salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "major-toning", "double-boil", "premium", "stew"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-098",
+      "name_en": "Yam Wolfberry Blue Red Date Abalone Stewed Lean Pork",
+      "name_zh": "淮山杞子蓝红枣鲍鱼炖廋肉",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["major"],
+      "prepTime": 150,
+      "servings": 2,
+      "ingredients": [
+        "Chinese yam (淮山) 20g, dried",
+        "wolfberries (杞子) 1 tbsp",
+        "black/blue dates (蓝枣) 4 pcs",
+        "red dates (红枣) 4 pcs, pitted",
+        "small abalone (鲍鱼) 1–2 pcs (canned or fresh mini)",
+        "lean pork (廋肉) 200g",
+        "water 500ml",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch lean pork in boiling water 2 minutes; rinse and cut into chunks.",
+        "If using canned abalone, reserve the brine and add to the pot for extra flavour.",
+        "Place all ingredients in a double-boiler stew pot with 500ml water.",
+        "Double-boil for 2.5–3 hours.",
+        "Season lightly with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "major-toning", "double-boil", "premium", "stew"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-099",
+      "name_en": "Astragalus Codonopsis Yam Wolfberry Scallop Red Date Stewed Black Chicken",
+      "name_zh": "北芪党参淮山杞子元贝红枣炖乌雞",
+      "cuisine": "chinese",
+      "protein": "chicken",
+      "phase": ["major", "maintenance"],
+      "prepTime": 180,
+      "servings": 2,
+      "ingredients": [
+        "astragalus root (北芪/黄芪) 20g",
+        "codonopsis root (党参) 20g",
+        "Chinese yam (淮山) 20g, dried",
+        "wolfberries (杞子) 1 tbsp",
+        "dried scallop (元贝) 2 pcs, soaked",
+        "red dates (红枣) 8 pcs, pitted",
+        "black chicken (乌雞) half, cut into pieces",
+        "water 600ml",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Blanch black chicken in boiling water 3 minutes; rinse.",
+        "Soak dried scallops for 1 hour; drain.",
+        "Place all ingredients in a double-boiler stew pot with 600ml water.",
+        "Double-boil for 2.5–3 hours.",
+        "Season lightly with salt. Serve hot."
+      ],
+      "tags": ["MenuReference", "major-toning", "qi-tonifying", "double-boil", "stew"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-100",
+      "name_en": "Gastrodia Chuanxiong Angelica Braised Fish Head Soup",
+      "name_zh": "天麻川芎白芷炖鱼头",
+      "cuisine": "chinese",
+      "protein": "fish",
+      "phase": ["warm", "major"],
+      "prepTime": 90,
+      "servings": 2,
+      "ingredients": [
+        "gastrodia rhizome (天麻) 15g",
+        "chuanxiong rhizome (川芎) 10g",
+        "angelica dahurica (白芷) 10g",
+        "fish head (鱼头) 1 large (grass carp or bighead carp), or lean pork 300g as alternative",
+        "fresh ginger 3 slices",
+        "water 1L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Rinse gastrodia, chuanxiong, and angelica briefly.",
+        "Pan-fry fish head in a little oil until both sides are lightly golden; OR blanch lean pork if using.",
+        "Transfer fish head/pork to pot with all herbs and ginger.",
+        "Add 1L of water, bring to a boil.",
+        "Reduce heat and simmer 1–1.5 hours.",
+        "Season with salt. Serve hot. (Note: this soup is for relieving postpartum headaches/wind.)"
+      ],
+      "tags": ["MenuReference", "head-wind", "headache-relief", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-101",
+      "name_en": "Soybean Pig's Trotter Soup",
+      "name_zh": "黄豆猪手汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["rest", "warm"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "soybeans (黄豆) 80g",
+        "pig's trotter (猪手) 1, chopped into pieces",
+        "fresh ginger 3 slices",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak soybeans overnight or for at least 4 hours; drain.",
+        "Blanch pig's trotter in boiling water 5 minutes; remove, rinse, and scrape clean.",
+        "Bring 2L fresh water to a boil with ginger slices.",
+        "Add pig's trotter and soybeans.",
+        "Reduce to low heat and simmer 2.5–3 hours until trotter is very tender.",
+        "Season with salt. Serve hot. (Supports milk production.)"
+      ],
+      "tags": ["MenuReference", "lactation", "breastfeeding", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-102",
+      "name_en": "Lotus Root Dried Octopus Pig's Trotter Soup",
+      "name_zh": "莲藕章鱼猪手汤",
+      "cuisine": "chinese",
+      "protein": "pork",
+      "phase": ["rest", "warm"],
+      "prepTime": 150,
+      "servings": 4,
+      "ingredients": [
+        "lotus root (莲藕) 300g, peeled and sliced",
+        "dried octopus (章鱼) 1 small piece (about 50g), soaked and cleaned",
+        "pig's trotter (猪手) 1, chopped into pieces",
+        "fresh ginger 3 slices",
+        "water 2L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak dried octopus in warm water for 30–60 minutes; cut into strips.",
+        "Blanch pig's trotter in boiling water 5 minutes; rinse clean.",
+        "Bring 2L fresh water to a boil with ginger.",
+        "Add all ingredients.",
+        "Reduce heat and simmer 2.5–3 hours.",
+        "Season with salt. Serve hot. (Supports milk production.)"
+      ],
+      "tags": ["MenuReference", "lactation", "breastfeeding", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
+    },
+    {
+      "id": "cn-103",
+      "name_en": "Papaya Dried Octopus Crucian Carp Soup",
+      "name_zh": "木瓜章鱼鲫鱼汤",
+      "cuisine": "chinese",
+      "protein": "fish",
+      "phase": ["rest", "warm"],
+      "prepTime": 90,
+      "servings": 2,
+      "ingredients": [
+        "green/semi-ripe papaya (青木瓜) 1 small, peeled, seeded, cubed",
+        "dried octopus (章鱼) 1 small piece (about 40g), soaked and cleaned",
+        "crucian carp (鲫鱼) 1 whole (about 400g), cleaned",
+        "fresh ginger 3 slices",
+        "cooking oil 1 tbsp",
+        "water 1.5L",
+        "salt to taste"
+      ],
+      "instructions": [
+        "Soak dried octopus 30–60 minutes; cut into strips.",
+        "Pan-fry crucian carp in oil with ginger slices until both sides are golden.",
+        "Transfer fish to a pot with 1.5L boiling water.",
+        "Add octopus and papaya.",
+        "Boil vigorously 10 minutes (to get milky broth), then reduce to medium-low and simmer 40 minutes.",
+        "Season with salt. Serve hot. (Supports milk production.)"
+      ],
+      "tags": ["MenuReference", "lactation", "breastfeeding", "soup"],
+      "source": "营养汤水 Menu (Traditional Chinese Postnatal Soup Menu)"
     }
   ]
 }

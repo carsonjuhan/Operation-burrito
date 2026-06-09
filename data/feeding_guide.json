@@ -1,0 +1,287 @@
+{
+  "sections": [
+    {
+      "id": "nursing-station",
+      "title": "Set Up Your Nursing Station",
+      "category": "environment",
+      "summary": "A well-prepared nursing spot saves energy when you're feeding 8–12 times a day.",
+      "tips": [
+        "Keep a large water bottle (at least 750 mL) within arm's reach — you'll be thirsty every single feed",
+        "Have snacks nearby: nuts, energy balls, or crackers you can eat one-handed",
+        "A nursing pillow (Boppy or My Brest Friend) reduces arm and back strain significantly",
+        "Dim lighting or a small lamp for night feeds — bright lights wake baby more than needed",
+        "Phone charger within reach — feeds can last 20–45 minutes",
+        "Burp cloths: keep at least 3 within reach at all times",
+        "A footstool raises your lap and reduces lower back strain during long feeds"
+      ],
+      "warnings": [
+        "Avoid deep, squishy sofas for newborn feeding — it's hard to maintain a safe hold if you fall asleep",
+        "Don't feed in complete darkness — you need to check latch and baby's colour"
+      ]
+    },
+    {
+      "id": "room-temp-feeding",
+      "title": "Room Temperature & Comfort",
+      "category": "environment",
+      "summary": "Temperature affects how alert and comfortable baby is during feeds.",
+      "tips": [
+        "Ideal room temperature for feeding: 20–22°C (68–72°F)",
+        "A slightly cooler room keeps baby awake enough to feed well — too warm and they fall asleep at the breast",
+        "If baby keeps dozing off mid-feed, undress them to their onesie or tickle their feet gently",
+        "Skin-to-skin contact during feeds helps regulate baby's temperature naturally"
+      ],
+      "warnings": [
+        "Avoid drafts or cold air directly on baby during feeds",
+        "Do not use hot packs on your breasts before feeding without checking with a lactation consultant first"
+      ]
+    },
+    {
+      "id": "latch",
+      "title": "Getting a Good Latch",
+      "category": "routine",
+      "summary": "A deep latch is the single most important factor in comfortable, effective breastfeeding.",
+      "tips": [
+        "Baby's mouth should cover most of the areola, not just the nipple",
+        "Nose should be clear — not smashed into the breast",
+        "Lower lip should be flanged outward (like a fish lip)",
+        "You should hear swallowing — soft 'kuh' or 'cuh' sounds every few sucks",
+        "Nipple should come out round after a feed, not pinched or lipstick-shaped",
+        "Tummy-to-tummy positioning: baby's ear, shoulder, and hip in a straight line",
+        "Try the 'sandwich' technique: compress your breast like a burger before offering it"
+      ],
+      "warnings": [
+        "Pain beyond initial latch-on discomfort (first 10–15 seconds) is a sign of a shallow latch — break suction and retry",
+        "To break suction safely: insert a clean finger into the corner of baby's mouth before pulling away"
+      ],
+      "whenToCall": [
+        "Nipple pain lasting throughout the full feed after day 5",
+        "Cracked, bleeding, or blistered nipples that aren't healing",
+        "Baby's weight not returning to birth weight by day 10–14",
+        "You suspect tongue or lip tie — a lactation consultant or pediatrician can assess"
+      ]
+    },
+    {
+      "id": "feeding-positions",
+      "title": "Breastfeeding Positions",
+      "category": "routine",
+      "summary": "Different positions work better at different times — find what's comfortable for you.",
+      "tips": [
+        "Cradle hold: classic position, baby across your lap facing you — good once latch is established",
+        "Cross-cradle: opposite arm supports baby's head — gives more control for newborns",
+        "Football (clutch) hold: baby tucked under your arm — great after C-section or for large breasts",
+        "Side-lying: lying on your side facing baby — great for night feeds and C-section recovery",
+        "Laid-back (biological nurturing): recline slightly and let baby lie on your chest — uses gravity to help latch",
+        "Switch positions if you have a blocked duct — different positions drain different lobes"
+      ]
+    },
+    {
+      "id": "feeding-schedule",
+      "title": "Feeding Frequency & Demand Feeding",
+      "category": "routine",
+      "summary": "Newborns feed frequently — this is normal and essential for supply.",
+      "tips": [
+        "Feed on demand: every 2–3 hours from start of last feed (8–12 feeds per 24 hours) in the first weeks",
+        "Watch for hunger cues before crying: rooting, sucking hands, turning head side to side",
+        "Wake baby to feed if it's been 4+ hours in the first 4 weeks — they can sleep through hunger",
+        "Each breast for 10–20 minutes — offer the second side after the first is drained",
+        "Remember which side you last fed on (app tracker helps!) — alternate each feed",
+        "Cluster feeding (feeds every 45–60 minutes for hours) usually happens in evenings — this is normal and builds supply",
+        "Growth spurts happen around days 3, 7–10, 2–3 weeks, 6 weeks — expect more feeds during these times"
+      ],
+      "warnings": [
+        "Scheduled feeding (clock-watching) can undermine supply in the early weeks",
+        "Don't give a pacifier until breastfeeding is well established (usually 3–4 weeks)"
+      ]
+    },
+    {
+      "id": "burping",
+      "title": "Burping Technique",
+      "category": "routine",
+      "summary": "Effective burping prevents gas pain and reduces spit-up.",
+      "tips": [
+        "Burp between switching breasts and after the feed ends",
+        "Over-the-shoulder: baby's chin on your shoulder, pat or rub their back firmly",
+        "Sitting up: support baby's chin and chest with one hand, pat their back with the other",
+        "Tummy across lap: lay baby face-down across your lap, support their head, pat the back",
+        "If no burp in 5 minutes it's fine — not every feed produces a burp",
+        "Move baby gently to a horizontal position after a confirmed burp (keep upright 15–20 min after feeds)"
+      ]
+    },
+    {
+      "id": "bottle-feeding",
+      "title": "Bottle Feeding (Pumped or Formula)",
+      "category": "routine",
+      "summary": "Paced bottle feeding reduces overfeeding and keeps baby comfortable.",
+      "tips": [
+        "Hold bottle horizontal (not tilted steeply) — baby should work for the milk, not have it pour in",
+        "Allow baby to latch onto the teat fully before tilting slightly",
+        "Pause every few minutes and tip the bottle down — mimic the natural pauses of breastfeeding",
+        "Watch for swallowing and pauses — never force a baby to finish a bottle",
+        "0–1 month: 60–90 mL per feed; 1–2 months: 90–120 mL — but follow baby's cues",
+        "Warm formula/breast milk to body temperature (test on wrist — not hot)",
+        "Formula: prepare fresh for each feed; don't reheat leftover formula",
+        "Breast milk: can sit at room temperature for 4 hours; fridge 4 days; freezer 6 months"
+      ],
+      "warnings": [
+        "Never prop a bottle — always hold it during feeds",
+        "Never microwave breast milk or formula — creates hot spots"
+      ]
+    },
+    {
+      "id": "supply-building",
+      "title": "Building & Maintaining Milk Supply",
+      "category": "routine",
+      "summary": "Supply is demand-driven — the more you feed or pump, the more you make.",
+      "tips": [
+        "Feed frequently in the first weeks — this is what establishes supply",
+        "Offer both breasts every feed for the first 4 weeks",
+        "Power pumping (pumping for 20 min, rest 10 min, pump 10 min, rest 10 min, pump 10 min) can boost supply",
+        "Stay hydrated: aim for 2.5–3L of water a day",
+        "Foods associated with supply: oats, fenugreek, brewer's yeast, flaxseed (though evidence is anecdotal)",
+        "Stress, fatigue, and dehydration are the biggest supply killers — prioritise rest",
+        "If pumping, double-pump (both sides simultaneously) is more effective than single"
+      ],
+      "whenToCall": [
+        "Baby losing more than 10% of birth weight",
+        "Fewer than 6 wet nappies per day after day 4",
+        "Baby still not back to birth weight by day 14",
+        "Breasts never feel full or never let down"
+      ]
+    },
+    {
+      "id": "engorgement",
+      "title": "Engorgement",
+      "category": "troubleshooting",
+      "summary": "Milk coming in on days 3–5 can cause painful swelling — this is temporary.",
+      "tips": [
+        "Feed frequently (at least every 2–3 hours) to keep milk moving",
+        "Cold cabbage leaves in your bra between feeds can relieve discomfort — change every 20–30 min",
+        "Cold packs (wrapped in cloth) for 15–20 minutes between feeds reduces inflammation",
+        "Warm shower or warm compress just before a feed to help with let-down",
+        "Gentle breast massage or hand expression before feeding softens the areola so baby can latch",
+        "Avoid over-pumping to 'relieve' engorgement — this signals your body to make more milk"
+      ],
+      "warnings": [
+        "Engorgement should improve significantly after 24–48 hours of frequent feeding",
+        "If engorgement is accompanied by fever (38°C+), redness, and flu-like symptoms — this may be mastitis"
+      ],
+      "whenToCall": [
+        "Fever over 38°C with a hard, red, painful area of the breast",
+        "Engorgement not improving after 48 hours of frequent feeding"
+      ]
+    },
+    {
+      "id": "mastitis",
+      "title": "Blocked Ducts & Mastitis",
+      "category": "troubleshooting",
+      "summary": "A hard lump in the breast can be a blocked duct — caught early it resolves without antibiotics.",
+      "tips": [
+        "Continue breastfeeding frequently — stopping makes it worse",
+        "Position baby's chin toward the blocked area to help drain that lobe",
+        "Gentle massage toward the nipple while feeding or in a warm shower",
+        "Heat before feeds, cold after feeds",
+        "Rest as much as possible — your immune system needs it"
+      ],
+      "warnings": [
+        "A blocked duct becomes mastitis if the area becomes red, hot, and swollen, with flu-like symptoms and fever",
+        "Do not stop breastfeeding with mastitis — continuing to feed helps clear the infection"
+      ],
+      "whenToCall": [
+        "Fever over 38.5°C with breast symptoms",
+        "Blocked duct not resolving in 24–48 hours",
+        "Mastitis symptoms — you may need antibiotics (safe to take while breastfeeding)"
+      ]
+    },
+    {
+      "id": "hunger-cues",
+      "title": "Reading Hunger & Fullness Cues",
+      "category": "troubleshooting",
+      "summary": "Crying is a late hunger cue — learning earlier signals makes feeds calmer.",
+      "tips": [
+        "Early hunger: rooting (turning head side to side), sucking on hands or tongue, increased alertness",
+        "Active hunger: opening mouth, pulling legs up, fussing or squirming",
+        "Late hunger: crying — a crying baby is harder to latch",
+        "If baby is crying from hunger, try skin-to-skin first to calm them before attempting to latch",
+        "Fullness cues: releasing the nipple, turning head away, hands relaxed and open, falling asleep",
+        "Don't force a baby to take more if they've shown fullness cues"
+      ]
+    },
+    {
+      "id": "nipple-pain",
+      "title": "Sore Nipples & Pain",
+      "category": "troubleshooting",
+      "summary": "Some tenderness is normal in the first 1–2 weeks, but sharp pain throughout a feed is not.",
+      "tips": [
+        "Express a few drops of breast milk after each feed and air dry — natural antibacterial properties promote healing",
+        "Lanolin cream (like Lansinoh) applied after feeds soothes cracked nipples",
+        "Medical-grade silicone nipple shields can give relief while healing — use temporarily with LC guidance",
+        "Gel pads (hydrogel) provide cooling relief between feeds",
+        "Ensure your nursing bra is not too tight — cutting off circulation slows healing",
+        "Let nipples air dry when possible"
+      ],
+      "warnings": [
+        "White or shiny nipple tips after feeding can indicate Raynaud's phenomenon or vasospasm — treatable",
+        "Burning, itching, or stabbing pain through the breast after feeds may indicate thrush — both you and baby need treatment"
+      ],
+      "whenToCall": [
+        "Cracked or bleeding nipples not healing after a week",
+        "Symptoms of thrush: burning pain, shiny/flaky/itchy nipples, white patches in baby's mouth"
+      ]
+    },
+    {
+      "id": "milk-amounts-by-age",
+      "title": "How Much Milk by Age",
+      "category": "routine",
+      "summary": "A quick reference for typical feeding volumes and frequency — use as a guide, not a rule.",
+      "tips": [
+        "Newborn (0–2 weeks): 8–12 feeds per day; 15–30 mL (0.5–1 oz) per feed, increasing to 60–90 mL by end of week 2",
+        "2–4 weeks: 8–10 feeds per day; 60–90 mL (2–3 oz) per bottle feed",
+        "1–2 months: 7–9 feeds per day; 90–120 mL (3–4 oz) per bottle feed; breastfed babies nurse 8+ times",
+        "2–3 months: 6–8 feeds per day; 120–150 mL (4–5 oz) per bottle feed",
+        "3–4 months: 6–7 feeds per day; 120–180 mL (4–6 oz) per bottle feed; daily total roughly 750–950 mL (25–32 oz)",
+        "Breastfed babies: you can't measure volume — use output (6+ wet nappies/day) and weight gain as your guide",
+        "Formula-fed rule of thumb: 150 mL per kg of body weight per day (e.g. 4 kg baby = ~600 mL/day total)"
+      ],
+      "warnings": [
+        "These are averages — a healthy baby may eat more or less. Follow hunger and fullness cues, not the clock or volume",
+        "Never force a baby to finish a bottle — overfeeding formula-fed babies is a real risk"
+      ],
+      "whenToCall": [
+        "Consistently eating significantly less than the lower end of ranges AND not gaining weight",
+        "Consistently refusing feeds or gagging/vomiting after most feeds"
+      ]
+    },
+    {
+      "id": "feed-on-wake",
+      "title": "Feed on Wake (Not to Sleep)",
+      "category": "routine",
+      "summary": "Feeding at the start of an awake period — not at the end — helps prevent feeding becoming the only way baby can fall asleep.",
+      "tips": [
+        "The Eat-Play-Sleep approach: when baby wakes, feed first, then play, then sleep — in that order",
+        "Feeding at wake means baby is hungry and alert enough to feed well, rather than half-asleep and snacking",
+        "Separating the feed from sleep onset reduces the chance of baby needing to feed to fall back asleep overnight",
+        "This approach works best from around 3–4 weeks — in the first 2 weeks, newborns eat and sleep on demand regardless",
+        "It's fine for the feed to take a while — the 'play' phase can be brief (a nappy change + 10 min of face time is plenty for a newborn)",
+        "If baby falls asleep at the breast at the end of a feed, that's OK — the goal is not to avoid all sleep-associations, just to shift the feed earlier in the cycle"
+      ],
+      "warnings": [
+        "Don't apply this rigidly in the first 2–3 weeks — newborns need to feed whenever they show hunger cues",
+        "Cluster feeding periods (evenings) will disrupt any schedule — this is normal, go with the flow"
+      ]
+    },
+    {
+      "id": "pre-solids-prep",
+      "title": "Preparing for Solids (3–4 Months)",
+      "category": "routine",
+      "summary": "Solids start around 6 months — but you can lay the groundwork earlier.",
+      "tips": [
+        "Bring baby to the table during family mealtimes — let them observe eating from around 3 months",
+        "Talk about food: describe what you're eating and the smells, colours, and textures",
+        "Floor play and tummy time build the core and neck strength needed for sitting up for solids",
+        "Look for readiness signs (not before 6 months): sitting with minimal support, loss of tongue-thrust reflex, showing interest in food by watching and reaching",
+        "WHO and most paediatric bodies recommend exclusive breastfeeding or formula to 6 months — no solids, water, or juice before then",
+        "Starting solids doesn't replace milk feeds at first — milk remains the primary nutrition source until 12 months"
+      ]
+    }
+  ]
+}

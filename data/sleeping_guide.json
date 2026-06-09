@@ -1,0 +1,279 @@
+{
+  "sections": [
+    {
+      "id": "safe-sleep-basics",
+      "title": "Safe Sleep Fundamentals (SAFE T)",
+      "category": "environment",
+      "summary": "The ABCs of safe sleep prevent SIDS and sleep-related infant death.",
+      "tips": [
+        "A — Alone: baby sleeps alone in their own sleep space (no bed-sharing with adults)",
+        "B — Back: always place baby on their back to sleep — every single time",
+        "C — Crib: firm, flat sleep surface in a safety-approved crib, bassinet, or play yard",
+        "No loose items in the sleep space: no blankets, pillows, bumpers, stuffed animals, or positioners",
+        "Swaddle or sleep sack replaces blankets safely — stop swaddling once baby shows signs of rolling",
+        "Room-sharing (baby in same room, not same bed) is recommended for at least the first 6 months and ideally 1 year",
+        "Use a firm, flat mattress with a fitted sheet — nothing else"
+      ],
+      "warnings": [
+        "Never place baby to sleep on a sofa, armchair, bouncy seat, or swing unsupervised",
+        "Car seats are for travel only — transfer baby to a flat surface when you get home",
+        "Sleeping in a bouncer or inclined surface is not safe for unattended sleep"
+      ]
+    },
+    {
+      "id": "sleep-space-setup",
+      "title": "Setting Up the Sleep Space",
+      "category": "environment",
+      "summary": "The right environment signals sleep and helps baby stay asleep longer.",
+      "tips": [
+        "Darkness: blackout curtains for daytime naps — light is the main signal that keeps babies awake",
+        "White noise: 65–70 dB (about the level of a shower) placed at least 2 metres from baby",
+        "Temperature: 18–20°C (64–68°F) — slightly cool is better than warm for safe sleep",
+        "Dress baby appropriately: 1 more layer than you would wear, or use a sleep sack rated for the room temp",
+        "White noise types that work well: fan, rain, pink noise, or a dedicated machine (avoid music or nature sounds with gaps)",
+        "If using a swaddle: baby's hips should be able to move freely — tight swaddling of hips causes hip dysplasia"
+      ],
+      "warnings": [
+        "Overheating is a SIDS risk factor — check that baby's chest is warm but not sweaty",
+        "Avoid sleeping baby near a heat vent or in direct sunlight"
+      ]
+    },
+    {
+      "id": "day-night-confusion",
+      "title": "Fixing Day/Night Confusion",
+      "category": "routine",
+      "summary": "Newborns are often 'flipped' for the first 2–4 weeks — you can gradually correct this.",
+      "tips": [
+        "During the day: let in bright natural light, make normal household noise, engage with baby when awake",
+        "At night: keep lights very dim (use a red nightlight — red light has the least impact on melatonin)",
+        "Night feeds: minimise interaction — no talking, eye contact, or stimulation",
+        "Short daytime naps (cap at 2 hours) help consolidate night sleep — this matters more after 6 weeks",
+        "Take baby outside in natural daylight each day — morning light especially helps set their circadian rhythm",
+        "Consistent bedtime routine (even a simple 10-minute version) can start as early as 6–8 weeks"
+      ]
+    },
+    {
+      "id": "wake-windows",
+      "title": "Age-Appropriate Wake Windows",
+      "category": "routine",
+      "summary": "Putting an overtired baby down is harder — timing the window is everything.",
+      "tips": [
+        "0–4 weeks: 45–60 minutes of awake time maximum (this includes the feed!)",
+        "4–8 weeks: 60–90 minutes between sleeps",
+        "2–3 months: 75–90 minutes, lengthening toward end of the period",
+        "3 months: 90 minutes–2 hours",
+        "Watch for tired cues: yawning, glazed eyes, slowing movements, turning away from stimulation, fussing",
+        "Start your wind-down routine when you see the FIRST yawn — don't wait for crying",
+        "Newborns can only handle about 1 hour of total stimulation before needing sleep"
+      ],
+      "warnings": [
+        "Overtired babies fight sleep hardest — they get a cortisol surge that makes it harder to settle",
+        "Undertired babies won't sleep well either — there's a window, and it's narrow early on"
+      ]
+    },
+    {
+      "id": "sleep-routine",
+      "title": "Building a Sleep Routine",
+      "category": "routine",
+      "summary": "A predictable pre-sleep routine becomes a powerful sleep cue within 1–2 weeks.",
+      "tips": [
+        "Keep it short (10–15 minutes) and consistent — same order every time",
+        "Example routine: dim lights → nappy change → swaddle/sleep sack → feed (if needed) → gentle rocking → white noise → put down",
+        "Do the routine in the sleep space so the environment itself becomes the cue",
+        "Same routine for naps and bedtime helps reinforce the association",
+        "Bedtime for newborns is often 9–10pm — this shifts earlier (6:30–8pm) around 3–4 months as biology changes",
+        "A full feed before sleep helps baby stay asleep longer"
+      ]
+    },
+    {
+      "id": "swaddling",
+      "title": "Swaddling Technique",
+      "category": "routine",
+      "summary": "A proper swaddle suppresses the Moro (startle) reflex and is one of the most effective newborn sleep tools.",
+      "tips": [
+        "Place a square muslin at a diamond angle, fold down the top corner, lay baby with shoulders at the fold",
+        "One arm down straight (or slightly bent), wrap that side across and tuck firmly behind their back",
+        "Fold the bottom up over the feet (hips should be able to flex and spread)",
+        "Wrap the second side across and tuck in",
+        "Snug around the chest but you should be able to fit 2 fingers at the chest",
+        "Velcro swaddles (Love to Dream, Halo, Ergobaby) are easier to use correctly and stay put",
+        "Test the swaddle: lift baby — if it unravels, it won't survive sleep"
+      ],
+      "warnings": [
+        "Stop swaddling as soon as baby shows signs of rolling — usually around 8–16 weeks",
+        "Never swaddle with arms up in a traditional swaddle — this increases risk of hip dysplasia",
+        "Arms-up swaddles (Love to Dream) are designed for that position safely"
+      ]
+    },
+    {
+      "id": "contact-naps",
+      "title": "Contact Naps & Independent Sleep",
+      "category": "routine",
+      "summary": "Contact naps are normal and sometimes the only option in the early weeks — they don't 'create bad habits' at this age.",
+      "tips": [
+        "0–3 months: contact naps (napping on you) are developmentally normal and fine",
+        "Biologically, newborns expect contact — this is not a 'bad habit' at this stage",
+        "If you want to transition from contact to cot: try placing baby down after a deeper sleep cycle (15–20 min into nap)",
+        "'Dream feed' technique: keep them drowsy but partially awake as you lay them down — they learn to self-settle gradually",
+        "A warm surface (pre-warmed with a heat pack, removed before laying baby down) can help with the transfer",
+        "If contact naps are working and everyone is resting — lean into them in the early weeks"
+      ]
+    },
+    {
+      "id": "overnight-waking",
+      "title": "Managing Overnight Wakings",
+      "category": "routine",
+      "summary": "Night feeds are biologically necessary for months — the goal is to make them as efficient as possible.",
+      "tips": [
+        "Newborns (0–3 months) need to feed every 2–4 hours overnight — this is normal and expected",
+        "Keep night feeds boring: dim light, minimal talking, no stimulating eye contact",
+        "Change nappy before the feed (not after) — this helps baby stay drowsy after feeding",
+        "Use a red nightlight rather than a bright white light",
+        "Have everything ready before you pick baby up: bottle warmed, nipple shield ready, burp cloth in place",
+        "Take turns with your partner — one person per night (or per half of the night) allows longer sleep blocks",
+        "Sleep when baby sleeps during the day — this advice is clichéd but true in the first 6 weeks"
+      ]
+    },
+    {
+      "id": "short-naps",
+      "title": "Short Naps (The 45-Minute Intruder)",
+      "category": "troubleshooting",
+      "summary": "Naps ending at exactly 30–45 minutes are a normal developmental pattern, not a problem you caused.",
+      "tips": [
+        "Babies complete one sleep cycle in about 45 minutes — many wake fully between cycles",
+        "They haven't yet learned to link cycles independently — this usually develops at 4–5 months",
+        "Try: being present at the 35-minute mark to gently shush/pat through the transition before full waking",
+        "Motion naps (pram, baby carrier) often extend naturally because motion helps link cycles",
+        "Don't stress about short naps in the first 3 months — quantity over quality",
+        "Some babies are naturally short nappers throughout infancy and do fine with more frequent naps"
+      ]
+    },
+    {
+      "id": "sleep-regression",
+      "title": "Sleep Regressions",
+      "category": "troubleshooting",
+      "summary": "Sleep regressions coincide with developmental leaps and are temporary — usually 2–4 weeks.",
+      "tips": [
+        "Common regression points: 4 weeks, 8 weeks, 4 months (the biggest one), 8 months, 12 months",
+        "The 4-month regression is the most significant — baby's sleep architecture permanently changes to adult-like cycles",
+        "During a regression: more feeds, shorter naps, more night waking is normal",
+        "Survival strategies: lean on contact naps, add an extra feed, lower expectations temporarily",
+        "Regressions end — maintaining the routine through them helps baby return to baseline faster",
+        "Introducing new sleep associations during a regression can make them permanent (e.g. feeding to sleep every waking)"
+      ]
+    },
+    {
+      "id": "wont-sleep-anywhere",
+      "title": "Baby Will Only Sleep on You",
+      "category": "troubleshooting",
+      "summary": "This is incredibly common and doesn't mean you've done something wrong.",
+      "tips": [
+        "Your smell, heartbeat, and warmth are literally what baby has known for 9 months — of course they prefer you",
+        "Try the warm sheet trick: lay a worn (unwashed) t-shirt under baby so they can smell you",
+        "Feed on the mattress next to the crib and transfer sideways rather than lowering from above",
+        "Baby carriers and wraps allow you to have your hands free during contact naps",
+        "If you need to put baby down: a firm swaddle + white noise + slight incline (safe wedge under mattress) can help",
+        "This phase does pass — it is hardest around weeks 2–6 and gradually improves"
+      ],
+      "whenToCall": [
+        "Baby can't be put down at all and this is causing safety concerns (parent falling asleep with baby on unsafe surface)",
+        "Baby seems in pain when lying flat — could indicate reflux"
+      ]
+    },
+    {
+      "id": "reflux-sleep",
+      "title": "Reflux & Sleep",
+      "category": "troubleshooting",
+      "summary": "Reflux causes pain when lying flat and disrupts sleep significantly.",
+      "tips": [
+        "Keep baby upright for 20–30 minutes after every feed before laying down",
+        "Smaller, more frequent feeds reduce the volume in the stomach at one time",
+        "Burp thoroughly mid-feed and after",
+        "A slight incline on the sleep surface (safe wedge under the mattress — not under the baby) can help",
+        "Gripe water and gas drops can help with gas-related discomfort, not reflux specifically"
+      ],
+      "warnings": [
+        "Never prop the mattress with a folded blanket or towel under the baby — this is a suffocation risk",
+        "Silent reflux (no visible spit-up but signs of pain: arching back, pulling off breast, crying after feeds) is common and treatable"
+      ],
+      "whenToCall": [
+        "Baby arching back and crying inconsolably after feeds consistently",
+        "Weight not gaining appropriately due to feeding discomfort",
+        "Projectile vomiting more than occasionally after feeds"
+      ]
+    },
+    {
+      "id": "eat-play-sleep",
+      "title": "The Eat-Play-Sleep Framework",
+      "category": "routine",
+      "summary": "A simple daytime structure that builds predictability and prevents feeding from becoming the only way baby falls asleep.",
+      "tips": [
+        "The cycle: baby wakes → feed → awake play time → sleep. Repeat.",
+        "Feeding at wake (not at the end of the awake period) means the feed and falling asleep are separated — baby learns to fall asleep without a feed in their mouth",
+        "This makes overnight wakings much easier — baby doesn't need to feed every time they surface between sleep cycles",
+        "The 'play' phase for a newborn is just being awake: a nappy change, a few minutes of face-to-face time, tummy time on your chest — it doesn't need to be stimulating",
+        "EPS works best from about 3–4 weeks; in the first 2 weeks don't try to impose any schedule",
+        "The length of each cycle stretches naturally as wake windows grow: ~2 hours at newborn → ~3.5 hours at 3 months",
+        "Night feeds: keep the EPS principle loose at night — feed, minimal stimulation, back to sleep. Don't force play at 3am.",
+        "EPS is a framework, not a rigid schedule — a hungry baby should always be fed"
+      ],
+      "warnings": [
+        "Applying EPS too strictly in the first 2–3 weeks can interfere with milk supply and weight gain — newborns need to feed on demand",
+        "If baby falls asleep mid-feed regularly, the wake window may be too long or baby may be overtired — shorten it"
+      ]
+    },
+    {
+      "id": "naps-by-age",
+      "title": "Naps & Wake Windows by Age",
+      "category": "routine",
+      "summary": "A reference table for how much awake time and how many naps to expect at each stage.",
+      "tips": [
+        "Newborn (0–4 weeks): wake window 45–60 min, 4–5+ naps per day, total sleep ~16–18 hrs",
+        "1 month: wake window 45–75 min, 4–5 naps per day, total sleep ~15–17 hrs",
+        "2 months: wake window 45–90 min, 4–5 naps per day, total sleep ~14–16 hrs",
+        "3 months: wake window 75–120 min, 4 naps per day, total sleep ~14–16 hrs",
+        "4 months: wake window 90–120 min, 3–4 naps per day, total sleep ~14–15 hrs",
+        "5 months: wake window 90–180 min, 3 naps per day, total sleep ~13–15 hrs",
+        "Wake windows are counted from when baby WAKES, not from when they last fell asleep",
+        "These are averages — your baby may run 15–30 minutes shorter or longer than these windows",
+        "Watch the baby, not the clock — tired cues are more reliable than the timer"
+      ],
+      "warnings": [
+        "Total sleep includes both naps and overnight — don't be alarmed if night sleep seems short if naps are long",
+        "Wide awake windows at 3am are not the same as daytime wake windows — this usually improves by 3–4 months as circadian rhythm matures"
+      ]
+    },
+    {
+      "id": "sample-schedules",
+      "title": "Sample Daily Schedules",
+      "category": "routine",
+      "summary": "Concrete examples of what an Eat-Play-Sleep day looks like at 1 and 2 months.",
+      "tips": [
+        "1-month example — 7am wake: 7am feed + play / 8:15am nap / 9:30am feed + play / 11am nap / 12:30pm feed + play / 2pm nap / 3:30pm feed + play / 5pm nap / 6:30pm feed + play / 8pm nap / 9:30pm feed + bedtime",
+        "2-month example — 7am wake: 7am feed + play / 8:30am nap / 10am feed + play / 11:30am nap / 1pm feed + play / 2:45pm nap / 4:15pm feed + play / 5:45pm short nap / 7pm feed / 8pm bedtime",
+        "These are examples only — a baby's actual schedule drifts by 30–60 minutes either way and that's completely normal",
+        "Bedtime at this age is often late (9–10pm) — it shifts earlier naturally around 3–4 months",
+        "Don't wake a sleeping baby to match a schedule in the first 4 weeks — let hunger be the guide",
+        "A 'schedule' at this age is really just a pattern you notice, not one you enforce"
+      ]
+    },
+    {
+      "id": "overstimulation",
+      "title": "Overstimulation Before Sleep",
+      "category": "troubleshooting",
+      "summary": "A baby who is too stimulated before sleep will fight it — the wind-down matters as much as the wake window.",
+      "tips": [
+        "Signs of overstimulation: turning away from faces, arching back, increased fussiness, hiccuping, yawning rapidly, inability to settle",
+        "Begin winding down 10–15 minutes before the end of the wake window — don't wait for tired cues to start the routine",
+        "In the last 10 minutes before sleep: dim lights, lower voices, stop active play, reduce eye contact and stimulation",
+        "Avoid screens, loud music, or busy environments right before sleep",
+        "Visitors and social situations are some of the biggest sources of overstimulation — watch baby carefully and be willing to take them away for a quiet feed and wind-down",
+        "If baby is already overtired and overstimulated: skip the usual routine, go straight to the quietest, darkest, most familiar settling approach you have"
+      ],
+      "warnings": [
+        "Overstimulated babies can look wired and alert — this is a cortisol response, not a sign they aren't tired",
+        "The window to settle an overstimulated baby is much longer — prevention is far easier than rescue"
+      ]
+    }
+  ]
+}

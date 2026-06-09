@@ -333,4 +333,107 @@ export interface PostpartumRecipe {
   ingredients: string[];
   instructions: string[];
   tags?: string[];
+  source?: string;
+}
+
+// ── Newborn Tracker ──────────────────────────────────────────────────────────
+
+export type FeedType = "breast-left" | "breast-right" | "both" | "bottle" | "formula";
+export type DiaperType = "wet" | "dirty" | "both";
+
+export interface FeedEvent {
+  id: string;
+  type: "feed";
+  timestamp: string;
+  feedType: FeedType;
+  durationMin?: number;
+  amountMl?: number;
+  notes?: string;
+}
+
+export interface SleepEvent {
+  id: string;
+  type: "sleep";
+  startTime: string;
+  endTime?: string;
+  notes?: string;
+}
+
+export interface DiaperEvent {
+  id: string;
+  type: "diaper";
+  timestamp: string;
+  diaperType: DiaperType;
+  notes?: string;
+}
+
+export type NewbornLogEvent = FeedEvent | SleepEvent | DiaperEvent;
+
+export interface NewbornTrackerData {
+  events: NewbornLogEvent[];
+  babyName: string;
+}
+
+// ── Guides (Feeding / Sleeping) ───────────────────────────────────────────────
+
+export type GuideCategory = "environment" | "routine" | "troubleshooting";
+
+export interface GuideSection {
+  id: string;
+  title: string;
+  category: GuideCategory;
+  summary: string;
+  tips: string[];
+  warnings?: string[];
+  whenToCall?: string[];
+}
+
+// ── Soothe Techniques ────────────────────────────────────────────────────────
+
+export type SootheDifficulty = "easy" | "medium" | "takes practice";
+
+export interface SootheTechnique {
+  id: string;
+  name: string;
+  emoji: string;
+  whenToUse: string;
+  difficulty: SootheDifficulty;
+  steps: string[];
+  tips?: string[];
+}
+
+// ── Symptom Checker ──────────────────────────────────────────────────────────
+
+export interface Symptom {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+  normalRange: string;
+  callDoctorIf: string[];
+  goERIf?: string[];
+  ageNote?: string;
+}
+
+// ── Growth Tracker ───────────────────────────────────────────────────────────
+
+export interface GrowthEntry {
+  id: string;
+  date: string;
+  weightKg?: number;
+  lengthCm?: number;
+  headCm?: number;
+  notes?: string;
+}
+
+// ── Development Milestones ───────────────────────────────────────────────────
+
+export type MilestoneCategory = "Motor" | "Social" | "Communication" | "Vision & Hearing";
+
+export interface MilestoneEntry {
+  id: string;
+  label: string;
+  ageRangeWeeks: [number, number];
+  category: MilestoneCategory;
+  achievedAt?: string;
 }
