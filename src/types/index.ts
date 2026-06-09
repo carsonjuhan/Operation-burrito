@@ -312,6 +312,9 @@ export interface AppStore {
   hospitalChecklistPacked?: string[];
   hospitalChecklistSkipped?: string[];
   postBirthChecked?: string[];
+  // Newborn tracker (synced across devices)
+  newbornEvents?: NewbornLogEvent[];
+  newbornBabyName?: string;
 }
 
 // ── Postpartum Recipes ────────────────────────────────────────────────────

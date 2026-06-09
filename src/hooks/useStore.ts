@@ -5,7 +5,8 @@ import {
   AppStore, BabyItem, BabyClass, Material, BirthPlan, Note,
   BagItem, Appointment, Contact, Contraction,
 } from "@/types";
-import { getPAT, getGistId, pushToGist } from "@/lib/gistSync";
+import { getPAT, getGistId, pushToGist, loadGist } from "@/lib/gistSync";
+import { mergeStores } from "@/lib/storeMerge";
 import { recordAction } from "@/lib/actionHistory";
 import { getStorageSize, getStoragePercent, isStorageWarning } from "@/lib/storageMonitor";
 import { setLastModifiedAt } from "@/lib/conflictDetection";
@@ -149,6 +150,19 @@ function loadStore(): AppStore {
       } catch { return []; }
     };
 
+    // Migrate newborn tracker from its own localStorage key
+    const migrateNewborn = () => {
+      if (parsed.newbornEvents && parsed.newbornEvents.length > 0) {
+        return { events: parsed.newbornEvents, name: parsed.newbornBabyName ?? "Baby" };
+      }
+      try {
+        const nb = localStorage.getItem("newborn_tracker");
+        if (nb) { const d = JSON.parse(nb); return { events: d.events ?? [], name: d.babyName ?? "Baby" }; }
+      } catch { /* */ }
+      return { events: [], name: "Baby" };
+    };
+    const nb = migrateNewborn();
+
     return {
       items: parsed.items ?? [],
       classes: parsed.classes ?? [],
@@ -164,6 +178,8 @@ function loadStore(): AppStore {
       checklistAlreadyHave: migrateList(parsed.checklistAlreadyHave, "checklist-already-have"),
       hospitalChecklistPacked: migrateList(parsed.hospitalChecklistPacked, "hospital-checklist-packed"),
       hospitalChecklistSkipped: migrateList(parsed.hospitalChecklistSkipped, "hospital-checklist-skipped"),
+      newbornEvents: nb.events,
+      newbornBabyName: nb.name,
     };
   } catch {
     return DEFAULT_STORE;
@@ -174,6 +190,13 @@ function saveStore(store: AppStore): boolean {
   if (typeof window === "undefined") return true;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    // Keep the newborn tracker key in sync so the page can still read it directly
+    if (store.newbornEvents !== undefined) {
+      localStorage.setItem("newborn_tracker", JSON.stringify({
+        events: store.newbornEvents,
+        babyName: store.newbornBabyName ?? "Baby",
+      }));
+    }
     return true;
   } catch {
     // QuotaExceededError — localStorage is full
@@ -313,7 +336,19 @@ export function useStore() {
     autoSyncTimer.current = setTimeout(async () => {
       setAutoSyncing(true);
       try {
-        await pushToGist(pat, nextStore);
+        // Fetch remote then merge before pushing — prevents 2-user overwrites
+        let storeToSync = nextStore;
+        try {
+          const remote = await loadGist(pat, gistId);
+          storeToSync = mergeStores(nextStore, remote);
+          // Persist merged result locally too
+          saveStore(storeToSync);
+          setStore(storeToSync);
+          storeRef.current = storeToSync;
+        } catch {
+          // Network or parse error on fetch — fall back to pushing local state
+        }
+        await pushToGist(pat, storeToSync);
         // Success — reset failure state if there were prior failures
         if (syncFailureRef.current.consecutiveFailures > 0) {
           const newState = recordSyncSuccess();
@@ -561,8 +596,10 @@ export function useStore() {
   // ── External load ─────────────────────────────────────────────────────────
 
   const loadFromExternal = useCallback((incoming: AppStore) => {
-    setStore(incoming);
-    saveStore(incoming);
+    const merged = mergeStores(storeRef.current, incoming);
+    setStore(merged);
+    saveStore(merged);
+    storeRef.current = merged;
     refreshStorageInfo();
   }, [refreshStorageInfo]);
 

@@ -8,7 +8,7 @@ import {
   Heart, StickyNote, Settings, Github, Briefcase, Calendar,
   Phone, Timer, Search, X, Menu, PiggyBank, AlertTriangle,
   RefreshCw, XCircle, WifiOff, UtensilsCrossed, ChevronRight, Baby,
-  Moon, Stethoscope, TrendingUp, Star,
+  Moon, Stethoscope, TrendingUp, Star, ClipboardList,
 } from "lucide-react";
 import clsx from "clsx";
 import { getPAT, getGistId, getLastSynced } from "@/lib/gistSync";
@@ -63,6 +63,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     heading: "Baby Care",
     items: [
+      { href: "/postbirth", label: "Post-Birth Tasks", icon: ClipboardList },
       { href: "/newborn", label: "Newborn Tracker", icon: Baby },
       { href: "/guides/feeding", label: "Feeding Guide", icon: Heart },
       { href: "/guides/sleeping", label: "Sleeping Guide", icon: Moon },
@@ -84,7 +85,9 @@ const NAV_SECTIONS: NavSection[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(
+    () => new Set(NAV_SECTIONS.filter(s => s.heading).map(s => s.heading!))
+  );
   const [syncState, setSyncState] = useState({ connected: false, lastSynced: "" });
   const [storageWarning, setStorageWarning] = useState(false);
   const sidebarRef = useRef<HTMLElement>(null);

@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Baby, Heart, Moon } from "lucide-react";
+import { LayoutDashboard, Baby, StickyNote, GraduationCap } from "lucide-react";
 import clsx from "clsx";
 
 const TABS = [
   { href: "/", label: "Home", icon: LayoutDashboard },
   { href: "/newborn", label: "Tracker", icon: Baby },
-  { href: "/guides/feeding", label: "Feeding", icon: Heart },
-  { href: "/guides/sleeping", label: "Sleeping", icon: Moon },
+  { href: "/notes", label: "Notes", icon: StickyNote },
+  { href: "/classes", label: "Classes", icon: GraduationCap },
 ];
 
 export function BottomNav() {
