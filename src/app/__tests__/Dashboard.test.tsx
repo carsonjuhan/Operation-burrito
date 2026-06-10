@@ -54,15 +54,9 @@ describe("DashboardPage", () => {
     expect(screen.getByText(/until due date/)).toBeInTheDocument();
   });
 
-  it("renders stat cards with correct item counts", () => {
-    const purchasedItem = createMockItem({ purchased: true, name: "Purchased Item" });
-    const unpurchasedItem = createMockItem({ purchased: false, name: "Unpurchased Item" });
-    setMockStore({
-      items: [purchasedItem, unpurchasedItem],
-    });
+  it("renders the checklist progress stat card", () => {
     render(<DashboardPage />);
-    expect(screen.getByText("Items Purchased")).toBeInTheDocument();
-    expect(screen.getByText("1 / 2")).toBeInTheDocument();
+    expect(screen.getByText("Checklist Progress")).toBeInTheDocument();
   });
 
   it("renders bag packed stat card", () => {
@@ -86,11 +80,10 @@ describe("DashboardPage", () => {
     expect(screen.getByText("Still Needed")).toBeInTheDocument();
   });
 
-  it("shows must-have items that are not purchased", () => {
-    const mustHave = createMockItem({ name: "Car Seat", priority: "Must Have", purchased: false });
-    setMockStore({ items: [mustHave] });
+  it("shows the items-you-have and items-still-needed sections", () => {
     render(<DashboardPage />);
-    expect(screen.getByText("Car Seat")).toBeInTheDocument();
+    expect(screen.getByText(/Items You Have/)).toBeInTheDocument();
+    expect(screen.getByText(/Items Still Needed/)).toBeInTheDocument();
   });
 
   it("shows upcoming appointments sorted by date", () => {
@@ -113,7 +106,7 @@ describe("DashboardPage", () => {
     setMockStore({});
     render(<DashboardPage />);
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
-    expect(screen.getByText("All must-have items purchased!")).toBeInTheDocument();
+    expect(screen.getByText("All checklist items covered!")).toBeInTheDocument();
     expect(screen.getByText("No upcoming appointments")).toBeInTheDocument();
     expect(screen.getByText("No pinned notes")).toBeInTheDocument();
   });

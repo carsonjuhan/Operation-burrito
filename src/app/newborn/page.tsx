@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Baby, Moon, Droplets, X, ChevronDown, ChevronUp, Pencil, Check } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
+import { useToast } from "@/contexts/ToastContext";
 import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, NewbornLogEvent, NewbornTrackerData } from "@/types";
 
 const STORAGE_KEY = "newborn_tracker";
@@ -312,9 +313,10 @@ function EditModal({
   const labelCls = "text-[10px] font-medium text-stone-400 uppercase tracking-wide mb-1 block";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-sm bg-white dark:bg-stone-900 rounded-2xl shadow-2xl p-4 space-y-3"
+        className="w-full sm:max-w-sm bg-white dark:bg-stone-900 rounded-t-2xl sm:rounded-2xl shadow-2xl p-4 space-y-3"
+        style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
@@ -428,7 +430,13 @@ function EditModal({
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
+// Light tap confirmation on devices that support it (Android; iOS ignores it)
+function vibrate() {
+  try { navigator.vibrate?.(15); } catch { /* unsupported */ }
+}
+
 export default function NewbornTrackerPage() {
+  const { addToast } = useToast();
   const [data, setData] = useState<NewbornTrackerData>({ events: [], babyName: "Baby" });
   const [now, setNow] = useState(Date.now());
   const [showHistory, setShowHistory] = useState(false);
@@ -456,6 +464,11 @@ export default function NewbornTrackerPage() {
   const historyEvents = allEvents.filter(e => !isToday(getEventTime(e)));
 
   const lastFeed = allEvents.find(e => e.type === "feed") as FeedEvent | undefined;
+  // Suggest alternating breast side based on the last nursing feed
+  const lastNursing = allEvents.find(e => e.type === "feed" && ["breast-left", "breast-right"].includes((e as FeedEvent).feedType)) as FeedEvent | undefined;
+  const suggestedSide: FeedType | null = lastNursing
+    ? (lastNursing.feedType === "breast-left" ? "breast-right" : "breast-left")
+    : null;
   const activeSleep = allEvents.find(e => e.type === "sleep" && !(e as SleepEvent).endTime) as SleepEvent | undefined;
   const lastEndedSleep = allEvents.find(e => e.type === "sleep" && !!(e as SleepEvent).endTime) as SleepEvent | undefined;
 
@@ -466,36 +479,62 @@ export default function NewbornTrackerPage() {
     return acc + ms / 60000;
   }, 0);
 
+  const deleteEvent = useCallback((id: string) => {
+    update(d => ({ ...d, events: d.events.filter(e => e.id !== id) }));
+  }, [update]);
+
+  // Row deletes get an undo toast since there's no confirmation step
+  const deleteEventWithUndo = useCallback((id: string) => {
+    let removed: NewbornLogEvent | undefined;
+    update(d => {
+      removed = d.events.find(e => e.id === id);
+      return { ...d, events: d.events.filter(e => e.id !== id) };
+    });
+    if (removed) {
+      const event = removed;
+      addToast("Event deleted", "info", {
+        label: "Undo",
+        onClick: () => update(d => ({ ...d, events: [...d.events, event] })),
+      });
+    }
+  }, [update, addToast]);
+
   const logFeed = (feedType: FeedType) => {
+    const id = Date.now().toString();
     update(d => ({
       ...d,
-      events: [...d.events, { id: Date.now().toString(), type: "feed", timestamp: new Date().toISOString(), feedType } as FeedEvent],
+      events: [...d.events, { id, type: "feed", timestamp: new Date().toISOString(), feedType } as FeedEvent],
     }));
+    vibrate();
+    addToast(`Logged ${FEED_LABELS[feedType]}`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
   };
 
   const toggleSleep = () => {
+    vibrate();
     if (activeSleep) {
       update(d => ({
         ...d,
         events: d.events.map(e => e.id === activeSleep.id ? { ...e, endTime: new Date().toISOString() } : e),
       }));
+      addToast(`Sleep ended · ${durationStr(activeSleep.startTime)}`, "success");
     } else {
+      const id = Date.now().toString();
       update(d => ({
         ...d,
-        events: [...d.events, { id: Date.now().toString(), type: "sleep", startTime: new Date().toISOString() } as SleepEvent],
+        events: [...d.events, { id, type: "sleep", startTime: new Date().toISOString() } as SleepEvent],
       }));
+      addToast("Sleep started", "success", { label: "Undo", onClick: () => deleteEvent(id) });
     }
   };
 
   const logDiaper = (diaperType: DiaperType) => {
+    const id = Date.now().toString();
     update(d => ({
       ...d,
-      events: [...d.events, { id: Date.now().toString(), type: "diaper", timestamp: new Date().toISOString(), diaperType } as DiaperEvent],
+      events: [...d.events, { id, type: "diaper", timestamp: new Date().toISOString(), diaperType } as DiaperEvent],
     }));
-  };
-
-  const deleteEvent = (id: string) => {
-    update(d => ({ ...d, events: d.events.filter(e => e.id !== id) }));
+    vibrate();
+    addToast(`Logged ${diaperType} diaper`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
   };
 
   const saveEditedEvent = useCallback((updated: NewbornLogEvent) => {
@@ -571,7 +610,9 @@ export default function NewbornTrackerPage() {
             </>
           ) : (
             <>
-              <p className="text-sm font-bold text-stone-700 dark:text-stone-200 leading-tight">Awake</p>
+              <p className="text-sm font-bold text-stone-700 dark:text-stone-200 leading-tight">
+                {lastEndedSleep ? `Awake ${durationStr(lastEndedSleep.endTime!)}` : "Awake"}
+              </p>
               <p className="text-[10px] text-stone-400 mt-0.5">
                 {lastEndedSleep ? `since ${formatTime(lastEndedSleep.endTime!)}` : "—"}
               </p>
@@ -597,15 +638,28 @@ export default function NewbornTrackerPage() {
         <div className="mb-4">
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-2 flex items-center gap-1">
             🤱 Feeding
+            {suggestedSide && (
+              <span className="text-sage-500 dark:text-sage-400 font-medium">
+                · {suggestedSide === "breast-left" ? "left" : "right"} side next
+              </span>
+            )}
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {(Object.keys(FEED_LABELS) as FeedType[]).map(ft => (
               <button
                 key={ft}
                 onClick={() => logFeed(ft)}
-                className="px-3 py-2 rounded-lg text-xs font-medium bg-sage-50 text-sage-700 hover:bg-sage-100 active:bg-sage-200 dark:bg-sage-900/30 dark:text-sage-300 dark:hover:bg-sage-900/50 border border-sage-200 dark:border-sage-800 transition-colors"
+                className={clsx(
+                  "relative min-h-[56px] px-3 py-2 rounded-xl text-sm font-medium border transition-colors select-none touch-manipulation",
+                  "bg-sage-50 text-sage-700 hover:bg-sage-100 active:bg-sage-200 dark:bg-sage-900/30 dark:text-sage-300 dark:hover:bg-sage-900/50 border-sage-200 dark:border-sage-800",
+                  ft === suggestedSide && "ring-2 ring-sage-400 dark:ring-sage-500 border-transparent",
+                  ft === "formula" && "col-span-2"
+                )}
               >
                 {FEED_ICON[ft]} {FEED_LABELS[ft]}
+                {ft === suggestedSide && (
+                  <span className="absolute top-1 right-1.5 text-[9px] font-semibold uppercase tracking-wide text-sage-500 dark:text-sage-400">next</span>
+                )}
               </button>
             ))}
           </div>
@@ -616,13 +670,13 @@ export default function NewbornTrackerPage() {
           <button
             onClick={toggleSleep}
             className={clsx(
-              "px-4 py-2 rounded-lg text-xs font-semibold border transition-all",
+              "w-full min-h-[56px] px-4 py-2 rounded-xl text-sm font-semibold border transition-all select-none touch-manipulation",
               activeSleep
-                ? "bg-indigo-100 text-indigo-700 border-indigo-200 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-700 shadow-sm"
-                : "bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 dark:bg-stone-800 dark:text-stone-300 dark:border-stone-700"
+                ? "bg-indigo-100 text-indigo-700 border-indigo-200 hover:bg-indigo-200 active:bg-indigo-300 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-700 shadow-sm"
+                : "bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 active:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:border-stone-700"
             )}
           >
-            <Moon size={12} className="inline mr-1.5 -mt-0.5" />
+            <Moon size={15} className="inline mr-1.5 -mt-0.5" />
             {activeSleep
               ? `End Sleep · ${durationStr(activeSleep.startTime)}`
               : "Start Sleep"}
@@ -631,12 +685,12 @@ export default function NewbornTrackerPage() {
 
         <div>
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">💧 Diaper</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {(["wet", "dirty", "both"] as DiaperType[]).map(dt => (
               <button
                 key={dt}
                 onClick={() => logDiaper(dt)}
-                className="px-3 py-2 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 active:bg-amber-200 dark:bg-amber-900/20 dark:text-amber-300 dark:hover:bg-amber-900/40 border border-amber-200 dark:border-amber-800 transition-colors capitalize"
+                className="min-h-[56px] px-3 py-2 rounded-xl text-sm font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 active:bg-amber-200 dark:bg-amber-900/20 dark:text-amber-300 dark:hover:bg-amber-900/40 border border-amber-200 dark:border-amber-800 transition-colors capitalize select-none touch-manipulation"
               >
                 {dt === "wet" ? "💧" : dt === "dirty" ? "💩" : "💧💩"} {dt}
               </button>
@@ -661,7 +715,7 @@ export default function NewbornTrackerPage() {
         ) : (
           <div className="divide-y divide-stone-50 dark:divide-stone-800">
             {todayEvents.map(event => (
-              <LogRow key={event.id} event={event} onDelete={deleteEvent} onEdit={setEditingEvent} />
+              <LogRow key={event.id} event={event} onDelete={deleteEventWithUndo} onEdit={setEditingEvent} />
             ))}
           </div>
         )}
@@ -685,7 +739,7 @@ export default function NewbornTrackerPage() {
               {showHistory && (
                 <div className="divide-y divide-stone-50 dark:divide-stone-800">
                   {historyEvents.slice(0, 100).map(event => (
-                    <LogRow key={event.id} event={event} onDelete={deleteEvent} onEdit={setEditingEvent} showDate />
+                    <LogRow key={event.id} event={event} onDelete={deleteEventWithUndo} onEdit={setEditingEvent} showDate />
                   ))}
                 </div>
               )}
@@ -714,17 +768,17 @@ function LogRow({
     <div className="flex items-center gap-0.5 shrink-0">
       <button
         onClick={() => onEdit(event)}
-        className="text-stone-300 hover:text-sage-500 dark:text-stone-600 dark:hover:text-sage-400 transition-colors p-2.5 rounded-lg active:bg-stone-100 dark:active:bg-stone-700"
+        className="text-stone-300 hover:text-sage-500 dark:text-stone-600 dark:hover:text-sage-400 transition-colors p-3 rounded-lg active:bg-stone-100 dark:active:bg-stone-700"
         aria-label="Edit"
       >
-        <Pencil size={11} />
+        <Pencil size={14} />
       </button>
       <button
         onClick={() => onDelete(event.id)}
-        className="text-stone-300 hover:text-red-400 dark:text-stone-600 dark:hover:text-red-400 transition-colors p-2.5 rounded-lg active:bg-red-50 dark:active:bg-red-950/30"
+        className="text-stone-300 hover:text-red-400 dark:text-stone-600 dark:hover:text-red-400 transition-colors p-3 rounded-lg active:bg-red-50 dark:active:bg-red-950/30"
         aria-label="Delete"
       >
-        <X size={12} />
+        <X size={14} />
       </button>
     </div>
   );
