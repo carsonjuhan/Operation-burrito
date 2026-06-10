@@ -420,6 +420,28 @@ export interface Symptom {
   ageNote?: string;
 }
 
+// ── Sleep Training ───────────────────────────────────────────────────────────
+
+export type SleepTrainingMethod = "ferber" | "cio" | "fading" | "no-cry";
+
+export interface SleepTrainingNight {
+  id: string;
+  date: string;        // YYYY-MM-DD
+  bedtime: string;     // HH:MM
+  minutesToSettle: number;
+  wakeUps: number;
+  totalCryMins: number;
+  rating: 1 | 2 | 3;  // 1=rough, 2=ok, 3=good
+  notes?: string;
+}
+
+export interface SleepTrainingData {
+  method: SleepTrainingMethod;
+  startDate: string;   // ISO date string, when training began
+  babyBirthDate?: string;
+  nights: SleepTrainingNight[];
+}
+
 // ── Growth Tracker ───────────────────────────────────────────────────────────
 
 export interface GrowthEntry {

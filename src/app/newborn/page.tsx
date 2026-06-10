@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Baby, Moon, Droplets, X, ChevronDown, ChevronUp, Pencil, Check } from "lucide-react";
+import { Baby, Moon, Droplets, X, ChevronDown, ChevronUp, Pencil, Check, ChevronRight } from "lucide-react";
 import clsx from "clsx";
+import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
 import { useToast } from "@/contexts/ToastContext";
 import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, NewbornLogEvent, NewbornTrackerData } from "@/types";
@@ -747,6 +748,21 @@ export default function NewbornTrackerPage() {
           )}
         </div>
       )}
+
+      {/* Sleep training entry point */}
+      <Link
+        href="/sleep-training"
+        className="card p-4 mt-4 flex items-center gap-3 hover:bg-indigo-50/60 dark:hover:bg-indigo-900/10 transition-colors"
+      >
+        <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl shrink-0">
+          <Moon size={18} className="text-indigo-600 dark:text-indigo-400" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">Sleep Training</p>
+          <p className="text-xs text-stone-400">Ferber intervals, nightly log & progress tracker</p>
+        </div>
+        <ChevronRight size={16} className="text-stone-300 shrink-0" />
+      </Link>
     </PageTransition>
   );
 }
