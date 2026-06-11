@@ -8,7 +8,7 @@ import {
   Heart, StickyNote, Settings, Github, Briefcase, Calendar,
   Phone, Timer, Search, X, Menu, PiggyBank, AlertTriangle,
   RefreshCw, XCircle, WifiOff, UtensilsCrossed, ChevronRight, Baby,
-  Moon, Stethoscope, TrendingUp, Star, ClipboardList,
+  Moon, Stethoscope, TrendingUp, Star, ClipboardList, Wind,
 } from "lucide-react";
 import clsx from "clsx";
 import { getPAT, getGistId, getLastSynced } from "@/lib/gistSync";
@@ -56,6 +56,7 @@ const NAV_SECTIONS: NavSection[] = [
     heading: "Resources",
     items: [
       { href: "/recipes", label: "Postpartum Recipes", icon: UtensilsCrossed },
+      { href: "/guides/recovery", label: "Recovery Guide", icon: Wind },
       { href: "/materials", label: "Materials", icon: BookOpen },
       { href: "/notes", label: "Notes", icon: StickyNote },
     ],
