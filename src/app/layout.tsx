@@ -66,7 +66,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="flex flex-1">
                   <Sidebar />
                   {/* On mobile: full width. On desktop: offset by sidebar width */}
-                  <main id="main-content" className="flex-1 w-full md:ml-64 p-4 md:p-8 pb-28 md:pb-8 mesh-bg safe-top">
+                  {/* Mobile top padding clears the fixed slim top bar (3rem) + safe area */}
+                  <main id="main-content" className="flex-1 w-full md:ml-64 p-4 md:p-8 pb-28 md:pb-8 mesh-bg pt-[calc(env(safe-area-inset-top)+4rem)] md:pt-8">
                     {children}
                   </main>
                 </div>

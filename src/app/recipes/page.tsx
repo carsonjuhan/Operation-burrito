@@ -89,7 +89,7 @@ export default function RecipesPage() {
   };
 
   return (
-    <PageTransition className="max-w-4xl mx-auto pt-10 md:pt-0">
+    <PageTransition className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">

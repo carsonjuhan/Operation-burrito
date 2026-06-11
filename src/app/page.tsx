@@ -225,7 +225,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <PageTransition className="max-w-5xl mx-auto pt-10 md:pt-0">
+    <PageTransition className="max-w-5xl mx-auto">
       {/* Hero: post-birth baby age, or pre-birth due date countdown */}
       {babyArrived ? (
         <div className="rounded-2xl p-6 mb-6 bg-gradient-to-br from-sage-50 via-white to-blush-50 dark:from-sage-900/40 dark:via-stone-900 dark:to-stone-900 border border-sage-200/60 dark:border-sage-800">

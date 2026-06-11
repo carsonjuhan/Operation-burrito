@@ -518,7 +518,7 @@ export default function NewbornTrackerPage() {
   };
 
   return (
-    <PageTransition className="max-w-2xl mx-auto pt-10 md:pt-0 pb-8">
+    <PageTransition className="max-w-2xl mx-auto pb-8">
       {editingEvent && (
         <EditModal
           event={editingEvent}

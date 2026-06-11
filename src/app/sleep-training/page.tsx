@@ -380,7 +380,7 @@ export default function SleepTrainingPage() {
   );
 
   return (
-    <PageTransition className="max-w-xl mx-auto pt-10 md:pt-0 pb-8">
+    <PageTransition className="max-w-xl mx-auto pb-8">
       {loggingNight && (
         <LogNightModal
           nightNum={loggingNight.nightNum}

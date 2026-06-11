@@ -85,6 +85,21 @@ const NAV_SECTIONS: NavSection[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [barVisible, setBarVisible] = useState(true);
+
+  // Slim top bar: hide on scroll down, reveal on scroll up or near top
+  useEffect(() => {
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < 24) setBarVisible(true);
+      else if (y > lastY + 4) setBarVisible(false);
+      else if (y < lastY - 4) setBarVisible(true);
+      lastY = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(
     () => new Set(NAV_SECTIONS.filter(s => s.heading).map(s => s.heading!))
   );
@@ -371,17 +386,30 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile hamburger */}
-      <button
-        onClick={() => setOpen(true)}
-        className="md:hidden fixed z-40 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 shadow-sm"
-        style={{ top: "max(1rem, env(safe-area-inset-top))", left: "max(1rem, env(safe-area-inset-left))" }}
-        aria-label="Open navigation menu"
-        aria-expanded={open}
-        aria-controls="sidebar-nav"
+      {/* Mobile slim top bar — hides on scroll down, reveals on scroll up */}
+      <header
+        className={clsx(
+          "md:hidden fixed top-0 inset-x-0 z-40 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/60 dark:border-stone-700/60 transition-transform duration-200",
+          !barVisible && "-translate-y-full"
+        )}
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <Menu size={20} className="text-stone-600 dark:text-stone-300" aria-hidden="true" />
-      </button>
+        <div className="h-12 px-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-base" aria-hidden="true">🌯</span>
+            <span className="text-sm font-display font-bold text-stone-800 dark:text-stone-100">Operation Burrito</span>
+          </div>
+          <button
+            onClick={() => setOpen(true)}
+            className="p-2 -mr-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-stone-600 dark:text-stone-300"
+            aria-label="Open navigation menu"
+            aria-expanded={open}
+            aria-controls="sidebar-nav"
+          >
+            <Menu size={20} aria-hidden="true" />
+          </button>
+        </div>
+      </header>
 
       {/* Mobile overlay */}
       {open && (
