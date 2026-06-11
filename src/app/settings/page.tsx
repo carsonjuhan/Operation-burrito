@@ -772,6 +772,10 @@ export default function SettingsPage() {
           </div>
         </div>
       )}
+
+      <p className="text-center text-[10px] text-stone-300 dark:text-stone-600 mt-8">
+        Built {new Date(process.env.NEXT_PUBLIC_BUILD_TIME!).toLocaleString("en-CA", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+      </p>
     </PageTransition>
   );
 }
