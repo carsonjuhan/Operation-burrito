@@ -380,6 +380,8 @@ export type NewbornLogEvent = FeedEvent | SleepEvent | DiaperEvent;
 export interface NewbornTrackerData {
   events: NewbornLogEvent[];
   babyName: string;
+  // Live nursing timer (transient, device-local — not synced)
+  activeNursing?: { feedType: FeedType; startTime: string };
 }
 
 // ── Guides (Feeding / Sleeping) ───────────────────────────────────────────────

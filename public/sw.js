@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
 // ── Cache Configuration ─────────────────────────────────────────────────────
-const CACHE_VERSION = 'ob-v2';
+const CACHE_VERSION = 'ob-v3';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 
@@ -45,9 +45,12 @@ self.addEventListener('activate', (event) => {
 
 /**
  * Routing strategy:
- *  - api.github.com  => network-first (fresh Gist data, cached fallback)
- *  - same-origin     => cache-first  (static shell, fast offline loads)
- *  - everything else => passthrough  (no caching)
+ *  - api.github.com   => network-first (fresh Gist data, cached fallback)
+ *  - HTML navigations => network-first (new deploys arrive immediately;
+ *                        cached shell only when offline)
+ *  - /_next/static    => cache-first  (content-hashed, immutable)
+ *  - other same-origin => cache-first
+ *  - everything else  => passthrough  (no caching)
  */
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -64,8 +67,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Same-origin static assets — cache-first
   if (url.origin === self.location.origin) {
+    // Page navigations / HTML — network-first so deploys are picked up
+    const isNavigation =
+      request.mode === 'navigate' ||
+      (request.headers.get('accept') || '').includes('text/html');
+    if (isNavigation) {
+      event.respondWith(networkFirst(request, STATIC_CACHE));
+      return;
+    }
+    // Hashed build assets and other static files — cache-first
     event.respondWith(cacheFirst(request, STATIC_CACHE));
     return;
   }

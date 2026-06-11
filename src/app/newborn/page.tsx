@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Baby, Moon, Droplets, X, ChevronDown, ChevronUp, Pencil, Check, ChevronRight } from "lucide-react";
+import { Baby, Moon, Sun, X, ChevronDown, ChevronUp, Pencil, Check, ChevronRight, Square, Stethoscope } from "lucide-react";
 import clsx from "clsx";
 import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
 import { useToast } from "@/contexts/ToastContext";
+import { useStoreContext } from "@/contexts/StoreContext";
+import { getLastSynced, getPAT, getGistId } from "@/lib/gistSync";
+import { relativeTime } from "@/lib/conflictDetection";
 import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, NewbornLogEvent, NewbornTrackerData } from "@/types";
 import {
   FEED_ICON,
@@ -16,6 +19,22 @@ import {
   saveNewbornData as saveData,
   vibrate,
 } from "@/lib/newbornTracker";
+
+const NIGHT_MODE_KEY = "nb-night-mode";
+
+// Live timer display: "4:32"
+function clockStr(startIso: string, now: number): string {
+  const secs = Math.max(0, Math.floor((now - new Date(startIso).getTime()) / 1000));
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+// First-week diaper expectations (day of life → minimum wet / dirty)
+function diaperExpectation(dayOfLife: number): { wet: number; dirty: number } | null {
+  if (dayOfLife < 1 || dayOfLife > 7) return null;
+  return { wet: Math.min(dayOfLife, 6), dirty: dayOfLife <= 2 ? 1 : 3 };
+}
 
 function timeSince(iso: string, now: number): string {
   const diff = now - new Date(iso).getTime();
@@ -408,17 +427,58 @@ export default function NewbornTrackerPage() {
   const [nameInput, setNameInput] = useState("");
   const [editingEvent, setEditingEvent] = useState<NewbornLogEvent | null>(null);
 
+  const { store } = useStoreContext();
+  const [nightMode, setNightMode] = useState(false);
+  const [syncedAgo, setSyncedAgo] = useState("");
+
   useEffect(() => { setData(loadData()); }, []);
+  useEffect(() => {
+    setNightMode(localStorage.getItem(NIGHT_MODE_KEY) === "1");
+  }, []);
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(id);
   }, []);
+  // Fast tick while a nursing timer is running
+  useEffect(() => {
+    if (!data.activeNursing) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [data.activeNursing]);
   // Reload when the Quick Log sheet writes events from another page/component
   useEffect(() => {
     const reload = () => setData(loadData());
     window.addEventListener(NEWBORN_UPDATED_EVENT, reload);
     return () => window.removeEventListener(NEWBORN_UPDATED_EVENT, reload);
   }, []);
+  // Sync trust indicator — refresh with the clock tick
+  useEffect(() => {
+    if (!(getPAT() && getGistId())) { setSyncedAgo(""); return; }
+    const last = getLastSynced();
+    setSyncedAgo(last ? relativeTime(last) : "never");
+  }, [now]);
+
+  // Night mode: force dark theme + warm dim overlay while enabled
+  const toggleNightMode = useCallback(() => {
+    setNightMode(prev => {
+      const next = !prev;
+      localStorage.setItem(NIGHT_MODE_KEY, next ? "1" : "0");
+      if (next) {
+        document.documentElement.classList.add("dark");
+      } else {
+        // Restore the user's normal theme preference
+        try {
+          const t = localStorage.getItem("theme");
+          const dark = t === "dark" || (t !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("dark", dark);
+        } catch { /* keep dark */ }
+      }
+      return next;
+    });
+  }, []);
+  useEffect(() => {
+    if (nightMode) document.documentElement.classList.add("dark");
+  }, [nightMode]);
 
   const update = useCallback((fn: (d: NewbornTrackerData) => NewbornTrackerData) => {
     setData(prev => {
@@ -449,6 +509,44 @@ export default function NewbornTrackerPage() {
     return acc + ms / 60000;
   }, 0);
 
+  // ── Pediatrician summary: last 24h and 7-day daily averages ─────────────
+  const sleepMinsInWindow = (events: SleepEvent[], cutoff: number) =>
+    events.reduce((acc, s) => {
+      const start = Math.max(new Date(s.startTime).getTime(), cutoff);
+      const end = s.endTime ? new Date(s.endTime).getTime() : now;
+      return end > start ? acc + (end - start) / 60000 : acc;
+    }, 0);
+
+  const cutoff24 = now - 24 * 3600e3;
+  const cutoff7d = now - 7 * 24 * 3600e3;
+  const within = (e: NewbornLogEvent, cutoff: number) => new Date(getEventTime(e)).getTime() >= cutoff;
+  const ev24 = allEvents.filter(e => within(e, cutoff24));
+  const ev7d = allEvents.filter(e => within(e, cutoff7d));
+  const stats24 = {
+    feeds: ev24.filter(e => e.type === "feed").length,
+    wet: ev24.filter(e => e.type === "diaper" && ["wet", "both"].includes((e as DiaperEvent).diaperType)).length,
+    dirty: ev24.filter(e => e.type === "diaper" && ["dirty", "both"].includes((e as DiaperEvent).diaperType)).length,
+    sleepH: sleepMinsInWindow(ev24.filter(e => e.type === "sleep") as SleepEvent[], cutoff24) / 60,
+  };
+  const oldest7d = ev7d.length ? new Date(getEventTime(ev7d[ev7d.length - 1])).getTime() : now;
+  const trackedDays = Math.min(7, Math.max(1, (now - oldest7d) / (24 * 3600e3)));
+  const stats7d = {
+    feedsPerDay: ev7d.filter(e => e.type === "feed").length / trackedDays,
+    diapersPerDay: ev7d.filter(e => e.type === "diaper").length / trackedDays,
+    sleepHPerDay: sleepMinsInWindow(ev7d.filter(e => e.type === "sleep") as SleepEvent[], cutoff7d) / 60 / trackedDays,
+  };
+
+  // Day of life from due date (first week diaper guidance)
+  const dueDateStr = store.birthPlan?.personalInfo?.dueDate;
+  const dayOfLife = (() => {
+    if (!dueDateStr) return null;
+    const due = new Date(dueDateStr); due.setHours(0, 0, 0, 0);
+    const t = new Date(); t.setHours(0, 0, 0, 0);
+    const d = Math.round((t.getTime() - due.getTime()) / (24 * 3600e3)) + 1;
+    return d >= 1 ? d : null;
+  })();
+  const expectation = dayOfLife ? diaperExpectation(dayOfLife) : null;
+
   const deleteEvent = useCallback((id: string) => {
     update(d => ({ ...d, events: d.events.filter(e => e.id !== id) }));
   }, [update]);
@@ -470,6 +568,12 @@ export default function NewbornTrackerPage() {
   }, [update, addToast]);
 
   const logFeed = (feedType: FeedType) => {
+    // Nursing feeds start a live timer; bottle/formula log instantly
+    if (feedType === "breast-left" || feedType === "breast-right" || feedType === "both") {
+      update(d => ({ ...d, activeNursing: { feedType, startTime: new Date().toISOString() } }));
+      vibrate();
+      return;
+    }
     const id = Date.now().toString();
     update(d => ({
       ...d,
@@ -477,6 +581,32 @@ export default function NewbornTrackerPage() {
     }));
     vibrate();
     addToast(`Logged ${FEED_LABELS[feedType]}`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
+  };
+
+  const finishNursing = () => {
+    const nursing = data.activeNursing;
+    if (!nursing) return;
+    const id = Date.now().toString();
+    const durationMin = Math.max(1, Math.round((Date.now() - new Date(nursing.startTime).getTime()) / 60000));
+    update(d => ({
+      ...d,
+      activeNursing: undefined,
+      events: [...d.events, {
+        id, type: "feed", timestamp: nursing.startTime, feedType: nursing.feedType, durationMin,
+      } as FeedEvent],
+    }));
+    vibrate();
+    addToast(`Logged ${FEED_LABELS[nursing.feedType]} · ${durationMin}min`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
+  };
+
+  const cancelNursing = () => {
+    const nursing = data.activeNursing;
+    if (!nursing) return;
+    update(d => ({ ...d, activeNursing: undefined }));
+    addToast("Nursing timer cancelled", "info", {
+      label: "Undo",
+      onClick: () => update(d => ({ ...d, activeNursing: nursing })),
+    });
   };
 
   const toggleSleep = () => {
@@ -527,14 +657,41 @@ export default function NewbornTrackerPage() {
         />
       )}
 
+      {/* Night mode: warm dim overlay over everything */}
+      {nightMode && (
+        <div
+          className="fixed inset-0 z-[90] pointer-events-none"
+          style={{ background: "rgba(70, 25, 0, 0.45)", mixBlendMode: "multiply" }}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-4">
         <div className="flex items-center gap-2 mb-1">
           <Baby size={20} className="text-sage-600" />
           <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800 dark:text-stone-100">
             Newborn Tracker
           </h1>
+          <button
+            onClick={toggleNightMode}
+            className={clsx(
+              "ml-auto p-2.5 rounded-xl border transition-colors",
+              nightMode
+                ? "bg-amber-900/40 border-amber-700 text-amber-300"
+                : "bg-stone-50 border-stone-200 text-stone-400 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400"
+            )}
+            aria-label={nightMode ? "Exit night mode" : "Night mode — dim for 3am"}
+            aria-pressed={nightMode}
+          >
+            {nightMode ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
         </div>
+        {syncedAgo && (
+          <p className="text-[10px] text-stone-400 dark:text-stone-500">
+            ☁️ Synced {syncedAgo}
+          </p>
+        )}
         <div className="flex items-center gap-2">
           {editingName ? (
             <form onSubmit={(e) => { e.preventDefault(); saveName(); }} className="flex items-center gap-2">
@@ -554,6 +711,41 @@ export default function NewbornTrackerPage() {
             </button>
           )}
         </div>
+      </div>
+
+      {/* Nocturnal hero — the number you want at 3am */}
+      <div className="mb-5 rounded-2xl p-5 bg-gradient-to-br from-indigo-950 via-stone-900 to-stone-950 border border-indigo-900/50 text-white shadow-lg shadow-indigo-950/20">
+        {data.activeNursing ? (
+          <>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">Nursing now · {FEED_LABELS[data.activeNursing.feedType]}</p>
+            <p className="font-display text-5xl leading-none tabular-nums">{clockStr(data.activeNursing.startTime, now)}</p>
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={finishNursing}
+                className="flex-1 min-h-[48px] flex items-center justify-center gap-2 bg-sage-500 hover:bg-sage-600 active:bg-sage-700 text-white rounded-xl text-sm font-semibold transition-colors"
+              >
+                <Square size={13} fill="currentColor" /> Finish &amp; Log
+              </button>
+              <button
+                onClick={cancelNursing}
+                className="px-4 min-h-[48px] text-indigo-300/70 hover:text-indigo-200 text-sm transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">Since last feed</p>
+            <p className="font-display text-5xl leading-none tabular-nums">
+              {lastFeed ? durationStr(lastFeed.timestamp) : "—"}
+            </p>
+            <p className="text-xs text-indigo-200/60 mt-2">
+              {lastFeed ? `${FEED_LABELS[lastFeed.feedType]} at ${formatTime(lastFeed.timestamp)}` : "No feeds logged yet"}
+              {activeSleep && <span className="text-indigo-300"> · 😴 sleeping {durationStr(activeSleep.startTime)}</span>}
+            </p>
+          </>
+        )}
       </div>
 
       {/* Status Cards */}
@@ -605,6 +797,7 @@ export default function NewbornTrackerPage() {
       <div className="card p-4 mb-4">
         <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-4">Quick Log</p>
 
+        {!data.activeNursing && (
         <div className="mb-4">
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-2 flex items-center gap-1">
             🤱 Feeding
@@ -634,6 +827,7 @@ export default function NewbornTrackerPage() {
             ))}
           </div>
         </div>
+        )}
 
         <div className="mb-4">
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">🌙 Sleep</p>
@@ -690,6 +884,48 @@ export default function NewbornTrackerPage() {
           </div>
         )}
       </div>
+
+      {/* Pediatrician summary */}
+      {allEvents.length > 0 && (
+        <div className="card p-4 mb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Stethoscope size={14} className="text-sky-500" />
+            <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">For the Pediatrician</p>
+          </div>
+          <div className="grid grid-cols-4 gap-2 mb-2">
+            {[
+              { label: "Feeds", v24: String(stats24.feeds), v7: `${stats7d.feedsPerDay.toFixed(1)}/d` },
+              { label: "Wet", v24: String(stats24.wet), v7: "" },
+              { label: "Dirty", v24: String(stats24.dirty), v7: "" },
+              { label: "Sleep", v24: `${stats24.sleepH.toFixed(1)}h`, v7: `${stats7d.sleepHPerDay.toFixed(1)}h/d` },
+            ].map(({ label, v24, v7 }) => (
+              <div key={label} className="text-center rounded-xl bg-stone-50 dark:bg-stone-800/60 py-2">
+                <p className="font-display text-xl text-stone-800 dark:text-stone-100 tabular-nums leading-tight">{v24}</p>
+                <p className="text-[10px] text-stone-400">{label} · 24h</p>
+                {v7 && <p className="text-[9px] text-stone-300 dark:text-stone-600">{v7} avg</p>}
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-stone-400 text-center">
+            7-day avg: {stats7d.feedsPerDay.toFixed(1)} feeds · {stats7d.diapersPerDay.toFixed(1)} diapers · {stats7d.sleepHPerDay.toFixed(1)}h sleep per day
+          </p>
+          {expectation && (
+            <div className={clsx(
+              "mt-3 px-3 py-2 rounded-lg text-xs flex items-start gap-2",
+              stats24.wet >= expectation.wet && stats24.dirty >= expectation.dirty
+                ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300"
+                : "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300"
+            )}>
+              <span className="shrink-0">💧</span>
+              <span>
+                Day {dayOfLife}: expect at least <b>{expectation.wet} wet</b> and <b>{expectation.dirty} dirty</b> in 24h —
+                {" "}you&apos;re at {stats24.wet} wet, {stats24.dirty} dirty.
+                {!(stats24.wet >= expectation.wet && stats24.dirty >= expectation.dirty) && " If low by end of day, mention it to your midwife."}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* History chart + log */}
       {allEvents.length > 0 && (

@@ -17,20 +17,18 @@ export function shouldRegisterSW(): boolean {
 }
 
 /**
- * Returns the service worker URL accounting for basePath.
- * In production, Next.js uses /Operation-burrito as basePath.
+ * Returns the service worker URL. The app deploys at the domain root
+ * (baby.juhan.me), so no basePath is needed.
  */
 export function getServiceWorkerURL(): string {
-  const basePath = process.env.NODE_ENV === 'production' ? '/Operation-burrito' : '';
-  return `${basePath}/sw.js`;
+  return '/sw.js';
 }
 
 /**
  * Returns the scope for the service worker registration.
  */
 export function getServiceWorkerScope(): string {
-  const basePath = process.env.NODE_ENV === 'production' ? '/Operation-burrito' : '';
-  return `${basePath}/`;
+  return '/';
 }
 
 /**
@@ -75,9 +73,14 @@ export function clearOfflineSyncQueue(): void {
 /**
  * Hook that registers the service worker and listens for updates.
  * Only active in production builds.
+ *
+ * @param onUpdate Called when a new app version has been installed and is
+ *                 ready — show a "Refresh" prompt to the user.
  */
-export function useServiceWorker(): void {
+export function useServiceWorker(onUpdate?: () => void): void {
   const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
+  const onUpdateRef = useRef(onUpdate);
+  onUpdateRef.current = onUpdate;
 
   useEffect(() => {
     if (!shouldRegisterSW()) return;
@@ -109,9 +112,8 @@ export function useServiceWorker(): void {
               newWorker.state === 'activated' &&
               navigator.serviceWorker.controller
             ) {
-              // A new version has been activated — the user will get it on next navigation.
-              // S-019/S-020 can add a UI prompt here to reload.
-              console.log('[SW] New version activated. Refresh for updates.');
+              // New version active — prompt the user to reload for fresh UI
+              onUpdateRef.current?.();
             }
           });
         });
@@ -120,8 +122,19 @@ export function useServiceWorker(): void {
         console.error('[SW] Registration failed:', error);
       });
 
+    // Re-check for a new deploy when the app regains focus (PWAs can sit in
+    // the app switcher for days) and on a slow interval while open.
+    const checkForUpdate = () => registrationRef.current?.update().catch(() => {});
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') checkForUpdate();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    const interval = setInterval(checkForUpdate, 30 * 60 * 1000);
+
     return () => {
       navigator.serviceWorker.removeEventListener('message', handleMessage);
+      document.removeEventListener('visibilitychange', onVisible);
+      clearInterval(interval);
     };
   }, []);
 }
