@@ -18,6 +18,9 @@ export function loadNewbornData(): NewbornTrackerData {
 
 export function saveNewbornData(data: NewbornTrackerData) {
   localStorage.setItem(NEWBORN_STORAGE_KEY, JSON.stringify(data));
+  // Notify listeners (tracker page, dashboard, store sync bridge) on the next
+  // microtask — saves often happen inside React state updaters.
+  queueMicrotask(notifyNewbornUpdate);
 }
 
 export function notifyNewbornUpdate() {

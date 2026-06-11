@@ -11,7 +11,6 @@ import {
   FEED_LABELS,
   durationStr,
   loadNewbornData,
-  notifyNewbornUpdate,
   saveNewbornData,
   vibrate,
 } from "@/lib/newbornTracker";
@@ -43,14 +42,12 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
   const appendEvent = (event: NewbornLogEvent, message: string) => {
     const data = loadNewbornData();
     saveNewbornData({ ...data, events: [...data.events, event] });
-    notifyNewbornUpdate();
     vibrate();
     addToast(message, "success", {
       label: "Undo",
       onClick: () => {
         const d = loadNewbornData();
         saveNewbornData({ ...d, events: d.events.filter(e => e.id !== event.id) });
-        notifyNewbornUpdate();
       },
     });
     onClose();
@@ -77,7 +74,6 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
         ...data,
         events: data.events.map(e => e.id === activeSleep.id ? { ...e, endTime: new Date().toISOString() } : e),
       });
-      notifyNewbornUpdate();
       vibrate();
       addToast(`Sleep ended · ${durationStr(activeSleep.startTime)}`, "success");
       onClose();

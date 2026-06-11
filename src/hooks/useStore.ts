@@ -6,7 +6,8 @@ import {
   BagItem, Appointment, Contact, Contraction,
 } from "@/types";
 import { getPAT, getGistId, pushToGist, loadGist } from "@/lib/gistSync";
-import { mergeStores } from "@/lib/storeMerge";
+import { mergeStores, mergeNewbornEvents } from "@/lib/storeMerge";
+import { loadNewbornData, saveNewbornData, NEWBORN_UPDATED_EVENT } from "@/lib/newbornTracker";
 import { recordAction } from "@/lib/actionHistory";
 import { getStorageSize, getStoragePercent, isStorageWarning } from "@/lib/storageMonitor";
 import { setLastModifiedAt } from "@/lib/conflictDetection";
@@ -326,6 +327,45 @@ export function useStore() {
     refreshStorageInfo();
   }, [refreshStorageInfo]);
 
+  // ── Tombstone tracking ────────────────────────────────────────────────────
+  // Diff ID-keyed arrays on every update: removed ids become tombstones so the
+  // delete propagates on merge; re-added ids (undo) clear their tombstone.
+
+  const TOMBSTONE_ARRAYS = useMemo(() => ([
+    "items", "classes", "materials", "notes", "appointments", "contacts", "hospitalBag", "newbornEvents",
+  ] as const), []);
+
+  const trackDeletes = useCallback((prev: AppStore, next: AppStore): AppStore => {
+    const tomb = { ...(next.deletedIds ?? prev.deletedIds ?? {}) };
+    const now = new Date().toISOString();
+    let changed = false;
+    for (const key of TOMBSTONE_ARRAYS) {
+      const prevArr = (prev[key] ?? []) as { id: string }[];
+      const nextArr = (next[key] ?? []) as { id: string }[];
+      const nextIds = new Set(nextArr.map((i) => i.id));
+      for (const item of prevArr) {
+        if (!nextIds.has(item.id)) { tomb[item.id] = now; changed = true; }
+      }
+      for (const id of Array.from(nextIds)) {
+        if (tomb[id]) { delete tomb[id]; changed = true; }
+      }
+    }
+    return changed || next.deletedIds !== tomb ? { ...next, deletedIds: tomb } : next;
+  }, [TOMBSTONE_ARRAYS]);
+
+  // ── Newborn tracker bridge ────────────────────────────────────────────────
+  // Store → localStorage after merges (union, never drops local events).
+  const writeNewbornToLocal = useCallback((s: AppStore) => {
+    if (!s.newbornEvents) return;
+    const local = loadNewbornData();
+    const tomb = s.deletedIds ?? {};
+    const events = mergeNewbornEvents(local.events, s.newbornEvents).filter((e) => !tomb[e.id]);
+    const babyName = s.newbornBabyName && s.newbornBabyName !== "Baby" ? s.newbornBabyName : local.babyName;
+    if (JSON.stringify(events) !== JSON.stringify(local.events) || babyName !== local.babyName) {
+      saveNewbornData({ events, babyName });
+    }
+  }, []);
+
   const triggerAutoSync = useCallback((nextStore: AppStore) => {
     const pat = getPAT();
     const gistId = getGistId();
@@ -336,15 +376,18 @@ export function useStore() {
     autoSyncTimer.current = setTimeout(async () => {
       setAutoSyncing(true);
       try {
-        // Fetch remote then merge before pushing — prevents 2-user overwrites
-        let storeToSync = nextStore;
+        // Fetch remote then merge before pushing — prevents 2-user overwrites.
+        // Merge against the freshest local state, not the debounce-time snapshot.
+        let storeToSync = storeRef.current ?? nextStore;
         try {
           const remote = await loadGist(pat, gistId);
-          storeToSync = mergeStores(nextStore, remote);
+          storeToSync = mergeStores(storeToSync, remote);
           // Persist merged result locally too
           saveStore(storeToSync);
           setStore(storeToSync);
           storeRef.current = storeToSync;
+          // Partner's tracker events land in the local tracker store
+          writeNewbornToLocal(storeToSync);
         } catch {
           // Network or parse error on fetch — fall back to pushing local state
         }
@@ -364,7 +407,7 @@ export function useStore() {
       }
       setAutoSyncing(false);
     }, 5000); // debounce 5 seconds
-  }, []);
+  }, [writeNewbornToLocal]);
 
   const update = useCallback((updater: (prev: AppStore) => AppStore, description?: string) => {
     setStore((prev) => {
@@ -372,7 +415,7 @@ export function useStore() {
         recordAction(description, prev);
       }
       const now = new Date().toISOString();
-      const next = { ...updater(prev), lastModifiedAt: now };
+      const next = trackDeletes(prev, { ...updater(prev), lastModifiedAt: now });
       saveStore(next);
       setLastModifiedAt(now);
       triggerAutoSync(next);
@@ -380,7 +423,26 @@ export function useStore() {
       storeRef.current = next;
       return next;
     });
-  }, [triggerAutoSync, refreshStorageInfo]);
+  }, [triggerAutoSync, refreshStorageInfo, trackDeletes]);
+
+  // ── Newborn tracker mirror (localStorage → store) ────────────────────────
+  // The tracker UI writes to its own localStorage key; mirror those writes
+  // into the synced store so both parents' phones share feed/sleep/diaper logs.
+  useEffect(() => {
+    if (!loaded) return;
+    const mirror = () => {
+      const d = loadNewbornData();
+      const cur = storeRef.current;
+      const sameEvents = JSON.stringify(cur.newbornEvents ?? []) === JSON.stringify(d.events);
+      const sameName = (cur.newbornBabyName ?? "Baby") === d.babyName;
+      if (!sameEvents || !sameName) {
+        update((s) => ({ ...s, newbornEvents: d.events, newbornBabyName: d.babyName }));
+      }
+    };
+    mirror(); // seed once on load
+    window.addEventListener(NEWBORN_UPDATED_EVENT, mirror);
+    return () => window.removeEventListener(NEWBORN_UPDATED_EVENT, mirror);
+  }, [loaded, update]);
 
   // ── Items ────────────────────────────────────────────────────────────────
 
@@ -600,8 +662,9 @@ export function useStore() {
     setStore(merged);
     saveStore(merged);
     storeRef.current = merged;
+    writeNewbornToLocal(merged);
     refreshStorageInfo();
-  }, [refreshStorageInfo]);
+  }, [refreshStorageInfo, writeNewbornToLocal]);
 
   // ── Memoized domain values (S-033) ──────────────────────────────────────
   // Each domain value only gets a new reference when its specific data changes.

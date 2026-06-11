@@ -1,11 +1,30 @@
 import { AppStore } from "@/types";
 import { validateAppStore } from "@/lib/syncValidation";
 import { clearLastModifiedAt } from "@/lib/conflictDetection";
+import { mergeStores } from "@/lib/storeMerge";
 
 const GIST_FILENAME = "operation-burrito.json";
 const PAT_KEY = "ob-github-pat";
 const GIST_ID_KEY = "ob-gist-id";
 const LAST_SYNCED_KEY = "ob-last-synced";
+const DEVICE_ID_KEY = "ob-device-id";
+
+/**
+ * Stable per-device id. Each device pushes to its own gist file
+ * (device-<id>.json) so two phones can never overwrite each other's push.
+ */
+export function getDeviceId(): string {
+  let id = localStorage.getItem(DEVICE_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID().slice(0, 8);
+    localStorage.setItem(DEVICE_ID_KEY, id);
+  }
+  return id;
+}
+
+function deviceFilename(): string {
+  return `device-${getDeviceId()}.json`;
+}
 
 // ── Local config ───────────────────────────────────────────────────────────
 
@@ -56,6 +75,18 @@ export async function verifyPAT(pat: string): Promise<string> {
 
 // ── Gist CRUD ──────────────────────────────────────────────────────────────
 
+/**
+ * Files written on every push: this device's own file (race-free — the other
+ * phone never writes it) plus the legacy combined file for compatibility.
+ */
+function pushFiles(store: AppStore) {
+  const content = JSON.stringify(store, null, 2);
+  return {
+    [deviceFilename()]: { content },
+    [GIST_FILENAME]: { content },
+  };
+}
+
 export async function createGist(pat: string, store: AppStore): Promise<string> {
   const res = await fetch("https://api.github.com/gists", {
     method: "POST",
@@ -63,9 +94,7 @@ export async function createGist(pat: string, store: AppStore): Promise<string> 
     body: JSON.stringify({
       description: "Operation Burrito — Baby Prep Data",
       public: false,
-      files: {
-        [GIST_FILENAME]: { content: JSON.stringify(store, null, 2) },
-      },
+      files: pushFiles(store),
     }),
   });
   if (!res.ok) throw new Error(`Failed to create Gist: ${res.status}`);
@@ -78,41 +107,74 @@ export async function updateGist(pat: string, gistId: string, store: AppStore): 
   const res = await fetch(`https://api.github.com/gists/${gistId}`, {
     method: "PATCH",
     headers: headers(pat),
-    body: JSON.stringify({
-      files: {
-        [GIST_FILENAME]: { content: JSON.stringify(store, null, 2) },
-      },
-    }),
+    body: JSON.stringify({ files: pushFiles(store) }),
   });
   if (!res.ok) throw new Error(`Failed to update Gist: ${res.status}`);
   setLastSynced();
 }
 
+interface GistFile {
+  filename?: string;
+  content?: string;
+  truncated?: boolean;
+  raw_url?: string;
+}
+
+async function fileContent(file: GistFile): Promise<string | null> {
+  if (file.truncated && file.raw_url) {
+    const res = await fetch(file.raw_url);
+    return res.ok ? res.text() : null;
+  }
+  return file.content ?? null;
+}
+
+function parseStore(raw: string): AppStore | null {
+  try {
+    const validation = validateAppStore(JSON.parse(raw));
+    return validation.valid ? validation.store : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Load and merge all data files in the gist: every device-*.json plus the
+ * legacy combined file. Invalid/corrupt files are skipped rather than failing
+ * the whole pull.
+ */
 export async function loadGist(pat: string, gistId: string): Promise<AppStore> {
   const res = await fetch(`https://api.github.com/gists/${gistId}`, {
     headers: headers(pat),
   });
   if (!res.ok) throw new Error(`Failed to load Gist: ${res.status}`);
   const data = await res.json();
-  const raw = data.files?.[GIST_FILENAME]?.content;
-  if (!raw) throw new Error("Gist found but no data file inside.");
+  const files = (data.files ?? {}) as Record<string, GistFile>;
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    throw new Error("Gist contains invalid JSON. The data may be corrupted.");
+  const names = Object.keys(files).filter(
+    (n) => n === GIST_FILENAME || /^device-.*\.json$/.test(n)
+  );
+  if (names.length === 0) throw new Error("Gist found but no data file inside.");
+
+  const stores: AppStore[] = [];
+  for (const name of names) {
+    const raw = await fileContent(files[name]);
+    if (!raw) continue;
+    const store = parseStore(raw);
+    if (store) stores.push(store);
   }
 
-  const validation = validateAppStore(parsed);
-  if (!validation.valid || !validation.store) {
-    throw new Error(
-      `Pulled data failed validation: ${validation.errors.join("; ")}`
-    );
+  if (stores.length === 0) {
+    throw new Error("Gist data failed validation. The data may be corrupted.");
+  }
+
+  // Fold all device snapshots together
+  let merged = stores[0];
+  for (let i = 1; i < stores.length; i++) {
+    merged = mergeStores(merged, stores[i]);
   }
 
   setLastSynced();
-  return validation.store;
+  return merged;
 }
 
 // ── Gist metadata ─────────────────────────────────────────────────────────

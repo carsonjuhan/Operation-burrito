@@ -317,6 +317,9 @@ export interface AppStore {
   // Newborn tracker (synced across devices)
   newbornEvents?: NewbornLogEvent[];
   newbornBabyName?: string;
+  // Tombstones: id → deletedAt ISO. Lets deletes propagate across devices
+  // instead of resurrecting on merge. Purged after 30 days.
+  deletedIds?: Record<string, string>;
 }
 
 // ── Postpartum Recipes ────────────────────────────────────────────────────

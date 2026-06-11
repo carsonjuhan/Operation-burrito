@@ -2,6 +2,9 @@ import type { AppStore, NewbornLogEvent } from "@/types";
 
 type WithId = { id: string };
 
+/** Tombstones older than this are purged during merge. */
+export const TOMBSTONE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
 /**
  * Merge two arrays by ID: all items from both sides, no duplicates.
  * Local version wins for items that exist in both (local changes are authoritative).
@@ -33,26 +36,62 @@ export function mergeNewbornEvents(
 }
 
 /**
+ * Union two tombstone maps (newest deletedAt wins per id), purging entries
+ * older than TOMBSTONE_TTL_MS.
+ */
+function mergeTombstones(
+  local: Record<string, string> = {},
+  remote: Record<string, string> = {}
+): Record<string, string> {
+  const merged: Record<string, string> = {};
+  const cutoff = Date.now() - TOMBSTONE_TTL_MS;
+  for (const src of [remote, local]) {
+    for (const [id, deletedAt] of Object.entries(src)) {
+      const t = new Date(deletedAt).getTime();
+      if (isNaN(t) || t < cutoff) continue;
+      if (!merged[id] || new Date(merged[id]).getTime() < t) merged[id] = deletedAt;
+    }
+  }
+  return merged;
+}
+
+function dropTombstoned<T extends WithId>(arr: T[], tombstones: Record<string, string>): T[] {
+  return arr.filter((item) => !tombstones[item.id]);
+}
+
+/**
  * Merge two AppStore snapshots.
- * - All ID-keyed arrays: union (local wins on conflict)
- * - birthPlan, registryUrl: take local (user's current intent)
+ * - All ID-keyed arrays: union (local wins on conflict), minus tombstoned ids
+ * - deletedIds: union of both sides' tombstones — deletes propagate
+ * - birthPlan: newest updatedAt wins (not blanket local-wins)
  * - checklistSkipped, checklistAlreadyHave, etc.: union of string arrays
  */
 export function mergeStores(local: AppStore, remote: AppStore): AppStore {
+  const deletedIds = mergeTombstones(local.deletedIds, remote.deletedIds);
+
+  const localBpTime = new Date(local.birthPlan?.updatedAt ?? 0).getTime() || 0;
+  const remoteBpTime = new Date(remote.birthPlan?.updatedAt ?? 0).getTime() || 0;
+
   return {
     ...local,
-    items: mergeById(local.items, remote.items ?? []),
-    classes: mergeById(local.classes, remote.classes ?? []),
-    materials: mergeById(local.materials, remote.materials ?? []),
-    notes: mergeById(local.notes, remote.notes ?? []),
-    appointments: mergeById(local.appointments, remote.appointments ?? []),
-    contacts: mergeById(local.contacts, remote.contacts ?? []),
-    hospitalBag: mergeById(local.hospitalBag, remote.hospitalBag ?? []),
-    // Newborn events (if present in store)
-    newbornEvents: mergeNewbornEvents(
-      local.newbornEvents ?? [],
-      remote.newbornEvents ?? []
+    items: dropTombstoned(mergeById(local.items, remote.items ?? []), deletedIds),
+    classes: dropTombstoned(mergeById(local.classes, remote.classes ?? []), deletedIds),
+    materials: dropTombstoned(mergeById(local.materials, remote.materials ?? []), deletedIds),
+    notes: dropTombstoned(mergeById(local.notes, remote.notes ?? []), deletedIds),
+    appointments: dropTombstoned(mergeById(local.appointments, remote.appointments ?? []), deletedIds),
+    contacts: dropTombstoned(mergeById(local.contacts, remote.contacts ?? []), deletedIds),
+    hospitalBag: dropTombstoned(mergeById(local.hospitalBag, remote.hospitalBag ?? []), deletedIds),
+    deletedIds,
+    // Newborn events: append-only union (tracker has its own delete semantics
+    // via tombstones too — a deleted log event's id lands in deletedIds)
+    newbornEvents: dropTombstoned(
+      mergeNewbornEvents(local.newbornEvents ?? [], remote.newbornEvents ?? []),
+      deletedIds
     ),
+    newbornBabyName:
+      local.newbornBabyName && local.newbornBabyName !== "Baby"
+        ? local.newbornBabyName
+        : remote.newbornBabyName ?? local.newbornBabyName,
     // Checklist boolean ID lists: union
     checklistSkipped: Array.from(new Set([
       ...(local.checklistSkipped ?? []),
@@ -70,10 +109,14 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
       ...(local.hospitalChecklistSkipped ?? []),
       ...(remote.hospitalChecklistSkipped ?? []),
     ])),
+    postBirthChecked: Array.from(new Set([
+      ...(local.postBirthChecked ?? []),
+      ...(remote.postBirthChecked ?? []),
+    ])),
     // Contractions: transient, keep local
     contractions: local.contractions,
-    // Birth plan and scalar: local wins
-    birthPlan: local.birthPlan,
-    registryUrl: local.registryUrl,
+    // Birth plan: newest edit wins
+    birthPlan: localBpTime >= remoteBpTime ? local.birthPlan : remote.birthPlan,
+    registryUrl: local.registryUrl || remote.registryUrl || "",
   };
 }
