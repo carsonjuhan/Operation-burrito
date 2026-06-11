@@ -399,6 +399,66 @@ export default function SleepTrainingPage() {
         <p className="text-sm text-stone-400">Track your nightly progress and intervals.</p>
       </div>
 
+      {/* When to get started — always visible */}
+      <div className="card p-4 mb-4">
+        <button
+          className="w-full flex items-center justify-between"
+          onClick={() => setShowWhenToStart(s => !s)}
+        >
+          <div className="flex items-center gap-2">
+            <Clock size={15} className="text-amber-500 shrink-0" />
+            <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">When to get started</p>
+          </div>
+          {showWhenToStart ? <ChevronUp size={16} className="text-stone-400" /> : <ChevronDown size={16} className="text-stone-400" />}
+        </button>
+
+        {showWhenToStart && (
+          <div className="mt-3 space-y-3">
+            <div className="bg-amber-50 dark:bg-amber-900/10 rounded-xl p-3">
+              <p className="text-sm font-bold text-amber-700 dark:text-amber-300">16–20 weeks (4–5 months) is the sweet spot</p>
+              <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">Most methods work best in this window before habits entrench.</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-1.5">Go when all of these are true</p>
+              {[
+                "Baby is at least 16 weeks corrected age",
+                "Back to birth weight and gaining consistently",
+                "Night feeds have dropped to 1–2 per night naturally",
+                "Pediatrician gives the OK at the 4-month visit",
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-2 py-1">
+                  <Check size={12} className="text-emerald-500 mt-0.5 shrink-0" />
+                  <p className="text-xs text-stone-600 dark:text-stone-300">{item}</p>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-start gap-2 p-2.5 bg-rose-50 dark:bg-rose-900/10 rounded-lg">
+                <span className="text-sm shrink-0">⚠️</span>
+                <div>
+                  <p className="text-xs font-semibold text-rose-700 dark:text-rose-300">Don&apos;t start before 16 weeks</p>
+                  <p className="text-xs text-rose-600 dark:text-rose-400">Under 4 months the nervous system isn&apos;t developed enough to self-soothe — crying without learning.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2 p-2.5 bg-stone-50 dark:bg-stone-800/50 rounded-lg">
+                <span className="text-sm shrink-0">💡</span>
+                <div>
+                  <p className="text-xs font-semibold text-stone-700 dark:text-stone-200">The 4-month regression is your signal</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">Around weeks 16–18 baby often starts waking every 2 hours. Old patterns are already broken — that&apos;s the ideal moment to start.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2 p-2.5 bg-stone-50 dark:bg-stone-800/50 rounded-lg">
+                <span className="text-sm shrink-0">📅</span>
+                <div>
+                  <p className="text-xs font-semibold text-stone-700 dark:text-stone-200">Don&apos;t wait past 6 months</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">After 6 months habits are more entrenched and separation anxiety (peaks ~8–9 months) makes it significantly harder.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Setup or active tracker */}
       {!data ? (
         <div className="card p-5">
@@ -595,68 +655,6 @@ export default function SleepTrainingPage() {
               </div>
             </div>
           )}
-
-          {/* When to get started */}
-          <div className="card p-4 mb-4">
-            <button
-              className="w-full flex items-center justify-between"
-              onClick={() => setShowWhenToStart(s => !s)}
-            >
-              <div className="flex items-center gap-2">
-                <Clock size={15} className="text-amber-500 shrink-0" />
-                <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">When to get started</p>
-              </div>
-              {showWhenToStart ? <ChevronUp size={16} className="text-stone-400" /> : <ChevronDown size={16} className="text-stone-400" />}
-            </button>
-
-            {showWhenToStart && (
-              <div className="mt-3 space-y-3">
-                <div className="bg-amber-50 dark:bg-amber-900/10 rounded-xl p-3">
-                  <p className="text-sm font-bold text-amber-700 dark:text-amber-300">16–20 weeks (4–5 months) is the sweet spot</p>
-                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">Most methods work best in this window before habits entrench.</p>
-                </div>
-
-                <div>
-                  <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-1.5">Go when all of these are true</p>
-                  {[
-                    "Baby is at least 16 weeks corrected age",
-                    "Back to birth weight and gaining consistently",
-                    "Night feeds have dropped to 1–2 per night naturally",
-                    "Pediatrician gives the OK at the 4-month visit",
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-2 py-1">
-                      <Check size={12} className="text-emerald-500 mt-0.5 shrink-0" />
-                      <p className="text-xs text-stone-600 dark:text-stone-300">{item}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2 p-2.5 bg-rose-50 dark:bg-rose-900/10 rounded-lg">
-                    <span className="text-sm shrink-0">⚠️</span>
-                    <div>
-                      <p className="text-xs font-semibold text-rose-700 dark:text-rose-300">Don&apos;t start before 16 weeks</p>
-                      <p className="text-xs text-rose-600 dark:text-rose-400">Under 4 months the nervous system isn&apos;t developed enough to self-soothe — crying without learning.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2 p-2.5 bg-stone-50 dark:bg-stone-800/50 rounded-lg">
-                    <span className="text-sm shrink-0">💡</span>
-                    <div>
-                      <p className="text-xs font-semibold text-stone-700 dark:text-stone-200">The 4-month regression is your signal</p>
-                      <p className="text-xs text-stone-500 dark:text-stone-400">Around weeks 16–18 baby often starts waking every 2 hours. Old patterns are already broken — that&apos;s the ideal moment to start.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2 p-2.5 bg-stone-50 dark:bg-stone-800/50 rounded-lg">
-                    <span className="text-sm shrink-0">📅</span>
-                    <div>
-                      <p className="text-xs font-semibold text-stone-700 dark:text-stone-200">Don&apos;t wait past 6 months</p>
-                      <p className="text-xs text-stone-500 dark:text-stone-400">After 6 months habits are more entrenched and separation anxiety (peaks ~8–9 months) makes it significantly harder.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
 
           {/* Tips for tonight */}
           <div className="card p-4 mb-4 space-y-1.5">
