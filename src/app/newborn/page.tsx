@@ -7,22 +7,15 @@ import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
 import { useToast } from "@/contexts/ToastContext";
 import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, NewbornLogEvent, NewbornTrackerData } from "@/types";
-
-const STORAGE_KEY = "newborn_tracker";
-
-function loadData(): NewbornTrackerData {
-  if (typeof window === "undefined") return { events: [], babyName: "Baby" };
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { events: [], babyName: "Baby" };
-  } catch {
-    return { events: [], babyName: "Baby" };
-  }
-}
-
-function saveData(data: NewbornTrackerData) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
+import {
+  FEED_ICON,
+  FEED_LABELS,
+  NEWBORN_UPDATED_EVENT,
+  durationStr,
+  loadNewbornData as loadData,
+  saveNewbornData as saveData,
+  vibrate,
+} from "@/lib/newbornTracker";
 
 function timeSince(iso: string, now: number): string {
   const diff = now - new Date(iso).getTime();
@@ -32,15 +25,6 @@ function timeSince(iso: string, now: number): string {
   const hrs = Math.floor(mins / 60);
   const rem = mins % 60;
   return rem > 0 ? `${hrs}h ${rem}m ago` : `${hrs}h ago`;
-}
-
-function durationStr(startIso: string, endIso?: string): string {
-  const ms = (endIso ? new Date(endIso).getTime() : Date.now()) - new Date(startIso).getTime();
-  const mins = Math.floor(ms / 60000);
-  if (mins < 60) return `${mins}m`;
-  const hrs = Math.floor(mins / 60);
-  const rem = mins % 60;
-  return rem > 0 ? `${hrs}h ${rem}m` : `${hrs}h`;
 }
 
 function isToday(iso: string): boolean {
@@ -239,22 +223,6 @@ function fromLocalInput(val: string): string {
   return new Date(val).toISOString();
 }
 
-const FEED_LABELS: Record<FeedType, string> = {
-  "breast-left": "Left Breast",
-  "breast-right": "Right Breast",
-  "both": "Both Breasts",
-  "bottle": "Bottle (Pumped)",
-  "formula": "Formula",
-};
-
-const FEED_ICON: Record<FeedType, string> = {
-  "breast-left": "🤱",
-  "breast-right": "🤱",
-  "both": "🤱",
-  "bottle": "🍼",
-  "formula": "🍼",
-};
-
 // ── Edit modal ────────────────────────────────────────────────────────────────
 
 function EditModal({
@@ -431,11 +399,6 @@ function EditModal({
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
-// Light tap confirmation on devices that support it (Android; iOS ignores it)
-function vibrate() {
-  try { navigator.vibrate?.(15); } catch { /* unsupported */ }
-}
-
 export default function NewbornTrackerPage() {
   const { addToast } = useToast();
   const [data, setData] = useState<NewbornTrackerData>({ events: [], babyName: "Baby" });
@@ -449,6 +412,12 @@ export default function NewbornTrackerPage() {
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(id);
+  }, []);
+  // Reload when the Quick Log sheet writes events from another page/component
+  useEffect(() => {
+    const reload = () => setData(loadData());
+    window.addEventListener(NEWBORN_UPDATED_EVENT, reload);
+    return () => window.removeEventListener(NEWBORN_UPDATED_EVENT, reload);
   }, []);
 
   const update = useCallback((fn: (d: NewbornTrackerData) => NewbornTrackerData) => {

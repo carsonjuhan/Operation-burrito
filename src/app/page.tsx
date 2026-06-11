@@ -1,13 +1,15 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import Link from "next/link";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { useChecklistData } from "@/hooks/useChecklistData";
 import {
   ShoppingCart, GraduationCap, BookOpen, Heart, StickyNote,
   CheckCircle2, Circle, Calendar, Briefcase, Baby, ExternalLink, ClipboardCheck,
+  Timer, PhoneCall, ChevronDown, ChevronUp, Archive,
 } from "lucide-react";
+import { NEWBORN_UPDATED_EVENT, loadNewbornData } from "@/lib/newbornTracker";
 import { PageTransition } from "@/components/PageTransition";
 import { MilestoneTimeline, type MilestoneCompletionData } from "@/components/MilestoneTimeline";
 
@@ -24,7 +26,35 @@ export default function DashboardPage() {
   const { store, loaded, updateChecklistState } = useStoreContext();
   const { data: checklistData } = useChecklistData();
 
-  const { items, classes, materials, birthPlan, notes, hospitalBag, appointments, registryUrl } = store;
+  const { items, classes, materials, birthPlan, notes, hospitalBag, appointments, contacts, registryUrl } = store;
+
+  // ── Newborn tracker summary (today) ─────────────────────────────────────
+  const [tracker, setTracker] = useState({ babyName: "Baby", feeds: 0, diapers: 0, sleepMins: 0, hasEvents: false });
+  const [showPrepArchive, setShowPrepArchive] = useState(false);
+
+  useEffect(() => {
+    const compute = () => {
+      const d = loadNewbornData();
+      const isToday = (iso: string) => {
+        const x = new Date(iso);
+        const t = new Date();
+        return x.getFullYear() === t.getFullYear() && x.getMonth() === t.getMonth() && x.getDate() === t.getDate();
+      };
+      let feeds = 0, diapers = 0, sleepMins = 0;
+      for (const e of d.events) {
+        if (e.type === "feed" && isToday(e.timestamp)) feeds++;
+        else if (e.type === "diaper" && isToday(e.timestamp)) diapers++;
+        else if (e.type === "sleep" && isToday(e.startTime)) {
+          const end = e.endTime ? new Date(e.endTime).getTime() : Date.now();
+          sleepMins += (end - new Date(e.startTime).getTime()) / 60000;
+        }
+      }
+      setTracker({ babyName: d.babyName, feeds, diapers, sleepMins, hasEvents: d.events.length > 0 });
+    };
+    compute();
+    window.addEventListener(NEWBORN_UPDATED_EVENT, compute);
+    return () => window.removeEventListener(NEWBORN_UPDATED_EVENT, compute);
+  }, []);
 
   // Read skipped items from store
   const skippedItems = useMemo(
@@ -105,6 +135,25 @@ export default function DashboardPage() {
   const weeksLeft = daysLeft != null ? Math.floor(daysLeft / 7) : null;
   const extraDays = daysLeft != null ? daysLeft % 7 : null;
 
+  // ── Phase: baby is here once the due date passes or tracking has begun ──
+  const babyArrived = (daysLeft != null && daysLeft < 0) || tracker.hasEvents;
+  const laborWatch = !babyArrived && daysLeft != null && daysLeft >= 0 && daysLeft <= 14;
+
+  const babyAgeStr = useMemo(() => {
+    if (daysLeft == null || daysLeft >= 0) return null;
+    const ageDays = Math.abs(daysLeft);
+    const w = Math.floor(ageDays / 7);
+    const d = ageDays % 7;
+    if (w === 0) return `${d} day${d !== 1 ? "s" : ""} old`;
+    if (d === 0) return `${w} week${w !== 1 ? "s" : ""} old`;
+    return `${w}w ${d}d old`;
+  }, [daysLeft]);
+
+  const laborContact = useMemo(
+    () => contacts.find((c) => (c.role === "Midwife" || c.role === "OB / Doctor" || c.role === "Hospital") && c.phone),
+    [contacts]
+  );
+
   // ── Items you have (matched from inventory) ────────────────────────────
   const itemsYouHave = useMemo(() => {
     if (!checklistData) return [];
@@ -177,17 +226,51 @@ export default function DashboardPage() {
 
   return (
     <PageTransition className="max-w-5xl mx-auto pt-10 md:pt-0">
-      {/* Due date banner */}
-      {daysLeft != null && (
+      {/* Hero: post-birth baby age, or pre-birth due date countdown */}
+      {babyArrived ? (
+        <div className="rounded-2xl p-6 mb-6 bg-gradient-to-br from-sage-50 via-white to-blush-50 dark:from-sage-900/40 dark:via-stone-900 dark:to-stone-900 border border-sage-200/60 dark:border-sage-800">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-sage-600 dark:text-sage-400 font-semibold mb-1">
+            Welcome to the world
+          </p>
+          <h2 className="font-display text-3xl md:text-4xl text-stone-800 dark:text-stone-100 leading-tight">
+            {tracker.babyName}{babyAgeStr ? <span className="text-stone-400 dark:text-stone-500"> · </span> : " is here 🎉"}
+            {babyAgeStr && <span>{babyAgeStr}</span>}
+          </h2>
+
+          {/* Today strip from the tracker */}
+          <Link
+            href="/newborn"
+            className="mt-4 flex items-center gap-4 rounded-xl bg-white/70 dark:bg-stone-800/60 border border-stone-200/60 dark:border-stone-700/60 px-4 py-3 hover:border-sage-300 dark:hover:border-sage-700 transition-colors"
+          >
+            <span className="text-sm font-semibold text-stone-700 dark:text-stone-200 tabular-nums">🤱 {tracker.feeds} <span className="font-normal text-stone-400 text-xs">feeds</span></span>
+            <span className="text-sm font-semibold text-stone-700 dark:text-stone-200 tabular-nums">💧 {tracker.diapers} <span className="font-normal text-stone-400 text-xs">diapers</span></span>
+            <span className="text-sm font-semibold text-stone-700 dark:text-stone-200 tabular-nums">😴 {(tracker.sleepMins / 60).toFixed(1)}h <span className="font-normal text-stone-400 text-xs">sleep</span></span>
+            <span className="ml-auto text-xs text-sage-600 dark:text-sage-400 font-medium shrink-0">today →</span>
+          </Link>
+
+          {/* Care quick links */}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {[
+              { href: "/soothe", label: "🫂 Soothe" },
+              { href: "/symptoms", label: "🩺 Symptoms" },
+              { href: "/sleep-training", label: "🌙 Sleep Training" },
+              { href: "/growth", label: "📈 Growth" },
+            ].map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="px-3 py-1.5 rounded-full text-xs font-medium bg-white/80 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:border-sage-300 dark:hover:border-sage-700 transition-colors"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : daysLeft != null && (
         <div className={`rounded-2xl p-5 mb-6 flex items-center gap-4 ${daysLeft <= 14 ? "bg-rose-50 dark:bg-rose-950 border border-rose-200 dark:border-rose-800" : daysLeft <= 42 ? "bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800" : "bg-sage-50 dark:bg-sage-900 border border-sage-200 dark:border-sage-800"}`}>
           <Baby size={32} className={daysLeft <= 14 ? "text-rose-400" : daysLeft <= 42 ? "text-amber-500" : "text-sage-500"} />
           <div>
-            {daysLeft < 0 ? (
-              <>
-                <p className="text-lg font-bold text-stone-800 dark:text-stone-100">Baby has arrived! 🎉</p>
-                <p className="text-sm text-stone-500">{Math.abs(daysLeft)} days ago</p>
-              </>
-            ) : daysLeft === 0 ? (
+            {daysLeft === 0 ? (
               <p className="text-lg font-bold text-stone-800 dark:text-stone-100">Due date is today! 🌯</p>
             ) : (
               <>
@@ -203,17 +286,76 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Milestone timeline */}
-      {dueDate && (
+      {/* Labor watch — final two weeks */}
+      {laborWatch && (
+        <div className="card p-5 mb-6 border-rose-200/70 dark:border-rose-800/60">
+          <div className="flex items-center gap-2 mb-3">
+            <Timer size={16} className="text-rose-500" />
+            <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-200">Labor Watch</h2>
+            <span className="text-xs text-stone-400 ml-auto">{daysLeft === 0 ? "due today" : `${daysLeft}d to go`}</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <Link
+              href="/timer"
+              className="flex items-center justify-center gap-2 min-h-[48px] rounded-xl bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white text-sm font-semibold transition-colors"
+            >
+              <Timer size={15} /> Contraction Timer
+            </Link>
+            <Link
+              href="/hospital-bag"
+              className="flex items-center justify-center gap-2 min-h-[48px] rounded-xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm font-medium text-stone-600 dark:text-stone-300 hover:border-stone-300 transition-colors"
+            >
+              <Briefcase size={14} className="text-orange-500" /> Bag {stats.bagPacked}/{stats.bagTotal} packed
+            </Link>
+            {laborContact ? (
+              <a
+                href={`tel:${laborContact.phone}`}
+                className="flex items-center justify-center gap-2 min-h-[48px] rounded-xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm font-medium text-stone-600 dark:text-stone-300 hover:border-stone-300 transition-colors"
+              >
+                <PhoneCall size={14} className="text-emerald-500" /> Call {laborContact.name.split(" ")[0]}
+              </a>
+            ) : (
+              <Link
+                href="/contacts"
+                className="flex items-center justify-center gap-2 min-h-[48px] rounded-xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-sm font-medium text-stone-600 dark:text-stone-300 hover:border-stone-300 transition-colors"
+              >
+                <PhoneCall size={14} className="text-emerald-500" /> Contacts
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Milestone timeline — pregnancy only */}
+      {!babyArrived && dueDate && (
         <MilestoneTimeline dueDate={dueDate} completionData={milestoneData} />
       )}
 
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800 dark:text-stone-100">Dashboard</h1>
-        <p className="text-sm text-stone-400 dark:text-stone-500 mt-1">Your baby prep command center.</p>
+        <p className="text-sm text-stone-400 dark:text-stone-500 mt-1">
+          {babyArrived ? "Your newborn command center." : "Your baby prep command center."}
+        </p>
       </div>
 
+      {/* Post-birth: prep content folds into a collapsible archive */}
+      {babyArrived && (
+        <div className="card p-4 mb-6">
+          <button
+            onClick={() => setShowPrepArchive(s => !s)}
+            className="w-full flex items-center justify-between"
+            aria-expanded={showPrepArchive}
+          >
+            <span className="flex items-center gap-2 text-sm font-semibold text-stone-600 dark:text-stone-300">
+              <Archive size={15} className="text-stone-400" /> Pregnancy Prep Archive
+            </span>
+            {showPrepArchive ? <ChevronUp size={16} className="text-stone-400" /> : <ChevronDown size={16} className="text-stone-400" />}
+          </button>
+        </div>
+      )}
+
+      {(!babyArrived || showPrepArchive) && <>
       {/* Stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <StatCard href="/items" icon={<ShoppingCart size={20} className="text-emerald-600" />} bg="bg-emerald-50"
@@ -312,6 +454,8 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+
+      </>}
 
       {/* Post-birth checklist */}
       <PostBirthChecklist checked={postBirthChecked} onToggle={togglePostBirth} />
