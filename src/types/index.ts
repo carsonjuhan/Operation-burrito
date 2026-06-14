@@ -102,6 +102,11 @@ export interface BirthPlanPersonalInfo {
   legalName: string;
   preferredName: string;
   dueDate: string;
+  careProvider: string;
+  birthLocation: string;
+  previousBirths: string;
+  preferredLanguage: string;
+  interpreterNeeded: boolean;
   currentMedications: string;
   allergies: string;
 }
@@ -121,12 +126,26 @@ export interface BirthPlanLabour {
     ice: boolean;
     massage: boolean;
     tens: boolean;
+    aromatherapy: boolean;
+    breathingTechniques: boolean;
+    acupressure: boolean;
+    hypnobirthing: boolean;
+    sterileWaterInjections: boolean;
     other: string;
   };
   pushingPreferences: {
     varietyOfPositions: boolean;
     helpWithPushing: boolean;
     selfDirected: boolean;
+    handsAndKnees: boolean;
+    squatting: boolean;
+    sideLying: boolean;
+    supportedSquat: boolean;
+    waterBirth: boolean;
+    perinealWarmCompress: boolean;
+    perinealMassage: boolean;
+    perinealNoTouch: boolean;
+    noEpisiotomy: boolean;
     other: string;
   };
   painMedication: {
@@ -138,6 +157,13 @@ export interface BirthPlanLabour {
     epidural: boolean;
     other: string;
   };
+  labourInterventions: {
+    preferNoIV: boolean;
+    preferHepLock: boolean;
+    fetalMonitoring: "intermittent" | "continuous" | "";
+    preferNoAmniotomy: boolean;
+    preferNoOxytocin: boolean;
+  };
   photographyNotes: string;
   personalTouches: string;
   cordBloodBankDonation: boolean;
@@ -147,12 +173,19 @@ export interface BirthPlanLabour {
 
 export interface BirthPlanAfterBirth {
   skinToSkin: boolean;
+  partnerSkinToSkinIfUnable: boolean;
   cordCuttingPerson: string;
-  feedingPlan: "breastfeed" | "formula" | "other";
+  cordClampingDuration: "untilPulsationStops" | "timed" | "";
+  thirdStageManagement: "active" | "physiological" | "";
+  feedingPlan: "breastfeed" | "formula" | "combination" | "other";
   feedingNotes: string;
+  pacifierPreference: "offer" | "doNotOffer" | "";
   newbornTreatments: {
     antibioticEyeOintment: boolean;
     vitaminKInjection: boolean;
+    hearingScreening: boolean;
+    pkuBloodSpot: boolean;
+    hepatitisBVaccine: boolean;
     other: string;
   };
   placentaPreferences: string;
@@ -182,6 +215,8 @@ export interface BirthPlanInterventions {
     involvedInCare: boolean;
     other: string;
   };
+  bloodTransfusionPreferences: string;
+  studentsObservers: boolean;
 }
 
 export interface BirthPlan {

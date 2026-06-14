@@ -306,6 +306,21 @@ function PersonalTab({
         <Field label="Due Date">
           <input className="input" type="date" value={pi.dueDate} onChange={(e) => set({ dueDate: e.target.value })} />
         </Field>
+        <Field label="Care Provider (Midwife / OB / GP)">
+          <input className="input" value={pi.careProvider} onChange={(e) => set({ careProvider: e.target.value })} placeholder="Name of your primary care provider" />
+        </Field>
+        <Field label="Birth Location">
+          <input className="input" value={pi.birthLocation} onChange={(e) => set({ birthLocation: e.target.value })} placeholder="e.g. BC Women's Hospital, home birth…" />
+        </Field>
+        <Field label="Previous Pregnancies / Births">
+          <input className="input" value={pi.previousBirths} onChange={(e) => set({ previousBirths: e.target.value })} placeholder="e.g. First baby, previous vaginal birth…" />
+        </Field>
+      </Section>
+      <Section title="Language & Communication">
+        <Field label="Preferred Language">
+          <input className="input" value={pi.preferredLanguage} onChange={(e) => set({ preferredLanguage: e.target.value })} placeholder="e.g. English, Cantonese…" />
+        </Field>
+        <Check checked={pi.interpreterNeeded} onChange={(v) => set({ interpreterNeeded: v })} label="I need an interpreter" />
       </Section>
       <Section title="Medical Information">
         <Field label="Current Medications">
@@ -335,6 +350,8 @@ function LabourTab({
     patchLabour({ pushingPreferences: { ...l.pushingPreferences, ...changes } });
   const setPain = (changes: Partial<typeof l.painMedication>) =>
     patchLabour({ painMedication: { ...l.painMedication, ...changes } });
+  const setLI = (changes: Partial<typeof l.labourInterventions>) =>
+    patchLabour({ labourInterventions: { ...l.labourInterventions, ...changes } });
 
   return (
     <div>
@@ -380,19 +397,73 @@ function LabourTab({
           <Check checked={l.comfortMeasures.ice} onChange={(v) => setCM({ ice: v })} label="Ice" />
           <Check checked={l.comfortMeasures.massage} onChange={(v) => setCM({ massage: v })} label="Massage" />
           <Check checked={l.comfortMeasures.tens} onChange={(v) => setCM({ tens: v })} label="TENS machine" />
+          <Check checked={l.comfortMeasures.aromatherapy} onChange={(v) => setCM({ aromatherapy: v })} label="Aromatherapy / essential oils" />
+          <Check checked={l.comfortMeasures.breathingTechniques} onChange={(v) => setCM({ breathingTechniques: v })} label="Breathing / relaxation techniques" />
+          <Check checked={l.comfortMeasures.acupressure} onChange={(v) => setCM({ acupressure: v })} label="Acupressure / acupuncture" />
+          <Check checked={l.comfortMeasures.hypnobirthing} onChange={(v) => setCM({ hypnobirthing: v })} label="Hypnobirthing / hypnotherapy" />
+          <Check checked={l.comfortMeasures.sterileWaterInjections} onChange={(v) => setCM({ sterileWaterInjections: v })} label="Sterile water injections" />
         </div>
         <Field label="Other comfort measures">
           <input className="input" value={l.comfortMeasures.other} onChange={(e) => setCM({ other: e.target.value })} placeholder="Other…" />
         </Field>
       </Section>
 
-      <Section title="Pushing Preferences">
-        <Check checked={l.pushingPreferences.varietyOfPositions} onChange={(v) => setPP({ varietyOfPositions: v })} label="Try a variety of pushing positions" />
-        <Check checked={l.pushingPreferences.helpWithPushing} onChange={(v) => setPP({ helpWithPushing: v })} label="Have help or direction with pushing" />
-        <Check checked={l.pushingPreferences.selfDirected} onChange={(v) => setPP({ selfDirected: v })} label="Self-directed pushing" />
+      <Section title="Birth Positions & Pushing">
+        <p className="text-xs text-stone-500 mb-1">Positions I would like to try:</p>
+        <div className="grid grid-cols-2 gap-2 pl-2">
+          <Check checked={l.pushingPreferences.handsAndKnees} onChange={(v) => setPP({ handsAndKnees: v })} label="Hands and knees" />
+          <Check checked={l.pushingPreferences.squatting} onChange={(v) => setPP({ squatting: v })} label="Squatting" />
+          <Check checked={l.pushingPreferences.sideLying} onChange={(v) => setPP({ sideLying: v })} label="Side-lying" />
+          <Check checked={l.pushingPreferences.supportedSquat} onChange={(v) => setPP({ supportedSquat: v })} label="Supported squat" />
+          <Check checked={l.pushingPreferences.waterBirth} onChange={(v) => setPP({ waterBirth: v })} label="Water birth" />
+          <Check checked={l.pushingPreferences.varietyOfPositions} onChange={(v) => setPP({ varietyOfPositions: v })} label="Variety of positions" />
+        </div>
+        <p className="text-xs text-stone-500 mt-2 mb-1">Pushing style:</p>
+        <div className="pl-2 space-y-1">
+          <Check checked={l.pushingPreferences.selfDirected} onChange={(v) => setPP({ selfDirected: v })} label="Self-directed (breathe baby down)" />
+          <Check checked={l.pushingPreferences.helpWithPushing} onChange={(v) => setPP({ helpWithPushing: v })} label="Coached / directed pushing" />
+        </div>
+        <p className="text-xs text-stone-500 mt-2 mb-1">Perineal care:</p>
+        <div className="pl-2 space-y-1">
+          <Check checked={l.pushingPreferences.perinealWarmCompress} onChange={(v) => setPP({ perinealWarmCompress: v })} label="Warm compress" />
+          <Check checked={l.pushingPreferences.perinealMassage} onChange={(v) => setPP({ perinealMassage: v })} label="Perineal massage" />
+          <Check checked={l.pushingPreferences.perinealNoTouch} onChange={(v) => setPP({ perinealNoTouch: v })} label="No perineal touch" />
+          <Check checked={l.pushingPreferences.noEpisiotomy} onChange={(v) => setPP({ noEpisiotomy: v })} label="Prefer no episiotomy unless medically necessary" />
+        </div>
         <Field label="Other">
           <input className="input" value={l.pushingPreferences.other} onChange={(e) => setPP({ other: e.target.value })} placeholder="Other…" />
         </Field>
+      </Section>
+
+      <Section title="Labour Interventions">
+        <p className="text-xs text-stone-500 mb-1">IV / fluids:</p>
+        <div className="pl-2 space-y-1">
+          <Check checked={l.labourInterventions.preferNoIV} onChange={(v) => setLI({ preferNoIV: v })} label="Prefer to avoid IV unless medically necessary" />
+          <Check checked={l.labourInterventions.preferHepLock} onChange={(v) => setLI({ preferHepLock: v })} label="Hep-lock (IV access without continuous drip)" />
+        </div>
+        <Field label="Fetal monitoring preference">
+          <div className="space-y-1 mt-1">
+            {(["intermittent", "continuous", ""] as const).map((opt) => (
+              <label key={opt || "none"} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="fetalMonitoring"
+                  value={opt}
+                  checked={l.labourInterventions.fetalMonitoring === opt}
+                  onChange={() => setLI({ fetalMonitoring: opt })}
+                  className="border-stone-300 text-sage-600 focus:ring-sage-400"
+                />
+                <span className="text-sm text-stone-600">
+                  {opt === "intermittent" ? "Intermittent auscultation (wireless)" : opt === "continuous" ? "Continuous EFM" : "No preference"}
+                </span>
+              </label>
+            ))}
+          </div>
+        </Field>
+        <div className="space-y-1 mt-1">
+          <Check checked={l.labourInterventions.preferNoAmniotomy} onChange={(v) => setLI({ preferNoAmniotomy: v })} label="Prefer membranes not artificially ruptured (no amniotomy)" />
+          <Check checked={l.labourInterventions.preferNoOxytocin} onChange={(v) => setLI({ preferNoOxytocin: v })} label="Prefer to avoid Pitocin / oxytocin augmentation" />
+        </div>
       </Section>
 
       <Section title="Preferences for Pain Medication">
@@ -441,14 +512,57 @@ function AfterBirthTab({
     <div>
       <Section title="Immediately After Birth">
         <Check checked={ab.skinToSkin} onChange={(v) => patchAfterBirth({ skinToSkin: v })} label="I would like skin-to-skin contact with baby right away" />
+        <Check checked={ab.partnerSkinToSkinIfUnable} onChange={(v) => patchAfterBirth({ partnerSkinToSkinIfUnable: v })} label="If I'm unable, I'd like my partner to do skin-to-skin" />
         <Field label="Cord cutting — who would you like to cut the cord?">
           <input className="input" value={ab.cordCuttingPerson} onChange={(e) => patchAfterBirth({ cordCuttingPerson: e.target.value })} placeholder="e.g. Birth partner, midwife, I will decide at the time…" />
+        </Field>
+        <Field label="Delayed cord clamping">
+          <div className="space-y-1 mt-1">
+            {([
+              { v: "untilPulsationStops", label: "Until cord stops pulsating" },
+              { v: "timed", label: "Timed delay (ask care team)" },
+              { v: "", label: "No preference" },
+            ] as const).map(({ v, label }) => (
+              <label key={v || "none"} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="cordClampingDuration"
+                  value={v}
+                  checked={ab.cordClampingDuration === v}
+                  onChange={() => patchAfterBirth({ cordClampingDuration: v })}
+                  className="border-stone-300 text-sage-600 focus:ring-sage-400"
+                />
+                <span className="text-sm text-stone-600">{label}</span>
+              </label>
+            ))}
+          </div>
+        </Field>
+        <Field label="Third stage (placenta delivery)">
+          <div className="space-y-1 mt-1">
+            {([
+              { v: "active", label: "Active management (oxytocin injection)" },
+              { v: "physiological", label: "Physiological / expectant (no medication)" },
+              { v: "", label: "No preference / discuss with care team" },
+            ] as const).map(({ v, label }) => (
+              <label key={v || "none"} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="thirdStageManagement"
+                  value={v}
+                  checked={ab.thirdStageManagement === v}
+                  onChange={() => patchAfterBirth({ thirdStageManagement: v })}
+                  className="border-stone-300 text-sage-600 focus:ring-sage-400"
+                />
+                <span className="text-sm text-stone-600">{label}</span>
+              </label>
+            ))}
+          </div>
         </Field>
       </Section>
 
       <Section title="Feeding">
         <p className="text-xs text-stone-500 mb-2">How are you planning to feed baby?</p>
-        {(["breastfeed", "formula", "other"] as const).map((opt) => (
+        {(["breastfeed", "formula", "combination", "other"] as const).map((opt) => (
           <label key={opt} className="flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
@@ -458,11 +572,34 @@ function AfterBirthTab({
               onChange={() => patchAfterBirth({ feedingPlan: opt })}
               className="border-stone-300 text-sage-600 focus:ring-sage-400"
             />
-            <span className="text-sm text-stone-600 capitalize">{opt === "breastfeed" ? "Breastfeed" : opt === "formula" ? "Formula" : "Other"}</span>
+            <span className="text-sm text-stone-600">
+              {opt === "breastfeed" ? "Breastfeed" : opt === "formula" ? "Formula" : opt === "combination" ? "Combination (breast + formula)" : "Other"}
+            </span>
           </label>
         ))}
         <Field label="Feeding notes">
           <textarea className="textarea" rows={2} value={ab.feedingNotes} onChange={(e) => patchAfterBirth({ feedingNotes: e.target.value })} placeholder="Lactation consultant requested, no formula without asking…" />
+        </Field>
+        <Field label="Pacifier / soother">
+          <div className="space-y-1 mt-1">
+            {([
+              { v: "offer", label: "Please offer a soother" },
+              { v: "doNotOffer", label: "Please do not offer a soother" },
+              { v: "", label: "No preference" },
+            ] as const).map(({ v, label }) => (
+              <label key={v || "none"} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="pacifierPreference"
+                  value={v}
+                  checked={ab.pacifierPreference === v}
+                  onChange={() => patchAfterBirth({ pacifierPreference: v })}
+                  className="border-stone-300 text-sage-600 focus:ring-sage-400"
+                />
+                <span className="text-sm text-stone-600">{label}</span>
+              </label>
+            ))}
+          </div>
         </Field>
       </Section>
 
@@ -470,6 +607,9 @@ function AfterBirthTab({
         <p className="text-xs text-stone-500 mb-1">I would like my baby to have:</p>
         <Check checked={ab.newbornTreatments.antibioticEyeOintment} onChange={(v) => setNT({ antibioticEyeOintment: v })} label="Antibiotic eye ointment" />
         <Check checked={ab.newbornTreatments.vitaminKInjection} onChange={(v) => setNT({ vitaminKInjection: v })} label="Vitamin K injection" />
+        <Check checked={ab.newbornTreatments.hepatitisBVaccine} onChange={(v) => setNT({ hepatitisBVaccine: v })} label="Hepatitis B vaccine" />
+        <Check checked={ab.newbornTreatments.hearingScreening} onChange={(v) => setNT({ hearingScreening: v })} label="Newborn hearing screening" />
+        <Check checked={ab.newbornTreatments.pkuBloodSpot} onChange={(v) => setNT({ pkuBloodSpot: v })} label="PKU / newborn blood spot screening" />
         <Field label="Other / notes">
           <input className="input" value={ab.newbornTreatments.other} onChange={(e) => setNT({ other: e.target.value })} placeholder="Other treatments or preferences…" />
         </Field>
@@ -555,6 +695,16 @@ function InterventionsTab({
           <input className="input" value={inv.specialCareForBaby.other} onChange={(e) => setSC({ other: e.target.value })} placeholder="Other…" />
         </Field>
       </Section>
+
+      <Section title="Blood Transfusion & Other Medical Preferences">
+        <Field label="Blood transfusion preferences">
+          <textarea className="textarea" rows={2} value={inv.bloodTransfusionPreferences} onChange={(e) => patchInterventions({ bloodTransfusionPreferences: e.target.value })} placeholder="e.g. No objection / religious or personal reasons to decline…" />
+        </Field>
+      </Section>
+
+      <Section title="Students & Observers">
+        <Check checked={inv.studentsObservers} onChange={(v) => patchInterventions({ studentsObservers: v })} label="Medical students / residents are welcome to observe or participate in my care" />
+      </Section>
     </div>
   );
 }
@@ -599,27 +749,40 @@ function BirthPlanPrintView({ plan }: { plan: BirthPlan }) {
   const ab = plan.afterBirth;
   const inv = plan.interventions;
 
-  const hasPersonalInfo = !!(pi.legalName || pi.preferredName || pi.dueDate || pi.currentMedications || pi.allergies);
+  const hasPersonalInfo = !!(pi.legalName || pi.preferredName || pi.dueDate || pi.careProvider || pi.birthLocation || pi.previousBirths || pi.preferredLanguage || pi.interpreterNeeded || pi.currentMedications || pi.allergies);
   const hasLabour = !!(l.birthPartner || l.doula || l.otherSupportPeople || l.labourGoal || l.atmosphereNotes ||
     l.photographyNotes || l.personalTouches || l.otherRequests || l.cordBloodTissueBankingNotes ||
     l.comfortMeasures.walking || l.comfortMeasures.labourBall || l.comfortMeasures.tub ||
     l.comfortMeasures.shower || l.comfortMeasures.heat || l.comfortMeasures.ice ||
-    l.comfortMeasures.massage || l.comfortMeasures.tens || l.comfortMeasures.other ||
+    l.comfortMeasures.massage || l.comfortMeasures.tens || l.comfortMeasures.aromatherapy ||
+    l.comfortMeasures.breathingTechniques || l.comfortMeasures.acupressure ||
+    l.comfortMeasures.hypnobirthing || l.comfortMeasures.sterileWaterInjections || l.comfortMeasures.other ||
     l.pushingPreferences.varietyOfPositions || l.pushingPreferences.helpWithPushing ||
-    l.pushingPreferences.selfDirected || l.pushingPreferences.other ||
+    l.pushingPreferences.selfDirected || l.pushingPreferences.handsAndKnees ||
+    l.pushingPreferences.squatting || l.pushingPreferences.sideLying ||
+    l.pushingPreferences.supportedSquat || l.pushingPreferences.waterBirth ||
+    l.pushingPreferences.perinealWarmCompress || l.pushingPreferences.perinealMassage ||
+    l.pushingPreferences.perinealNoTouch || l.pushingPreferences.noEpisiotomy || l.pushingPreferences.other ||
     l.painMedication.onlyIfAsked || l.painMedication.offerIfNotCoping ||
     l.painMedication.offerAsSoonAsPossible || l.painMedication.nitrous ||
     l.painMedication.morphineFentanyl || l.painMedication.epidural || l.painMedication.other ||
+    l.labourInterventions.preferNoIV || l.labourInterventions.preferHepLock ||
+    l.labourInterventions.fetalMonitoring || l.labourInterventions.preferNoAmniotomy ||
+    l.labourInterventions.preferNoOxytocin ||
     l.cordBloodBankDonation);
-  const hasAfterBirth = !!(ab.skinToSkin || ab.cordCuttingPerson || ab.feedingPlan || ab.feedingNotes ||
-    ab.newbornTreatments.antibioticEyeOintment || ab.newbornTreatments.vitaminKInjection ||
-    ab.newbornTreatments.other || ab.placentaPreferences || ab.circumcisionPreferences || ab.visitorsPreference);
+  const hasAfterBirth = !!(ab.skinToSkin || ab.partnerSkinToSkinIfUnable || ab.cordCuttingPerson ||
+    ab.cordClampingDuration || ab.thirdStageManagement || ab.feedingPlan || ab.feedingNotes ||
+    ab.pacifierPreference || ab.newbornTreatments.antibioticEyeOintment || ab.newbornTreatments.vitaminKInjection ||
+    ab.newbornTreatments.hearingScreening || ab.newbornTreatments.pkuBloodSpot ||
+    ab.newbornTreatments.hepatitisBVaccine || ab.newbornTreatments.other ||
+    ab.placentaPreferences || ab.circumcisionPreferences || ab.visitorsPreference);
   const hasInterventions = !!(inv.unexpectedEvents.includeInAllDecisions || inv.unexpectedEvents.partnerIncluded ||
     inv.unexpectedEvents.other || inv.continuousMonitoring.preferMobile || inv.continuousMonitoring.useShowerBath ||
     inv.prolongedLabour.tryNaturalMethods || inv.prolongedLabour.offerMedication ||
     inv.assistedBirthPreference || inv.caesarianWishes ||
     inv.specialCareForBaby.skinToSkinIfPossible || inv.specialCareForBaby.helpExpressing ||
-    inv.specialCareForBaby.involvedInCare || inv.specialCareForBaby.other);
+    inv.specialCareForBaby.involvedInCare || inv.specialCareForBaby.other ||
+    inv.bloodTransfusionPreferences || inv.studentsObservers);
 
   return (
     <div className="hidden print:block birth-plan-print-view">
@@ -647,6 +810,13 @@ function BirthPlanPrintView({ plan }: { plan: BirthPlan }) {
             <PrintField label="Legal Name" value={pi.legalName} />
             <PrintField label="Preferred Name" value={pi.preferredName} />
             {pi.dueDate && <PrintField label="Due Date" value={new Date(pi.dueDate + "T00:00:00").toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })} />}
+            {pi.careProvider && <PrintField label="Care Provider" value={pi.careProvider} />}
+            {pi.birthLocation && <PrintField label="Birth Location" value={pi.birthLocation} />}
+            {pi.previousBirths && <PrintField label="Previous Births" value={pi.previousBirths} />}
+          </PrintSection>
+          <PrintSection title="Language & Communication" isEmpty={!pi.preferredLanguage && !pi.interpreterNeeded}>
+            {pi.preferredLanguage && <PrintField label="Preferred Language" value={pi.preferredLanguage} />}
+            {pi.interpreterNeeded && <PrintCheck checked={true} label="Interpreter needed" />}
           </PrintSection>
           <PrintSection title="Medical Information" isEmpty={!pi.currentMedications && !pi.allergies}>
             <PrintField label="Current Medications" value={pi.currentMedications} />
@@ -679,7 +849,9 @@ function BirthPlanPrintView({ plan }: { plan: BirthPlan }) {
           <PrintSection title="Comfort Measures" isEmpty={
             !l.comfortMeasures.walking && !l.comfortMeasures.labourBall && !l.comfortMeasures.tub &&
             !l.comfortMeasures.shower && !l.comfortMeasures.heat && !l.comfortMeasures.ice &&
-            !l.comfortMeasures.massage && !l.comfortMeasures.tens && !l.comfortMeasures.other
+            !l.comfortMeasures.massage && !l.comfortMeasures.tens && !l.comfortMeasures.aromatherapy &&
+            !l.comfortMeasures.breathingTechniques && !l.comfortMeasures.acupressure &&
+            !l.comfortMeasures.hypnobirthing && !l.comfortMeasures.sterileWaterInjections && !l.comfortMeasures.other
           }>
             <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
               <PrintCheck checked={l.comfortMeasures.walking} label="Walking, rocking, leaning" />
@@ -690,18 +862,52 @@ function BirthPlanPrintView({ plan }: { plan: BirthPlan }) {
               <PrintCheck checked={l.comfortMeasures.ice} label="Ice" />
               <PrintCheck checked={l.comfortMeasures.massage} label="Massage" />
               <PrintCheck checked={l.comfortMeasures.tens} label="TENS machine" />
+              <PrintCheck checked={l.comfortMeasures.aromatherapy} label="Aromatherapy / essential oils" />
+              <PrintCheck checked={l.comfortMeasures.breathingTechniques} label="Breathing / relaxation techniques" />
+              <PrintCheck checked={l.comfortMeasures.acupressure} label="Acupressure / acupuncture" />
+              <PrintCheck checked={l.comfortMeasures.hypnobirthing} label="Hypnobirthing / hypnotherapy" />
+              <PrintCheck checked={l.comfortMeasures.sterileWaterInjections} label="Sterile water injections" />
             </div>
             {l.comfortMeasures.other && <PrintField label="Other" value={l.comfortMeasures.other} />}
           </PrintSection>
 
-          <PrintSection title="Pushing Preferences" isEmpty={
+          <PrintSection title="Birth Positions & Pushing" isEmpty={
             !l.pushingPreferences.varietyOfPositions && !l.pushingPreferences.helpWithPushing &&
-            !l.pushingPreferences.selfDirected && !l.pushingPreferences.other
+            !l.pushingPreferences.selfDirected && !l.pushingPreferences.handsAndKnees &&
+            !l.pushingPreferences.squatting && !l.pushingPreferences.sideLying &&
+            !l.pushingPreferences.supportedSquat && !l.pushingPreferences.waterBirth &&
+            !l.pushingPreferences.perinealWarmCompress && !l.pushingPreferences.perinealMassage &&
+            !l.pushingPreferences.perinealNoTouch && !l.pushingPreferences.noEpisiotomy && !l.pushingPreferences.other
           }>
-            <PrintCheck checked={l.pushingPreferences.varietyOfPositions} label="Try a variety of pushing positions" />
-            <PrintCheck checked={l.pushingPreferences.helpWithPushing} label="Have help or direction with pushing" />
-            <PrintCheck checked={l.pushingPreferences.selfDirected} label="Self-directed pushing" />
+            <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+              <PrintCheck checked={l.pushingPreferences.handsAndKnees} label="Hands and knees" />
+              <PrintCheck checked={l.pushingPreferences.squatting} label="Squatting" />
+              <PrintCheck checked={l.pushingPreferences.sideLying} label="Side-lying" />
+              <PrintCheck checked={l.pushingPreferences.supportedSquat} label="Supported squat" />
+              <PrintCheck checked={l.pushingPreferences.waterBirth} label="Water birth" />
+              <PrintCheck checked={l.pushingPreferences.varietyOfPositions} label="Variety of positions" />
+              <PrintCheck checked={l.pushingPreferences.selfDirected} label="Self-directed pushing" />
+              <PrintCheck checked={l.pushingPreferences.helpWithPushing} label="Coached pushing" />
+              <PrintCheck checked={l.pushingPreferences.perinealWarmCompress} label="Perineal warm compress" />
+              <PrintCheck checked={l.pushingPreferences.perinealMassage} label="Perineal massage" />
+              <PrintCheck checked={l.pushingPreferences.perinealNoTouch} label="No perineal touch" />
+              <PrintCheck checked={l.pushingPreferences.noEpisiotomy} label="No episiotomy unless necessary" />
+            </div>
             {l.pushingPreferences.other && <PrintField label="Other" value={l.pushingPreferences.other} />}
+          </PrintSection>
+
+          <PrintSection title="Labour Interventions" isEmpty={
+            !l.labourInterventions.preferNoIV && !l.labourInterventions.preferHepLock &&
+            !l.labourInterventions.fetalMonitoring && !l.labourInterventions.preferNoAmniotomy &&
+            !l.labourInterventions.preferNoOxytocin
+          }>
+            {l.labourInterventions.preferNoIV && <PrintCheck checked={true} label="Prefer to avoid IV unless medically necessary" />}
+            {l.labourInterventions.preferHepLock && <PrintCheck checked={true} label="Prefer hep-lock (IV access without continuous drip)" />}
+            {l.labourInterventions.fetalMonitoring && (
+              <PrintField label="Fetal monitoring" value={l.labourInterventions.fetalMonitoring === "intermittent" ? "Intermittent auscultation" : "Continuous EFM"} />
+            )}
+            {l.labourInterventions.preferNoAmniotomy && <PrintCheck checked={true} label="Prefer membranes not artificially ruptured" />}
+            {l.labourInterventions.preferNoOxytocin && <PrintCheck checked={true} label="Prefer to avoid Pitocin / oxytocin augmentation" />}
           </PrintSection>
 
           <PrintSection title="Pain Medication Preferences" isEmpty={
@@ -741,19 +947,32 @@ function BirthPlanPrintView({ plan }: { plan: BirthPlan }) {
         <div className="mb-5">
           <h2 className="text-base font-bold text-stone-800 uppercase tracking-wide mb-3 border-b-2 border-stone-300 pb-1">After Birth</h2>
 
-          <PrintSection title="Immediately After Birth" isEmpty={!ab.skinToSkin && !ab.cordCuttingPerson}>
+          <PrintSection title="Immediately After Birth" isEmpty={!ab.skinToSkin && !ab.partnerSkinToSkinIfUnable && !ab.cordCuttingPerson && !ab.cordClampingDuration && !ab.thirdStageManagement}>
             {ab.skinToSkin && <PrintCheck checked={true} label="Skin-to-skin contact with baby right away" />}
+            {ab.partnerSkinToSkinIfUnable && <PrintCheck checked={true} label="Partner to do skin-to-skin if I am unable" />}
             {ab.cordCuttingPerson && <PrintField label="Cord cutting" value={ab.cordCuttingPerson} />}
+            {ab.cordClampingDuration && <PrintField label="Delayed cord clamping" value={ab.cordClampingDuration === "untilPulsationStops" ? "Until cord stops pulsating" : "Timed delay"} />}
+            {ab.thirdStageManagement && <PrintField label="Third stage (placenta)" value={ab.thirdStageManagement === "active" ? "Active management (oxytocin)" : "Physiological / expectant (no medication)"} />}
           </PrintSection>
 
-          <PrintSection title="Feeding" isEmpty={!ab.feedingPlan && !ab.feedingNotes}>
-            {ab.feedingPlan && <PrintField label="Feeding plan" value={ab.feedingPlan === "breastfeed" ? "Breastfeed" : ab.feedingPlan === "formula" ? "Formula" : "Other"} />}
+          <PrintSection title="Feeding" isEmpty={!ab.feedingPlan && !ab.feedingNotes && !ab.pacifierPreference}>
+            {ab.feedingPlan && <PrintField label="Feeding plan" value={ab.feedingPlan === "breastfeed" ? "Breastfeed" : ab.feedingPlan === "formula" ? "Formula" : ab.feedingPlan === "combination" ? "Combination (breast + formula)" : "Other"} />}
             {ab.feedingNotes && <PrintField label="Notes" value={ab.feedingNotes} />}
+            {ab.pacifierPreference && <PrintField label="Pacifier / soother" value={ab.pacifierPreference === "offer" ? "Please offer a soother" : "Please do not offer a soother"} />}
           </PrintSection>
 
-          <PrintSection title="Newborn Treatments" isEmpty={!ab.newbornTreatments.antibioticEyeOintment && !ab.newbornTreatments.vitaminKInjection && !ab.newbornTreatments.other}>
-            <PrintCheck checked={ab.newbornTreatments.antibioticEyeOintment} label="Antibiotic eye ointment" />
-            <PrintCheck checked={ab.newbornTreatments.vitaminKInjection} label="Vitamin K injection" />
+          <PrintSection title="Newborn Treatments" isEmpty={
+            !ab.newbornTreatments.antibioticEyeOintment && !ab.newbornTreatments.vitaminKInjection &&
+            !ab.newbornTreatments.hearingScreening && !ab.newbornTreatments.pkuBloodSpot &&
+            !ab.newbornTreatments.hepatitisBVaccine && !ab.newbornTreatments.other
+          }>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+              <PrintCheck checked={ab.newbornTreatments.antibioticEyeOintment} label="Antibiotic eye ointment" />
+              <PrintCheck checked={ab.newbornTreatments.vitaminKInjection} label="Vitamin K injection" />
+              <PrintCheck checked={ab.newbornTreatments.hepatitisBVaccine} label="Hepatitis B vaccine" />
+              <PrintCheck checked={ab.newbornTreatments.hearingScreening} label="Newborn hearing screening" />
+              <PrintCheck checked={ab.newbornTreatments.pkuBloodSpot} label="PKU / blood spot screening" />
+            </div>
             {ab.newbornTreatments.other && <PrintField label="Other" value={ab.newbornTreatments.other} />}
           </PrintSection>
 
@@ -806,6 +1025,14 @@ function BirthPlanPrintView({ plan }: { plan: BirthPlan }) {
             {inv.specialCareForBaby.involvedInCare && <PrintCheck checked={true} label="Be involved in baby's care as much as possible" />}
             {inv.specialCareForBaby.other && <PrintField label="Other" value={inv.specialCareForBaby.other} />}
           </PrintSection>
+
+          <PrintSection title="Blood Transfusion & Medical Preferences" isEmpty={!inv.bloodTransfusionPreferences}>
+            <p className="text-stone-800">{inv.bloodTransfusionPreferences}</p>
+          </PrintSection>
+
+          <PrintSection title="Students & Observers" isEmpty={!inv.studentsObservers}>
+            {inv.studentsObservers && <PrintCheck checked={true} label="Medical students / residents are welcome to observe or participate" />}
+          </PrintSection>
         </div>
       )}
 
@@ -836,6 +1063,11 @@ function countFilled(plan: BirthPlan): number {
   str(plan.personalInfo.legalName);
   str(plan.personalInfo.preferredName);
   str(plan.personalInfo.dueDate);
+  str(plan.personalInfo.careProvider);
+  str(plan.personalInfo.birthLocation);
+  str(plan.personalInfo.previousBirths);
+  str(plan.personalInfo.preferredLanguage);
+  bool(plan.personalInfo.interpreterNeeded);
   str(plan.personalInfo.currentMedications);
   str(plan.personalInfo.allergies);
 
@@ -847,20 +1079,30 @@ function countFilled(plan: BirthPlan): number {
   str(plan.labour.photographyNotes);
   str(plan.labour.otherRequests);
   const cm = plan.labour.comfortMeasures;
-  [cm.walking, cm.labourBall, cm.tub, cm.shower, cm.heat, cm.ice, cm.massage, cm.tens].forEach(bool);
+  [cm.walking, cm.labourBall, cm.tub, cm.shower, cm.heat, cm.ice, cm.massage, cm.tens,
+   cm.aromatherapy, cm.breathingTechniques, cm.acupressure, cm.hypnobirthing, cm.sterileWaterInjections].forEach(bool);
   const pp = plan.labour.pushingPreferences;
-  [pp.varietyOfPositions, pp.helpWithPushing, pp.selfDirected].forEach(bool);
+  [pp.varietyOfPositions, pp.helpWithPushing, pp.selfDirected, pp.handsAndKnees, pp.squatting,
+   pp.sideLying, pp.supportedSquat, pp.waterBirth, pp.perinealWarmCompress, pp.perinealMassage,
+   pp.perinealNoTouch, pp.noEpisiotomy].forEach(bool);
   const pm = plan.labour.painMedication;
   [pm.onlyIfAsked, pm.offerIfNotCoping, pm.offerAsSoonAsPossible, pm.nitrous, pm.morphineFentanyl, pm.epidural].forEach(bool);
+  const li = plan.labour.labourInterventions;
+  [li.preferNoIV, li.preferHepLock, li.preferNoAmniotomy, li.preferNoOxytocin].forEach(bool);
+  if (li.fetalMonitoring) n++;
   bool(plan.labour.cordBloodBankDonation);
 
   // after birth
   bool(plan.afterBirth.skinToSkin);
+  bool(plan.afterBirth.partnerSkinToSkinIfUnable);
   str(plan.afterBirth.cordCuttingPerson);
+  if (plan.afterBirth.cordClampingDuration) n++;
+  if (plan.afterBirth.thirdStageManagement) n++;
   if (plan.afterBirth.feedingPlan) n++;
   str(plan.afterBirth.feedingNotes);
+  if (plan.afterBirth.pacifierPreference) n++;
   const nt = plan.afterBirth.newbornTreatments;
-  [nt.antibioticEyeOintment, nt.vitaminKInjection].forEach(bool);
+  [nt.antibioticEyeOintment, nt.vitaminKInjection, nt.hearingScreening, nt.pkuBloodSpot, nt.hepatitisBVaccine].forEach(bool);
   str(plan.afterBirth.placentaPreferences);
   str(plan.afterBirth.circumcisionPreferences);
   str(plan.afterBirth.visitorsPreference);
@@ -876,6 +1118,8 @@ function countFilled(plan: BirthPlan): number {
   str(plan.interventions.caesarianWishes);
   const sc = plan.interventions.specialCareForBaby;
   [sc.skinToSkinIfPossible, sc.helpExpressing, sc.involvedInCare].forEach(bool);
+  str(plan.interventions.bloodTransfusionPreferences);
+  bool(plan.interventions.studentsObservers);
 
   str(plan.notes);
 
