@@ -141,6 +141,12 @@ export function Sidebar() {
     setStorageWarning(isStorageWarning());
   }, [pathname]);
 
+  useEffect(() => {
+    if (!autoSyncing) {
+      setSyncState({ connected: !!(getPAT() && getGistId()), lastSynced: getLastSynced() });
+    }
+  }, [autoSyncing]);
+
   // Close mobile menu on route change
   useEffect(() => { setOpen(false); }, [pathname]);
 
