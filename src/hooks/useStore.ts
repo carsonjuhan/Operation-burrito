@@ -150,10 +150,36 @@ function loadStore(): AppStore {
     if (!raw) return DEFAULT_STORE;
     const parsed = JSON.parse(raw) as Partial<AppStore>;
     const storedPlan = parsed.birthPlan as unknown;
-    const birthPlan =
-      storedPlan && typeof storedPlan === "object" && !("sections" in (storedPlan as object))
-        ? (storedPlan as AppStore["birthPlan"])
-        : DEFAULT_STORE.birthPlan;
+    const rawPlan = storedPlan && typeof storedPlan === "object" && !("sections" in (storedPlan as object))
+      ? (storedPlan as AppStore["birthPlan"])
+      : null;
+    const def = DEFAULT_BIRTH_PLAN;
+    const birthPlan: AppStore["birthPlan"] = rawPlan ? {
+      ...def,
+      ...rawPlan,
+      personalInfo: { ...def.personalInfo, ...rawPlan.personalInfo },
+      labour: {
+        ...def.labour,
+        ...rawPlan.labour,
+        comfortMeasures: { ...def.labour.comfortMeasures, ...rawPlan.labour?.comfortMeasures },
+        pushingPreferences: { ...def.labour.pushingPreferences, ...rawPlan.labour?.pushingPreferences },
+        painMedication: { ...def.labour.painMedication, ...rawPlan.labour?.painMedication },
+        labourInterventions: { ...def.labour.labourInterventions, ...rawPlan.labour?.labourInterventions },
+      },
+      afterBirth: {
+        ...def.afterBirth,
+        ...rawPlan.afterBirth,
+        newbornTreatments: { ...def.afterBirth.newbornTreatments, ...rawPlan.afterBirth?.newbornTreatments },
+      },
+      interventions: {
+        ...def.interventions,
+        ...rawPlan.interventions,
+        unexpectedEvents: { ...def.interventions.unexpectedEvents, ...rawPlan.interventions?.unexpectedEvents },
+        continuousMonitoring: { ...def.interventions.continuousMonitoring, ...rawPlan.interventions?.continuousMonitoring },
+        prolongedLabour: { ...def.interventions.prolongedLabour, ...rawPlan.interventions?.prolongedLabour },
+        specialCareForBaby: { ...def.interventions.specialCareForBaby, ...rawPlan.interventions?.specialCareForBaby },
+      },
+    } : def;
     // Migrate checklist state from separate localStorage keys if not yet in store
     const migrateList = (storeVal: string[] | undefined, lsKey: string): string[] => {
       if (storeVal && storeVal.length > 0) return storeVal;
