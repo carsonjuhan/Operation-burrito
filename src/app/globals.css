@@ -212,6 +212,7 @@ button:focus:not(:focus-visible),
 
   /* Hide chrome and screen-only elements */
   aside,
+  nav,
   .print-hide {
     display: none !important;
   }
