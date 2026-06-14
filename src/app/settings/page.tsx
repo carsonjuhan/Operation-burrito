@@ -371,6 +371,9 @@ export default function SettingsPage() {
             {connected ? "GitHub Connected" : "Step 1 — Connect GitHub"}
           </h2>
           {connected && <CheckCircle2 size={16} className="text-emerald-500" />}
+          {connected && lastSynced && (
+            <span className="text-xs text-stone-400 ml-1">· synced {new Date(lastSynced).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+          )}
         </div>
 
         {!connected ? (
