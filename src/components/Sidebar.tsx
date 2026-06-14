@@ -404,7 +404,14 @@ export function Sidebar() {
         <div className="h-12 px-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-base" aria-hidden="true">🌯</span>
-            <span className="text-sm font-display font-bold text-stone-800 dark:text-stone-100">Operation Burrito</span>
+            <div>
+              <span className="text-sm font-display font-bold text-stone-800 dark:text-stone-100">Operation Burrito</span>
+              {syncState.connected && syncState.lastSynced && (
+                <p className="text-[10px] text-stone-400 dark:text-stone-500 leading-none mt-0.5">
+                  {autoSyncing ? "Syncing…" : `synced ${new Date(syncState.lastSynced).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
+                </p>
+              )}
+            </div>
           </div>
           <button
             onClick={() => setOpen(true)}
