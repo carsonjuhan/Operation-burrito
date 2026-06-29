@@ -410,7 +410,15 @@ export interface DiaperEvent {
   notes?: string;
 }
 
-export type NewbornLogEvent = FeedEvent | SleepEvent | DiaperEvent;
+export interface MedEvent {
+  id: string;
+  type: "med";
+  timestamp: string;
+  medName?: string;
+  notes?: string;
+}
+
+export type NewbornLogEvent = FeedEvent | SleepEvent | DiaperEvent | MedEvent;
 
 export interface NewbornTrackerData {
   events: NewbornLogEvent[];

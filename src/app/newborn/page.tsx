@@ -1,15 +1,23 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Baby, Moon, Sun, X, ChevronDown, ChevronUp, Pencil, Check, Square, Stethoscope, LineChart } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Baby, Moon, Sun, X, ChevronDown, ChevronUp, Pencil, Check, Square, Stethoscope, LineChart, Pill, Bell, BellOff, Settings2 } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
 import { SleepTrainingPanel } from "@/components/SleepTrainingPanel";
 import { useToast } from "@/contexts/ToastContext";
 import { useStoreContext } from "@/contexts/StoreContext";
+import { useNotifications } from "@/hooks/useNotifications";
 import { getLastSynced, getPAT, getGistId } from "@/lib/gistSync";
 import { relativeTime } from "@/lib/conflictDetection";
-import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, NewbornLogEvent, NewbornTrackerData } from "@/types";
+import {
+  loadReminderSettings,
+  saveReminderSettings,
+  unlockAudio,
+  playAlertSound,
+  type ReminderSettings,
+} from "@/lib/reminderTimers";
+import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, MedEvent, NewbornLogEvent, NewbornTrackerData } from "@/types";
 import {
   FEED_ICON,
   FEED_LABELS,
@@ -28,6 +36,20 @@ function clockStr(startIso: string, now: number): string {
   const m = Math.floor(secs / 60);
   const s = secs % 60;
   return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+// Countdown label for a reminder timer: "in 1h 23m", "5m overdue", "due now"
+function dueLabel(dueAt: number, now: number): { text: string; overdue: boolean } {
+  const ms = dueAt - now;
+  const overdue = ms <= 0;
+  const totalMin = Math.floor(Math.abs(ms) / 60000);
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  const hm = h > 0 ? `${h}h ${m}m` : `${m}m`;
+  return {
+    text: overdue ? (totalMin === 0 ? "due now" : `${hm} overdue`) : `in ${hm}`,
+    overdue,
+  };
 }
 
 // First-week diaper expectations (day of life → minimum wet / dirty)
@@ -431,6 +453,20 @@ export default function NewbornTrackerPage() {
   const { store } = useStoreContext();
   const [nightMode, setNightMode] = useState(false);
   const [syncedAgo, setSyncedAgo] = useState("");
+  const [reminders, setReminders] = useState<ReminderSettings>(() => loadReminderSettings());
+  const [showReminderSettings, setShowReminderSettings] = useState(false);
+  const { permission: notifPermission, requestPermission } = useNotifications();
+  // Track which due-time we've already alerted for, so each cycle alerts once
+  const alertedFeedRef = useRef<number>(0);
+  const alertedMedRef = useRef<number>(0);
+
+  const updateReminders = useCallback((patch: Partial<ReminderSettings>) => {
+    setReminders(prev => {
+      const next = { ...prev, ...patch };
+      saveReminderSettings(next);
+      return next;
+    });
+  }, []);
 
   useEffect(() => { setData(loadData()); }, []);
   useEffect(() => {
@@ -502,13 +538,43 @@ export default function NewbornTrackerPage() {
     : null;
   const activeSleep = allEvents.find(e => e.type === "sleep" && !(e as SleepEvent).endTime) as SleepEvent | undefined;
   const lastEndedSleep = allEvents.find(e => e.type === "sleep" && !!(e as SleepEvent).endTime) as SleepEvent | undefined;
+  const lastMed = allEvents.find(e => e.type === "med") as MedEvent | undefined;
 
-  // Fast tick while a sleep timer is running, so the counter ticks live
+  // Next-due times for the reminder timers (null when timer off or no log yet)
+  const feedDueAt = reminders.feedEnabled && lastFeed
+    ? new Date(lastFeed.timestamp).getTime() + reminders.feedHours * 3600_000
+    : null;
+  const medDueAt = reminders.medEnabled && lastMed
+    ? new Date(lastMed.timestamp).getTime() + reminders.medHours * 3600_000
+    : null;
+
+  // Fast tick while a sleep timer is running OR a reminder is active, so the
+  // counter ticks live and we catch the due moment within a second.
   useEffect(() => {
-    if (!activeSleep) return;
+    if (!activeSleep && feedDueAt === null && medDueAt === null) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, [activeSleep?.id]);
+  }, [activeSleep?.id, feedDueAt, medDueAt]);
+
+  // Fire the alert (sound + vibrate + notification) once when a timer comes due
+  useEffect(() => {
+    const fire = (label: string) => {
+      if (reminders.soundEnabled) playAlertSound();
+      vibrate();
+      if (notifPermission === "granted") {
+        try { new Notification(label, { body: "Tap to open Operation Burrito", tag: label }); } catch { /* ignore */ }
+      }
+      addToast(label, "info");
+    };
+    if (feedDueAt !== null && now >= feedDueAt && alertedFeedRef.current !== feedDueAt) {
+      alertedFeedRef.current = feedDueAt;
+      fire("🍼 Feed due");
+    }
+    if (medDueAt !== null && now >= medDueAt && alertedMedRef.current !== medDueAt) {
+      alertedMedRef.current = medDueAt;
+      fire("💊 Meds due");
+    }
+  }, [now, feedDueAt, medDueAt, reminders.soundEnabled, notifPermission, addToast]);
 
   const todayFeedings = todayEvents.filter(e => e.type === "feed").length;
   const todayDiapers = todayEvents.filter(e => e.type === "diaper").length;
@@ -576,6 +642,7 @@ export default function NewbornTrackerPage() {
   }, [update, addToast]);
 
   const logFeed = (feedType: FeedType) => {
+    unlockAudio(); // prime audio within this tap so the timer can beep later
     // Nursing feeds start a live timer; bottle/formula log instantly
     if (feedType === "breast-left" || feedType === "breast-right" || feedType === "both") {
       update(d => ({ ...d, activeNursing: { feedType, startTime: new Date().toISOString() } }));
@@ -643,6 +710,17 @@ export default function NewbornTrackerPage() {
     }));
     vibrate();
     addToast(`Logged ${diaperType} diaper`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
+  };
+
+  const logMed = () => {
+    unlockAudio(); // prime audio within this tap so the timer can beep later
+    const id = Date.now().toString();
+    update(d => ({
+      ...d,
+      events: [...d.events, { id, type: "med", timestamp: new Date().toISOString() } as MedEvent],
+    }));
+    vibrate();
+    addToast("Logged medication", "success", { label: "Undo", onClick: () => deleteEvent(id) });
   };
 
   const saveEditedEvent = useCallback((updated: NewbornLogEvent) => {
@@ -826,6 +904,106 @@ export default function NewbornTrackerPage() {
         </div>
       </div>
 
+      {/* Next Due reminders */}
+      <div className="card p-4 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Next Due</p>
+          <button
+            onClick={() => setShowReminderSettings(s => !s)}
+            className="text-stone-400 hover:text-sage-500 dark:text-stone-500 dark:hover:text-sage-400 p-1 rounded-lg transition-colors"
+            aria-label="Reminder settings"
+          >
+            <Settings2 size={15} />
+          </button>
+        </div>
+
+        {([
+          { key: "feed" as const, icon: "🍼", label: "Feed", dueAt: feedDueAt, hours: reminders.feedHours, enabled: reminders.feedEnabled, hasLog: !!lastFeed },
+          { key: "med" as const, icon: "💊", label: "Meds", dueAt: medDueAt, hours: reminders.medHours, enabled: reminders.medEnabled, hasLog: !!lastMed },
+        ]).map(t => {
+          const d = t.dueAt !== null ? dueLabel(t.dueAt, now) : null;
+          return (
+            <div key={t.key} className="flex items-center justify-between py-1.5">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base leading-none">{t.icon}</span>
+                <div>
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-200">{t.label} · every {t.hours}h</p>
+                  <p className="text-[10px] text-stone-400">
+                    {!t.enabled ? "reminder off" : !t.hasLog ? `log a ${t.label.toLowerCase()} to start` : "auto-resets from last log"}
+                  </p>
+                </div>
+              </div>
+              {t.enabled && d && (
+                <span className={clsx(
+                  "text-sm font-semibold tabular-nums",
+                  d.overdue ? "text-rose-500 dark:text-rose-400" : "text-sage-600 dark:text-sage-400"
+                )}>
+                  {d.text}
+                </span>
+              )}
+            </div>
+          );
+        })}
+
+        {showReminderSettings && (
+          <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-800 space-y-3">
+            {([
+              { key: "feed" as const, label: "Feed", enabled: reminders.feedEnabled, hours: reminders.feedHours, enKey: "feedEnabled" as const, hrKey: "feedHours" as const },
+              { key: "med" as const, label: "Meds", enabled: reminders.medEnabled, hours: reminders.medHours, enKey: "medEnabled" as const, hrKey: "medHours" as const },
+            ]).map(t => (
+              <div key={t.key} className="flex items-center justify-between gap-3">
+                <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300">
+                  <input
+                    type="checkbox"
+                    checked={t.enabled}
+                    onChange={e => updateReminders({ [t.enKey]: e.target.checked })}
+                    className="accent-sage-500"
+                  />
+                  {t.label} reminder
+                </label>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] text-stone-400">every</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={24}
+                    step={0.5}
+                    value={t.hours}
+                    onChange={e => updateReminders({ [t.hrKey]: Math.max(0.5, Number(e.target.value) || t.hours) })}
+                    className="w-14 px-2 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center"
+                  />
+                  <span className="text-[11px] text-stone-400">h</span>
+                </div>
+              </div>
+            ))}
+            <div className="flex items-center justify-between gap-3 pt-1">
+              <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300">
+                <input
+                  type="checkbox"
+                  checked={reminders.soundEnabled}
+                  onChange={e => { unlockAudio(); updateReminders({ soundEnabled: e.target.checked }); }}
+                  className="accent-sage-500"
+                />
+                Sound alert
+              </label>
+              {notifPermission !== "granted" ? (
+                <button onClick={() => requestPermission()} className="btn-secondary text-[11px]">
+                  <Bell size={12} /> Enable notifications
+                </button>
+              ) : (
+                <span className="text-[11px] text-emerald-500 flex items-center gap-1">
+                  <Bell size={12} /> Notifications on
+                </span>
+              )}
+            </div>
+            <p className="text-[10px] text-stone-400 leading-relaxed">
+              <BellOff size={10} className="inline -mt-0.5 mr-0.5" />
+              Sound &amp; alerts only fire while this app is open on screen — iOS can&apos;t wake a web app in the background.
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Quick Log */}
       <div className="card p-4 mb-4">
         <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-4">Quick Log</p>
@@ -893,6 +1071,16 @@ export default function NewbornTrackerPage() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="mt-4">
+          <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">💊 Medication</p>
+          <button
+            onClick={logMed}
+            className="w-full min-h-[56px] px-4 py-2 rounded-xl text-sm font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 active:bg-rose-200 dark:bg-rose-900/20 dark:text-rose-300 dark:hover:bg-rose-900/40 border border-rose-200 dark:border-rose-800 transition-colors select-none touch-manipulation"
+          >
+            <Pill size={15} className="inline mr-1.5 -mt-0.5" /> Log Medication
+          </button>
         </div>
       </div>
 
@@ -1090,6 +1278,28 @@ function LogRow({
           </div>
         </div>
         {actions}
+      </div>
+    );
+  }
+
+  if (event.type === "med") {
+    return (
+      <div className="flex items-center justify-between py-2">
+        <div className="flex items-center gap-2.5">
+          <span className="text-base leading-none">💊</span>
+          <div>
+            <p className="text-xs font-medium text-stone-700 dark:text-stone-200">{event.medName || "Medication"}</p>
+            <p className="text-[10px] text-stone-400">{formatTime(event.timestamp, showDate)}</p>
+          </div>
+        </div>
+        {/* Med events have no edit form yet — delete only */}
+        <button
+          onClick={() => onDelete(event.id)}
+          className="text-stone-300 hover:text-red-400 dark:text-stone-600 dark:hover:text-red-400 transition-colors p-3 rounded-lg active:bg-red-50 dark:active:bg-red-950/30 shrink-0"
+          aria-label="Delete"
+        >
+          <X size={14} />
+        </button>
       </div>
     );
   }
