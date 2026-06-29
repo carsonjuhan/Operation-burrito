@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Baby, Moon, Sun, X, ChevronDown, ChevronUp, Pencil, Check, ChevronRight, Square, Stethoscope } from "lucide-react";
+import { Baby, Moon, Sun, X, ChevronDown, ChevronUp, Pencil, Check, Square, Stethoscope, LineChart } from "lucide-react";
 import clsx from "clsx";
-import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
+import { SleepTrainingPanel } from "@/components/SleepTrainingPanel";
 import { useToast } from "@/contexts/ToastContext";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { getLastSynced, getPAT, getGistId } from "@/lib/gistSync";
@@ -422,6 +422,7 @@ export default function NewbornTrackerPage() {
   const { addToast } = useToast();
   const [data, setData] = useState<NewbornTrackerData>({ events: [], babyName: "Baby" });
   const [now, setNow] = useState(Date.now());
+  const [tab, setTab] = useState<"log" | "trends" | "sleep">("log");
   const [showHistory, setShowHistory] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
@@ -501,6 +502,13 @@ export default function NewbornTrackerPage() {
     : null;
   const activeSleep = allEvents.find(e => e.type === "sleep" && !(e as SleepEvent).endTime) as SleepEvent | undefined;
   const lastEndedSleep = allEvents.find(e => e.type === "sleep" && !!(e as SleepEvent).endTime) as SleepEvent | undefined;
+
+  // Fast tick while a sleep timer is running, so the counter ticks live
+  useEffect(() => {
+    if (!activeSleep) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [activeSleep?.id]);
 
   const todayFeedings = todayEvents.filter(e => e.type === "feed").length;
   const todayDiapers = todayEvents.filter(e => e.type === "diaper").length;
@@ -748,6 +756,31 @@ export default function NewbornTrackerPage() {
         )}
       </div>
 
+      {/* Tabs */}
+      <div className="flex gap-1 mb-5 p-1 rounded-2xl bg-stone-100 dark:bg-stone-800/60">
+        {([
+          { id: "log", label: "Log", icon: Baby },
+          { id: "trends", label: "Trends", icon: LineChart },
+          { id: "sleep", label: "Sleep", icon: Moon },
+        ] as const).map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            onClick={() => setTab(id)}
+            className={clsx(
+              "flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-sm font-semibold transition-colors",
+              tab === id
+                ? "bg-white dark:bg-stone-700 text-sage-700 dark:text-sage-300 shadow-sm"
+                : "text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200"
+            )}
+            aria-current={tab === id ? "true" : undefined}
+          >
+            <Icon size={15} /> {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === "log" && (
+      <>
       {/* Status Cards */}
       <div className="grid grid-cols-3 gap-3 mb-5">
         <div className="card p-3 text-center">
@@ -842,7 +875,7 @@ export default function NewbornTrackerPage() {
           >
             <Moon size={15} className="inline mr-1.5 -mt-0.5" />
             {activeSleep
-              ? `End Sleep · ${durationStr(activeSleep.startTime)}`
+              ? `End Sleep · ${clockStr(activeSleep.startTime, now)}`
               : "Start Sleep"}
           </button>
         </div>
@@ -884,6 +917,18 @@ export default function NewbornTrackerPage() {
           </div>
         )}
       </div>
+
+      </>
+      )}
+
+      {tab === "trends" && (
+      <>
+      {allEvents.length === 0 && (
+        <div className="card p-8 text-center">
+          <LineChart size={28} className="mx-auto mb-2 text-stone-200 dark:text-stone-700" />
+          <p className="text-sm text-stone-400">No data yet. Log feeds, sleep and diapers to see trends and a pediatrician summary here.</p>
+        </div>
+      )}
 
       {/* Pediatrician summary */}
       {allEvents.length > 0 && (
@@ -954,20 +999,10 @@ export default function NewbornTrackerPage() {
         </div>
       )}
 
-      {/* Sleep training entry point */}
-      <Link
-        href="/sleep-training"
-        className="card p-4 mt-4 flex items-center gap-3 hover:bg-indigo-50/60 dark:hover:bg-indigo-900/10 transition-colors"
-      >
-        <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl shrink-0">
-          <Moon size={18} className="text-indigo-600 dark:text-indigo-400" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">Sleep Training</p>
-          <p className="text-xs text-stone-400">Ferber intervals, nightly log & progress tracker</p>
-        </div>
-        <ChevronRight size={16} className="text-stone-300 shrink-0" />
-      </Link>
+      </>
+      )}
+
+      {tab === "sleep" && <SleepTrainingPanel showHeader={false} />}
     </PageTransition>
   );
 }
