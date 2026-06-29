@@ -26,6 +26,33 @@ function deviceFilename(): string {
   return `device-${getDeviceId()}.json`;
 }
 
+/**
+ * Generate a fresh device id for this device. Use when two devices have ended
+ * up sharing the same id (e.g. cloned storage) so they stop overwriting one
+ * another's file. The next push creates a new device-<id>.json.
+ */
+export function resetDeviceId(): string {
+  const id = crypto.randomUUID().slice(0, 8);
+  localStorage.setItem(DEVICE_ID_KEY, id);
+  return id;
+}
+
+/**
+ * List the data file names present in the gist (device-*.json plus any legacy
+ * combined file). Lets the UI show how many devices are actively syncing.
+ */
+export async function listDeviceFiles(pat: string, gistId: string): Promise<string[]> {
+  const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+    headers: headers(pat),
+  });
+  if (!res.ok) throw new Error(`Failed to list Gist files: ${res.status}`);
+  const data = await res.json();
+  const files = (data.files ?? {}) as Record<string, unknown>;
+  return Object.keys(files).filter(
+    (n) => n === GIST_FILENAME || /^device-.*\.json$/.test(n)
+  );
+}
+
 // ── Local config ───────────────────────────────────────────────────────────
 
 export function getPAT(): string {

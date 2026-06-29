@@ -14,6 +14,9 @@ import {
   getLastSynced,
   clearGistConfig,
   fetchGistUpdatedAt,
+  getDeviceId,
+  resetDeviceId,
+  listDeviceFiles,
 } from "@/lib/gistSync";
 import {
   hasLocalChanges,
@@ -71,6 +74,8 @@ export default function SettingsPage() {
 
   const [pat, setPATState] = useState("");
   const [gistId, setGistIdState] = useState("");
+  const [deviceId, setDeviceIdState] = useState("");
+  const [deviceFiles, setDeviceFiles] = useState<string[] | null>(null);
   const [gistIdInput, setGistIdInput] = useState("");
   const [username, setUsername] = useState("");
   const [lastSynced, setLastSyncedState] = useState("");
@@ -112,7 +117,17 @@ export default function SettingsPage() {
     }
     if (savedGistId) setGistIdState(savedGistId);
     if (savedSynced) setLastSyncedState(savedSynced);
+    setDeviceIdState(getDeviceId());
+    if (savedPAT && savedGistId) {
+      listDeviceFiles(savedPAT, savedGistId)
+        .then(setDeviceFiles)
+        .catch(() => setDeviceFiles(null));
+    }
   }, []);
+
+  function handleResetDeviceId() {
+    setDeviceIdState(resetDeviceId());
+  }
 
   // ── Connect ──────────────────────────────────────────────────────────────
 
@@ -457,6 +472,32 @@ export default function SettingsPage() {
               >
                 View on GitHub <ExternalLink size={11} />
               </a>
+              <div className="mt-3 pt-3 border-t border-stone-200">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-xs text-stone-400 mb-1">This device</p>
+                    <p className="text-xs font-mono text-stone-600 break-all">
+                      device-{deviceId}.json
+                    </p>
+                  </div>
+                  <button onClick={handleResetDeviceId} className="btn-secondary text-xs shrink-0">
+                    Reset ID
+                  </button>
+                </div>
+                {deviceFiles !== null && (
+                  <p className="text-[11px] text-stone-500 mt-2">
+                    {deviceFiles.length} device file{deviceFiles.length === 1 ? "" : "s"} syncing to
+                    this Gist:{" "}
+                    <span className="font-mono">{deviceFiles.join(", ")}</span>
+                  </p>
+                )}
+                <p className="text-[11px] text-stone-400 mt-1">
+                  This device pushes to and is identified by the file above. Each device should
+                  have a unique ID — if two devices show the same ID, they share one file and can
+                  overwrite each other. Tap <span className="font-semibold">Reset ID</span> on one
+                  device if they collide.
+                </p>
+              </div>
             </div>
           )}
 
