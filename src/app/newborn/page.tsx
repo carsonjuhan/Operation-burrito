@@ -13,6 +13,7 @@ import { relativeTime } from "@/lib/conflictDetection";
 import {
   loadReminderSettings,
   saveReminderSettings,
+  feedAnchorMs,
   unlockAudio,
   playAlertSound,
   type ReminderSettings,
@@ -50,6 +51,18 @@ function dueLabel(dueAt: number, now: number): { text: string; overdue: boolean 
     text: overdue ? (totalMin === 0 ? "due now" : `${hm} overdue`) : `in ${hm}`,
     overdue,
   };
+}
+
+// Feed window status: before it opens, open, or overdue past the max.
+function feedWindowLabel(start: number, end: number, now: number): { text: string; tone: "wait" | "open" | "overdue" } {
+  const fmt = (ms: number) => {
+    const min = Math.floor(Math.abs(ms) / 60000);
+    const h = Math.floor(min / 60), m = min % 60;
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  };
+  if (now < start) return { text: `in ${fmt(start - now)}`, tone: "wait" };
+  if (now <= end) return { text: `now · ${fmt(end - now)} left`, tone: "open" };
+  return { text: `${fmt(now - end)} overdue`, tone: "overdue" };
 }
 
 // First-week diaper expectations (day of life → minimum wet / dirty)
@@ -564,10 +577,14 @@ export default function NewbornTrackerPage() {
   const lastEndedSleep = allEvents.find(e => e.type === "sleep" && !!(e as SleepEvent).endTime) as SleepEvent | undefined;
   const lastMed = allEvents.find(e => e.type === "med") as MedEvent | undefined;
 
-  // Next-due times for the reminder timers (null when timer off or no log yet)
-  const feedDueAt = reminders.feedEnabled && lastFeed
-    ? new Date(lastFeed.timestamp).getTime() + reminders.feedHours * 3600_000
+  // Feed window: anchored to the FIRST feed of the latest cluster (so logging
+  // both breasts in one session doesn't push the next feed out). Window opens
+  // at feedMinHours and is "overdue" past feedMaxHours.
+  const feedAnchor = reminders.feedEnabled
+    ? feedAnchorMs(allEvents.filter(e => e.type === "feed").map(e => new Date((e as FeedEvent).timestamp).getTime()))
     : null;
+  const feedWindowStart = feedAnchor !== null ? feedAnchor + reminders.feedMinHours * 3600_000 : null;
+  const feedWindowEnd = feedAnchor !== null ? feedAnchor + reminders.feedMaxHours * 3600_000 : null;
   const medDueAt = reminders.medEnabled && lastMed
     ? new Date(lastMed.timestamp).getTime() + reminders.medHours * 3600_000
     : null;
@@ -575,10 +592,10 @@ export default function NewbornTrackerPage() {
   // Fast tick while a sleep timer is running OR a reminder is active, so the
   // counter ticks live and we catch the due moment within a second.
   useEffect(() => {
-    if (!activeSleep && feedDueAt === null && medDueAt === null) return;
+    if (!activeSleep && feedWindowStart === null && medDueAt === null) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, [activeSleep?.id, feedDueAt, medDueAt]);
+  }, [activeSleep?.id, feedWindowStart, medDueAt]);
 
   // Fire the alert (sound + vibrate + notification) once when a timer comes due
   useEffect(() => {
@@ -590,15 +607,16 @@ export default function NewbornTrackerPage() {
       }
       addToast(label, "info");
     };
-    if (feedDueAt !== null && now >= feedDueAt && alertedFeedRef.current !== feedDueAt) {
-      alertedFeedRef.current = feedDueAt;
-      fire("🍼 Feed due");
+    // Feed alert fires when the window opens (feedMinHours since the cluster start)
+    if (feedWindowStart !== null && now >= feedWindowStart && alertedFeedRef.current !== feedWindowStart) {
+      alertedFeedRef.current = feedWindowStart;
+      fire("🍼 Feed window open");
     }
     if (medDueAt !== null && now >= medDueAt && alertedMedRef.current !== medDueAt) {
       alertedMedRef.current = medDueAt;
       fire("💊 Meds due");
     }
-  }, [now, feedDueAt, medDueAt, reminders.soundEnabled, notifPermission, addToast]);
+  }, [now, feedWindowStart, medDueAt, reminders.soundEnabled, notifPermission, addToast]);
 
   const todayFeedings = todayEvents.filter(e => e.type === "feed").length;
   const todayDiapers = todayEvents.filter(e => e.type === "diaper").length;
@@ -941,23 +959,46 @@ export default function NewbornTrackerPage() {
           </button>
         </div>
 
-        {([
-          { key: "feed" as const, icon: "🍼", label: "Feed", dueAt: feedDueAt, hours: reminders.feedHours, enabled: reminders.feedEnabled, hasLog: !!lastFeed },
-          { key: "med" as const, icon: "💊", label: "Meds", dueAt: medDueAt, hours: reminders.medHours, enabled: reminders.medEnabled, hasLog: !!lastMed },
-        ]).map(t => {
-          const d = t.dueAt !== null ? dueLabel(t.dueAt, now) : null;
+        {/* Feed — window between feedMinHours and feedMaxHours, anchored to cluster start */}
+        {(() => {
+          const fw = feedWindowStart !== null && feedWindowEnd !== null
+            ? feedWindowLabel(feedWindowStart, feedWindowEnd, now) : null;
+          const toneCls = fw?.tone === "overdue" ? "text-rose-500 dark:text-rose-400"
+            : fw?.tone === "open" ? "text-amber-500 dark:text-amber-400"
+            : "text-sage-600 dark:text-sage-400";
           return (
-            <div key={t.key} className="flex items-center justify-between py-1.5">
+            <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2.5">
-                <span className="text-base leading-none">{t.icon}</span>
+                <span className="text-base leading-none">🍼</span>
                 <div>
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-200">{t.label} · every {t.hours}h</p>
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-200">Feed · {reminders.feedMinHours}–{reminders.feedMaxHours}h window</p>
                   <p className="text-[10px] text-stone-400">
-                    {!t.enabled ? "reminder off" : !t.hasLog ? `log a ${t.label.toLowerCase()} to start` : "auto-resets from last log"}
+                    {!reminders.feedEnabled ? "reminder off" : !lastFeed ? "log a feed to start" : "from first feed of the session"}
                   </p>
                 </div>
               </div>
-              {t.enabled && d && (
+              {reminders.feedEnabled && fw && (
+                <span className={clsx("text-sm font-semibold tabular-nums text-right", toneCls)}>{fw.text}</span>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* Meds — fixed interval from last dose */}
+        {(() => {
+          const d = medDueAt !== null ? dueLabel(medDueAt, now) : null;
+          return (
+            <div className="flex items-center justify-between py-1.5">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base leading-none">💊</span>
+                <div>
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-200">Meds · every {reminders.medHours}h</p>
+                  <p className="text-[10px] text-stone-400">
+                    {!reminders.medEnabled ? "reminder off" : !lastMed ? "log a med to start" : "auto-resets from last dose"}
+                  </p>
+                </div>
+              </div>
+              {reminders.medEnabled && d && (
                 <span className={clsx(
                   "text-sm font-semibold tabular-nums",
                   d.overdue ? "text-rose-500 dark:text-rose-400" : "text-sage-600 dark:text-sage-400"
@@ -967,39 +1008,60 @@ export default function NewbornTrackerPage() {
               )}
             </div>
           );
-        })}
+        })()}
 
         {showReminderSettings && (
           <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-800 space-y-3">
-            {([
-              { key: "feed" as const, label: "Feed", enabled: reminders.feedEnabled, hours: reminders.feedHours, enKey: "feedEnabled" as const, hrKey: "feedHours" as const },
-              { key: "med" as const, label: "Meds", enabled: reminders.medEnabled, hours: reminders.medHours, enKey: "medEnabled" as const, hrKey: "medHours" as const },
-            ]).map(t => (
-              <div key={t.key} className="flex items-center justify-between gap-3">
-                <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300">
-                  <input
-                    type="checkbox"
-                    checked={t.enabled}
-                    onChange={e => updateReminders({ [t.enKey]: e.target.checked })}
-                    className="accent-sage-500"
-                  />
-                  {t.label} reminder
-                </label>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] text-stone-400">every</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={24}
-                    step={0.5}
-                    value={t.hours}
-                    onChange={e => updateReminders({ [t.hrKey]: Math.max(0.5, Number(e.target.value) || t.hours) })}
-                    className="w-14 px-2 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center"
-                  />
-                  <span className="text-[11px] text-stone-400">h</span>
-                </div>
+            {/* Feed window: min–max hours */}
+            <div className="flex items-center justify-between gap-3">
+              <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300">
+                <input
+                  type="checkbox"
+                  checked={reminders.feedEnabled}
+                  onChange={e => updateReminders({ feedEnabled: e.target.checked })}
+                  className="accent-sage-500"
+                />
+                Feed window
+              </label>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number" min={0.5} max={12} step={0.5}
+                  value={reminders.feedMinHours}
+                  onChange={e => updateReminders({ feedMinHours: Math.max(0.5, Number(e.target.value) || reminders.feedMinHours) })}
+                  className="w-12 px-1.5 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center"
+                />
+                <span className="text-[11px] text-stone-400">to</span>
+                <input
+                  type="number" min={0.5} max={12} step={0.5}
+                  value={reminders.feedMaxHours}
+                  onChange={e => updateReminders({ feedMaxHours: Math.max(reminders.feedMinHours, Number(e.target.value) || reminders.feedMaxHours) })}
+                  className="w-12 px-1.5 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center"
+                />
+                <span className="text-[11px] text-stone-400">h</span>
               </div>
-            ))}
+            </div>
+            {/* Meds: single interval */}
+            <div className="flex items-center justify-between gap-3">
+              <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300">
+                <input
+                  type="checkbox"
+                  checked={reminders.medEnabled}
+                  onChange={e => updateReminders({ medEnabled: e.target.checked })}
+                  className="accent-sage-500"
+                />
+                Meds reminder
+              </label>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-stone-400">every</span>
+                <input
+                  type="number" min={1} max={24} step={0.5}
+                  value={reminders.medHours}
+                  onChange={e => updateReminders({ medHours: Math.max(0.5, Number(e.target.value) || reminders.medHours) })}
+                  className="w-14 px-2 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center"
+                />
+                <span className="text-[11px] text-stone-400">h</span>
+              </div>
+            </div>
             <div className="flex items-center justify-between gap-3 pt-1">
               <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300">
                 <input

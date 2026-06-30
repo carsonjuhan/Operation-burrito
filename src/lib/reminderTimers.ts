@@ -5,7 +5,9 @@
 
 export interface ReminderSettings {
   feedEnabled: boolean;
-  feedHours: number;
+  // Feeds use a window: the timer opens at min hours and is "overdue" past max.
+  feedMinHours: number;
+  feedMaxHours: number;
   medEnabled: boolean;
   medHours: number;
   soundEnabled: boolean;
@@ -13,11 +15,34 @@ export interface ReminderSettings {
 
 export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
   feedEnabled: true,
-  feedHours: 2,
+  feedMinHours: 1.5,
+  feedMaxHours: 3,
   medEnabled: true,
   medHours: 4,
   soundEnabled: true,
 };
+
+// Feeds within this gap are treated as one session (e.g. left then right
+// breast); the next feed window is anchored to the FIRST feed of that cluster.
+export const FEED_CLUSTER_GAP_MS = 30 * 60 * 1000;
+
+/**
+ * Anchor time for the next feed window: the timestamp of the earliest feed in
+ * the most recent contiguous cluster (feeds spaced <= FEED_CLUSTER_GAP_MS).
+ * `feedTimesDesc` must be feed timestamps (ms) sorted newest-first.
+ */
+export function feedAnchorMs(feedTimesDesc: number[]): number | null {
+  if (feedTimesDesc.length === 0) return null;
+  let anchor = feedTimesDesc[0];
+  for (let i = 1; i < feedTimesDesc.length; i++) {
+    if (anchor - feedTimesDesc[i] <= FEED_CLUSTER_GAP_MS) {
+      anchor = feedTimesDesc[i]; // extend the cluster further back
+    } else {
+      break;
+    }
+  }
+  return anchor;
+}
 
 const SETTINGS_KEY = "nb-reminder-settings";
 

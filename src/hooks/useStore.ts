@@ -309,6 +309,7 @@ export interface ContactsContextValue {
 export interface ContractionsContextValue {
   contractions: Contraction[];
   addContraction: (c: Contraction) => void;
+  deleteContraction: (id: string) => void;
   clearContractions: () => void;
 }
 
@@ -462,6 +463,55 @@ export function useStore() {
       return next;
     });
   }, [triggerAutoSync, refreshStorageInfo, trackDeletes]);
+
+  // ── Pull-on-open / refocus ────────────────────────────────────────────────
+  // Auto-sync only pushes after a *local* edit, so an idle device (e.g. the
+  // other parent's phone that only views the log) never received remote
+  // changes. Fetch-and-merge from the Gist when the app opens or regains focus
+  // so both phones converge without requiring an edit. Throttled to avoid
+  // hammering the API on rapid focus changes.
+  const lastPullRef = useRef(0);
+  const pullFromRemote = useCallback(async () => {
+    const pat = getPAT();
+    const gistId = getGistId();
+    if (!pat || !gistId) return;
+    if (syncFailureRef.current.isPaused) return;
+    if (Date.now() - lastPullRef.current < 8000) return;
+    lastPullRef.current = Date.now();
+    setAutoSyncing(true);
+    try {
+      const remote = await loadGist(pat, gistId);
+      const merged = mergeStores(storeRef.current, remote);
+      saveStore(merged);
+      setStore(merged);
+      storeRef.current = merged;
+      writeNewbornToLocal(merged);
+      if (syncFailureRef.current.consecutiveFailures > 0) {
+        const newState = recordSyncSuccess();
+        syncFailureRef.current = newState;
+        setSyncFailureState(newState);
+        onSyncSuccessAfterFailureRef.current?.();
+      }
+    } catch (err) {
+      const newState = recordSyncFailure(syncFailureRef.current, err);
+      syncFailureRef.current = newState;
+      setSyncFailureState(newState);
+    }
+    setAutoSyncing(false);
+  }, [writeNewbornToLocal]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    pullFromRemote();
+    const onFocus = () => pullFromRemote();
+    const onVisible = () => { if (document.visibilityState === "visible") pullFromRemote(); };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [loaded, pullFromRemote]);
 
   // ── Newborn tracker mirror (localStorage → store) ────────────────────────
   // The tracker UI writes to its own localStorage key; mirror those writes
@@ -635,6 +685,23 @@ export function useStore() {
     update((s) => ({ ...s, contractions: [...s.contractions, c] }));
   }, [update]);
 
+  // Remove one contraction and recompute intervals so the remaining timeline
+  // stays consistent (each interval is measured from the prior contraction's start).
+  const deleteContraction = useCallback((id: string) => {
+    update((s) => {
+      const remaining = s.contractions
+        .filter((c) => c.id !== id)
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+      const recomputed = remaining.map((c, i) => ({
+        ...c,
+        interval: i === 0
+          ? 0
+          : Math.floor((new Date(c.startTime).getTime() - new Date(remaining[i - 1].startTime).getTime()) / 1000),
+      }));
+      return { ...s, contractions: recomputed };
+    });
+  }, [update]);
+
   const clearContractions = useCallback(() => {
     update((s) => ({ ...s, contractions: [] }));
   }, [update]);
@@ -750,8 +817,8 @@ export function useStore() {
 
   const contractionsValue: ContractionsContextValue = useMemo(() => ({
     contractions: store.contractions,
-    addContraction, clearContractions,
-  }), [store.contractions, addContraction, clearContractions]);
+    addContraction, deleteContraction, clearContractions,
+  }), [store.contractions, addContraction, deleteContraction, clearContractions]);
 
   // Note: `store` is intentionally included — coreValue consumers need the full store.
   // The domain-specific contexts (itemsValue, classesValue, etc.) provide the perf wins.
@@ -798,7 +865,7 @@ export function useStore() {
     updateBagItem, addBagItem, deleteBagItem, restoreBagItem,
     addAppointment, updateAppointment, deleteAppointment, restoreAppointment,
     addContact, updateContact, deleteContact, restoreContact,
-    addContraction, clearContractions,
+    addContraction, deleteContraction, clearContractions,
     updateRegistryUrl,
     updateChecklistState,
     loadFromExternal,
