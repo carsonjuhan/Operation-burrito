@@ -289,6 +289,10 @@ function EditModal({
   const [diaperType, setDiaperType] = useState<DiaperType>(event.type === "diaper" ? event.diaperType : "wet");
   const [diaperTime, setDiaperTime] = useState(event.type === "diaper" ? toLocalInput(event.timestamp) : "");
 
+  // Med fields
+  const [medName, setMedName] = useState(event.type === "med" ? (event.medName ?? "") : "");
+  const [medTime, setMedTime] = useState(event.type === "med" ? toLocalInput(event.timestamp) : "");
+
   // Shared
   const [notes, setNotes] = useState(event.notes ?? "");
 
@@ -316,6 +320,13 @@ function EditModal({
         timestamp: fromLocalInput(diaperTime),
         notes: notes.trim() || undefined,
       });
+    } else if (event.type === "med") {
+      onSave({
+        ...event,
+        medName: medName.trim() || undefined,
+        timestamp: fromLocalInput(medTime),
+        notes: notes.trim() || undefined,
+      });
     }
   };
 
@@ -331,7 +342,7 @@ function EditModal({
       >
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100">
-            Edit {event.type === "feed" ? "Feed" : event.type === "sleep" ? "Sleep" : "Diaper"}
+            Edit {event.type === "feed" ? "Feed" : event.type === "sleep" ? "Sleep" : event.type === "med" ? "Medication" : "Diaper"}
           </h3>
           <button onClick={onClose} className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-300">
             <X size={16} />
@@ -413,6 +424,19 @@ function EditModal({
             <div>
               <label className={labelCls}>Time</label>
               <input type="datetime-local" value={diaperTime} onChange={e => setDiaperTime(e.target.value)} className={inputCls} />
+            </div>
+          </>
+        )}
+
+        {event.type === "med" && (
+          <>
+            <div>
+              <label className={labelCls}>Medication</label>
+              <input type="text" placeholder="e.g. Vitamin D, Tylenol" value={medName} onChange={e => setMedName(e.target.value)} className={inputCls} />
+            </div>
+            <div>
+              <label className={labelCls}>Time</label>
+              <input type="datetime-local" value={medTime} onChange={e => setMedTime(e.target.value)} className={inputCls} />
             </div>
           </>
         )}
@@ -1292,14 +1316,7 @@ function LogRow({
             <p className="text-[10px] text-stone-400">{formatTime(event.timestamp, showDate)}</p>
           </div>
         </div>
-        {/* Med events have no edit form yet — delete only */}
-        <button
-          onClick={() => onDelete(event.id)}
-          className="text-stone-300 hover:text-red-400 dark:text-stone-600 dark:hover:text-red-400 transition-colors p-3 rounded-lg active:bg-red-50 dark:active:bg-red-950/30 shrink-0"
-          aria-label="Delete"
-        >
-          <X size={14} />
-        </button>
+        {actions}
       </div>
     );
   }
