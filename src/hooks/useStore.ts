@@ -507,9 +507,17 @@ export function useStore() {
     const onVisible = () => { if (document.visibilityState === "visible") pullFromRemote(); };
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onVisible);
+    // Background poll: focus/visibility events don't fire while the app sits
+    // open and foregrounded, so an idle device never sees the other phone's
+    // edits. Poll every 30s while visible (pullFromRemote is throttled to 8s
+    // and no-ops when the tab is hidden, so this stays cheap).
+    const poll = setInterval(() => {
+      if (document.visibilityState === "visible") pullFromRemote();
+    }, 30_000);
     return () => {
       window.removeEventListener("focus", onFocus);
       document.removeEventListener("visibilitychange", onVisible);
+      clearInterval(poll);
     };
   }, [loaded, pullFromRemote]);
 

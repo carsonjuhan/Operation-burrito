@@ -44,6 +44,21 @@ export function feedAnchorMs(feedTimesDesc: number[]): number | null {
   return anchor;
 }
 
+/**
+ * Count feeding sessions: feeds spaced <= FEED_CLUSTER_GAP_MS collapse into one
+ * session (e.g. left then right breast in a single nursing). Formula/bottle feeds
+ * that stand alone each count as their own session. `feedTimesMs` may be unsorted.
+ */
+export function countFeedSessions(feedTimesMs: number[]): number {
+  if (feedTimesMs.length === 0) return 0;
+  const sorted = [...feedTimesMs].sort((a, b) => a - b);
+  let sessions = 1;
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i] - sorted[i - 1] > FEED_CLUSTER_GAP_MS) sessions++;
+  }
+  return sessions;
+}
+
 const SETTINGS_KEY = "nb-reminder-settings";
 
 export function loadReminderSettings(): ReminderSettings {

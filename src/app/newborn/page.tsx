@@ -14,6 +14,7 @@ import {
   loadReminderSettings,
   saveReminderSettings,
   feedAnchorMs,
+  countFeedSessions,
   unlockAudio,
   playAlertSound,
   type ReminderSettings,
@@ -103,9 +104,10 @@ interface DayData {
   key: string;         // YYYY-MM-DD
   label: string;       // "Jun 8"
   feeds: number[];     // pct positions
+  feedTimes: number[]; // raw ms, for session clustering
   diapers: number[];   // pct positions
   sleeps: { left: number; width: number }[];
-  feedCount: number;
+  feedCount: number;   // feeding sessions (left+right within 30min = 1)
   diaperCount: number;
   sleepMins: number;
 }
@@ -117,7 +119,7 @@ function buildDayData(events: NewbornLogEvent[]): DayData[] {
     if (!days[key]) {
       const [y, m, d] = key.split("-").map(Number);
       const label = new Date(y, m - 1, d).toLocaleDateString([], { month: "short", day: "numeric" });
-      days[key] = { key, label, feeds: [], diapers: [], sleeps: [], feedCount: 0, diaperCount: 0, sleepMins: 0 };
+      days[key] = { key, label, feeds: [], feedTimes: [], diapers: [], sleeps: [], feedCount: 0, diaperCount: 0, sleepMins: 0 };
     }
     return days[key];
   };
@@ -127,7 +129,7 @@ function buildDayData(events: NewbornLogEvent[]): DayData[] {
       const k = dateKey(e.timestamp);
       const day = ensureDay(k);
       day.feeds.push(pct(e.timestamp));
-      day.feedCount++;
+      day.feedTimes.push(new Date(e.timestamp).getTime());
     } else if (e.type === "diaper") {
       const k = dateKey(e.timestamp);
       const day = ensureDay(k);
@@ -158,6 +160,9 @@ function buildDayData(events: NewbornLogEvent[]): DayData[] {
     }
   }
 
+  for (const day of Object.values(days)) {
+    day.feedCount = countFeedSessions(day.feedTimes);
+  }
   return Object.values(days).sort((a, b) => b.key.localeCompare(a.key));
 }
 
@@ -639,7 +644,7 @@ export default function NewbornTrackerPage() {
   const ev24 = allEvents.filter(e => within(e, cutoff24));
   const ev7d = allEvents.filter(e => within(e, cutoff7d));
   const stats24 = {
-    feeds: ev24.filter(e => e.type === "feed").length,
+    feeds: countFeedSessions(ev24.filter(e => e.type === "feed").map(e => new Date((e as FeedEvent).timestamp).getTime())),
     wet: ev24.filter(e => e.type === "diaper" && ["wet", "both"].includes((e as DiaperEvent).diaperType)).length,
     dirty: ev24.filter(e => e.type === "diaper" && ["dirty", "both"].includes((e as DiaperEvent).diaperType)).length,
     sleepH: sleepMinsInWindow(ev24.filter(e => e.type === "sleep") as SleepEvent[], cutoff24) / 60,
@@ -647,7 +652,7 @@ export default function NewbornTrackerPage() {
   const oldest7d = ev7d.length ? new Date(getEventTime(ev7d[ev7d.length - 1])).getTime() : now;
   const trackedDays = Math.min(7, Math.max(1, (now - oldest7d) / (24 * 3600e3)));
   const stats7d = {
-    feedsPerDay: ev7d.filter(e => e.type === "feed").length / trackedDays,
+    feedsPerDay: countFeedSessions(ev7d.filter(e => e.type === "feed").map(e => new Date((e as FeedEvent).timestamp).getTime())) / trackedDays,
     diapersPerDay: ev7d.filter(e => e.type === "diaper").length / trackedDays,
     sleepHPerDay: sleepMinsInWindow(ev7d.filter(e => e.type === "sleep") as SleepEvent[], cutoff7d) / 60 / trackedDays,
   };
@@ -1213,7 +1218,7 @@ export default function NewbornTrackerPage() {
           </div>
           <div className="grid grid-cols-4 gap-2 mb-2">
             {[
-              { label: "Feeds", v24: String(stats24.feeds), v7: `${stats7d.feedsPerDay.toFixed(1)}/d` },
+              { label: "Feedings", v24: String(stats24.feeds), v7: `${stats7d.feedsPerDay.toFixed(1)}/d` },
               { label: "Wet", v24: String(stats24.wet), v7: "" },
               { label: "Dirty", v24: String(stats24.dirty), v7: "" },
               { label: "Sleep", v24: `${stats24.sleepH.toFixed(1)}h`, v7: `${stats7d.sleepHPerDay.toFixed(1)}h/d` },
@@ -1226,7 +1231,10 @@ export default function NewbornTrackerPage() {
             ))}
           </div>
           <p className="text-[10px] text-stone-400 text-center">
-            7-day avg: {stats7d.feedsPerDay.toFixed(1)} feeds · {stats7d.diapersPerDay.toFixed(1)} diapers · {stats7d.sleepHPerDay.toFixed(1)}h sleep per day
+            7-day avg: {stats7d.feedsPerDay.toFixed(1)} feedings · {stats7d.diapersPerDay.toFixed(1)} diapers · {stats7d.sleepHPerDay.toFixed(1)}h sleep per day
+          </p>
+          <p className="text-[9px] text-stone-300 dark:text-stone-600 text-center mt-1">
+            Feedings count nursing sessions — left + right within 30 min count as one.
           </p>
           {expectation && (
             <div className={clsx(
