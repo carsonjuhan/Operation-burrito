@@ -699,7 +699,7 @@ export default function NewbornTrackerPage() {
     const id = Date.now().toString();
     update(d => ({
       ...d,
-      events: [...d.events, { id, type: "feed", timestamp: new Date().toISOString(), feedType } as FeedEvent],
+      events: [...d.events, { id, type: "feed", timestamp: new Date().toISOString(), feedType, updatedAt: new Date().toISOString() } as FeedEvent],
     }));
     vibrate();
     addToast(`Logged ${FEED_LABELS[feedType]}`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
@@ -714,7 +714,7 @@ export default function NewbornTrackerPage() {
       ...d,
       activeNursing: undefined,
       events: [...d.events, {
-        id, type: "feed", timestamp: nursing.startTime, feedType: nursing.feedType, durationMin,
+        id, type: "feed", timestamp: nursing.startTime, feedType: nursing.feedType, durationMin, updatedAt: new Date().toISOString(),
       } as FeedEvent],
     }));
     vibrate();
@@ -736,14 +736,14 @@ export default function NewbornTrackerPage() {
     if (activeSleep) {
       update(d => ({
         ...d,
-        events: d.events.map(e => e.id === activeSleep.id ? { ...e, endTime: new Date().toISOString() } : e),
+        events: d.events.map(e => e.id === activeSleep.id ? { ...e, endTime: new Date().toISOString(), updatedAt: new Date().toISOString() } : e),
       }));
       addToast(`Sleep ended · ${durationStr(activeSleep.startTime)}`, "success");
     } else {
       const id = Date.now().toString();
       update(d => ({
         ...d,
-        events: [...d.events, { id, type: "sleep", startTime: new Date().toISOString() } as SleepEvent],
+        events: [...d.events, { id, type: "sleep", startTime: new Date().toISOString(), updatedAt: new Date().toISOString() } as SleepEvent],
       }));
       addToast("Sleep started", "success", { label: "Undo", onClick: () => deleteEvent(id) });
     }
@@ -753,7 +753,7 @@ export default function NewbornTrackerPage() {
     const id = Date.now().toString();
     update(d => ({
       ...d,
-      events: [...d.events, { id, type: "diaper", timestamp: new Date().toISOString(), diaperType } as DiaperEvent],
+      events: [...d.events, { id, type: "diaper", timestamp: new Date().toISOString(), diaperType, updatedAt: new Date().toISOString() } as DiaperEvent],
     }));
     vibrate();
     addToast(`Logged ${diaperType} diaper`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
@@ -764,14 +764,15 @@ export default function NewbornTrackerPage() {
     const id = Date.now().toString();
     update(d => ({
       ...d,
-      events: [...d.events, { id, type: "med", timestamp: new Date().toISOString() } as MedEvent],
+      events: [...d.events, { id, type: "med", timestamp: new Date().toISOString(), updatedAt: new Date().toISOString() } as MedEvent],
     }));
     vibrate();
     addToast("Logged medication", "success", { label: "Undo", onClick: () => deleteEvent(id) });
   };
 
   const saveEditedEvent = useCallback((updated: NewbornLogEvent) => {
-    update(d => ({ ...d, events: d.events.map(e => e.id === updated.id ? updated : e) }));
+    const stamped = { ...updated, updatedAt: new Date().toISOString() };
+    update(d => ({ ...d, events: d.events.map(e => e.id === updated.id ? stamped : e) }));
     setEditingEvent(null);
   }, [update]);
 

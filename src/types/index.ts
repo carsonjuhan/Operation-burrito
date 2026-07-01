@@ -392,6 +392,7 @@ export interface FeedEvent {
   durationMin?: number;
   amountMl?: number;
   notes?: string;
+  updatedAt?: string;
 }
 
 export interface SleepEvent {
@@ -400,6 +401,7 @@ export interface SleepEvent {
   startTime: string;
   endTime?: string;
   notes?: string;
+  updatedAt?: string;
 }
 
 export interface DiaperEvent {
@@ -408,6 +410,7 @@ export interface DiaperEvent {
   timestamp: string;
   diaperType: DiaperType;
   notes?: string;
+  updatedAt?: string;
 }
 
 export interface MedEvent {
@@ -416,6 +419,7 @@ export interface MedEvent {
   timestamp: string;
   medName?: string;
   notes?: string;
+  updatedAt?: string;
 }
 
 export type NewbornLogEvent = FeedEvent | SleepEvent | DiaperEvent | MedEvent;

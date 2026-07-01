@@ -89,4 +89,11 @@ describe("mergeNewbornEvents", () => {
     expect(merged[0].id).toBe("y"); // newest first
     expect((merged.find((e) => e.id === "x") as FeedEvent).amountMl).toBe(90); // local wins
   });
+
+  it("prefers the newer updatedAt when both sides have one (remote ended a sleep session)", () => {
+    const local: FeedEvent = { id: "s1", type: "feed", timestamp: "2026-06-10T03:00:00Z", feedType: "bottle", updatedAt: "2026-06-10T03:00:00Z" };
+    const remote: FeedEvent = { ...local, amountMl: 90, updatedAt: "2026-06-10T04:00:00Z" };
+    const merged = mergeNewbornEvents([local], [remote]);
+    expect((merged.find((e) => e.id === "s1") as FeedEvent).amountMl).toBe(90); // stale local no longer wins
+  });
 });

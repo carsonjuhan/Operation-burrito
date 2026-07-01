@@ -13,6 +13,7 @@ import {
   loadNewbornData,
   saveNewbornData,
   vibrate,
+  NEWBORN_UPDATED_EVENT,
 } from "@/lib/newbornTracker";
 
 export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -23,25 +24,32 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
 
   useEffect(() => {
     if (!open) return;
-    const data = loadNewbornData();
-    const byTimeDesc = [...data.events].sort((a, b) => {
-      const ta = a.type === "sleep" ? a.startTime : a.timestamp;
-      const tb = b.type === "sleep" ? b.startTime : b.timestamp;
-      return new Date(tb).getTime() - new Date(ta).getTime();
-    });
-    const lastNursing = byTimeDesc.find(
-      e => e.type === "feed" && ["breast-left", "breast-right"].includes((e as FeedEvent).feedType)
-    ) as FeedEvent | undefined;
-    setSuggestedSide(lastNursing ? (lastNursing.feedType === "breast-left" ? "breast-right" : "breast-left") : null);
-    const sleeping = byTimeDesc.find(e => e.type === "sleep" && !(e as SleepEvent).endTime) as SleepEvent | undefined;
-    setActiveSleep(sleeping ?? null);
+    const reload = () => {
+      const data = loadNewbornData();
+      const byTimeDesc = [...data.events].sort((a, b) => {
+        const ta = a.type === "sleep" ? a.startTime : a.timestamp;
+        const tb = b.type === "sleep" ? b.startTime : b.timestamp;
+        return new Date(tb).getTime() - new Date(ta).getTime();
+      });
+      const lastNursing = byTimeDesc.find(
+        e => e.type === "feed" && ["breast-left", "breast-right"].includes((e as FeedEvent).feedType)
+      ) as FeedEvent | undefined;
+      setSuggestedSide(lastNursing ? (lastNursing.feedType === "breast-left" ? "breast-right" : "breast-left") : null);
+      const sleeping = byTimeDesc.find(e => e.type === "sleep" && !(e as SleepEvent).endTime) as SleepEvent | undefined;
+      setActiveSleep(sleeping ?? null);
+    };
+    reload();
+    // Re-check while the sheet stays open so a sleep session ended on another
+    // device (picked up by the background sync poll) clears the timer here too.
+    window.addEventListener(NEWBORN_UPDATED_EVENT, reload);
+    return () => window.removeEventListener(NEWBORN_UPDATED_EVENT, reload);
   }, [open]);
 
   if (!open) return null;
 
   const appendEvent = (event: NewbornLogEvent, message: string) => {
     const data = loadNewbornData();
-    saveNewbornData({ ...data, events: [...data.events, event] });
+    saveNewbornData({ ...data, events: [...data.events, { ...event, updatedAt: new Date().toISOString() }] });
     vibrate();
     addToast(message, "success", {
       label: "Undo",
@@ -72,7 +80,7 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
     if (activeSleep) {
       saveNewbornData({
         ...data,
-        events: data.events.map(e => e.id === activeSleep.id ? { ...e, endTime: new Date().toISOString() } : e),
+        events: data.events.map(e => e.id === activeSleep.id ? { ...e, endTime: new Date().toISOString(), updatedAt: new Date().toISOString() } : e),
       });
       vibrate();
       addToast(`Sleep ended · ${durationStr(activeSleep.startTime)}`, "success");

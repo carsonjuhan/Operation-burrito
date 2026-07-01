@@ -20,6 +20,10 @@ function mergeById<T extends WithId>(local: T[], remote: T[]): T[] {
 
 /**
  * Merge newborn events: union by id, sorted by timestamp.
+ * When an id exists on both sides (e.g. one phone starts a sleep session and
+ * another phone later ends it), the copy with the newer `updatedAt` wins so a
+ * remote edit isn't clobbered by a stale local copy. Events without
+ * `updatedAt` (pre-migration data) fall back to local-wins.
  */
 export function mergeNewbornEvents(
   local: NewbornLogEvent[],
@@ -27,7 +31,14 @@ export function mergeNewbornEvents(
 ): NewbornLogEvent[] {
   const map = new Map<string, NewbornLogEvent>();
   for (const e of remote) map.set(e.id, e);
-  for (const e of local) map.set(e.id, e);
+  for (const e of local) {
+    const existing = map.get(e.id);
+    if (existing && existing.updatedAt && e.updatedAt) {
+      map.set(e.id, new Date(e.updatedAt) >= new Date(existing.updatedAt) ? e : existing);
+    } else {
+      map.set(e.id, e);
+    }
+  }
   return Array.from(map.values()).sort((a, b) => {
     const ta = "timestamp" in a ? a.timestamp : "startTime" in a ? a.startTime : "";
     const tb = "timestamp" in b ? b.timestamp : "startTime" in b ? b.startTime : "";

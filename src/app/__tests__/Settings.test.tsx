@@ -20,6 +20,9 @@ const mockClearGistConfig = vi.fn();
 const mockVerifyPAT = vi.fn();
 const mockPushToGist = vi.fn();
 const mockPullFromGist = vi.fn();
+const mockGetDeviceId = vi.fn(() => "test-device-id");
+const mockResetDeviceId = vi.fn(() => "test-device-id");
+const mockListDeviceFiles = vi.fn((..._args: any[]) => Promise.resolve([] as string[]));
 
 vi.mock("@/lib/gistSync", () => ({
   getPAT: () => mockGetPAT(),
@@ -31,6 +34,9 @@ vi.mock("@/lib/gistSync", () => ({
   verifyPAT: (...args: any[]) => mockVerifyPAT(...args),
   pushToGist: (...args: any[]) => mockPushToGist(...args),
   pullFromGist: (...args: any[]) => mockPullFromGist(...args),
+  getDeviceId: () => mockGetDeviceId(),
+  resetDeviceId: () => mockResetDeviceId(),
+  listDeviceFiles: (...args: any[]) => mockListDeviceFiles(...args),
 }));
 
 // Mock useStoreContext
