@@ -546,6 +546,8 @@ export default function NewbornTrackerPage() {
   const [showHistory, setShowHistory] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
+  const [editingBirthDate, setEditingBirthDate] = useState(false);
+  const [birthDateInput, setBirthDateInput] = useState("");
   const [editingEvent, setEditingEvent] = useState<NewbornLogEvent | null>(null);
 
   const { store, updateReminderSettings } = useStoreContext();
@@ -835,6 +837,11 @@ export default function NewbornTrackerPage() {
     setEditingName(false);
   };
 
+  const saveBirthDate = () => {
+    update(d => ({ ...d, babyBirthDate: birthDateInput || undefined }));
+    setEditingBirthDate(false);
+  };
+
   return (
     <PageTransition className="max-w-2xl mx-auto pb-8">
       {editingEvent && (
@@ -898,6 +905,28 @@ export default function NewbornTrackerPage() {
           ) : (
             <button onClick={() => { setNameInput(data.babyName); setEditingName(true); }} className="text-sm text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors">
               Tracking: <span className="font-medium text-stone-600 dark:text-stone-300">{data.babyName}</span>
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-2 mt-0.5">
+          {editingBirthDate ? (
+            <form onSubmit={(e) => { e.preventDefault(); saveBirthDate(); }} className="flex items-center gap-2">
+              <input
+                autoFocus
+                type="date"
+                value={birthDateInput}
+                onChange={e => setBirthDateInput(e.target.value)}
+                max={new Date().toISOString().slice(0, 10)}
+                className="input text-sm py-1 px-2"
+              />
+              <button type="submit" className="text-xs text-sage-600 font-medium hover:underline">Save</button>
+              <button type="button" onClick={() => setEditingBirthDate(false)} className="text-xs text-stone-400 hover:underline">Cancel</button>
+            </form>
+          ) : (
+            <button onClick={() => { setBirthDateInput(data.babyBirthDate ?? ""); setEditingBirthDate(true); }} className="text-sm text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors">
+              Born: <span className="font-medium text-stone-600 dark:text-stone-300">
+                {data.babyBirthDate ? new Date(data.babyBirthDate).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }) : "Set birth date"}
+              </span>
             </button>
           )}
         </div>

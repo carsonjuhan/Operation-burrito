@@ -193,13 +193,13 @@ function loadStore(): AppStore {
     // Migrate newborn tracker from its own localStorage key
     const migrateNewborn = () => {
       if (parsed.newbornEvents && parsed.newbornEvents.length > 0) {
-        return { events: parsed.newbornEvents, name: parsed.newbornBabyName ?? "Baby" };
+        return { events: parsed.newbornEvents, name: parsed.newbornBabyName ?? "Baby", birthDate: parsed.newbornBabyBirthDate };
       }
       try {
         const nb = localStorage.getItem("newborn_tracker");
-        if (nb) { const d = JSON.parse(nb); return { events: d.events ?? [], name: d.babyName ?? "Baby" }; }
+        if (nb) { const d = JSON.parse(nb); return { events: d.events ?? [], name: d.babyName ?? "Baby", birthDate: d.babyBirthDate }; }
       } catch { /* */ }
-      return { events: [], name: "Baby" };
+      return { events: [], name: "Baby", birthDate: undefined };
     };
     const nb = migrateNewborn();
 
@@ -226,6 +226,7 @@ function loadStore(): AppStore {
       hospitalChecklistSkipped: migrateList(parsed.hospitalChecklistSkipped, "hospital-checklist-skipped"),
       newbornEvents: nb.events,
       newbornBabyName: nb.name,
+      newbornBabyBirthDate: nb.birthDate,
       reminderSettings: migrateReminderSettings(),
     };
   } catch {
@@ -242,6 +243,7 @@ function saveStore(store: AppStore): boolean {
       localStorage.setItem("newborn_tracker", JSON.stringify({
         events: store.newbornEvents,
         babyName: store.newbornBabyName ?? "Baby",
+        babyBirthDate: store.newbornBabyBirthDate,
       }));
     }
     return true;
@@ -409,6 +411,7 @@ export function useStore() {
     const tomb = s.deletedIds ?? {};
     const events = mergeNewbornEvents(local.events, s.newbornEvents).filter((e) => !tomb[e.id]);
     const babyName = s.newbornBabyName && s.newbornBabyName !== "Baby" ? s.newbornBabyName : local.babyName;
+    const babyBirthDate = s.newbornBabyBirthDate ?? local.babyBirthDate;
     // Active nursing timer: newest updatedAt wins, same rule as the store merge.
     const localNursingTime = new Date(local.activeNursingUpdatedAt ?? 0).getTime() || 0;
     const remoteNursingTime = new Date(s.newbornActiveNursingUpdatedAt ?? 0).getTime() || 0;
@@ -418,9 +421,10 @@ export function useStore() {
     if (
       JSON.stringify(events) !== JSON.stringify(local.events) ||
       babyName !== local.babyName ||
+      babyBirthDate !== local.babyBirthDate ||
       JSON.stringify(activeNursing ?? null) !== JSON.stringify(local.activeNursing ?? null)
     ) {
-      saveNewbornData({ events, babyName, activeNursing: activeNursing ?? undefined, activeNursingUpdatedAt });
+      saveNewbornData({ events, babyName, babyBirthDate, activeNursing: activeNursing ?? undefined, activeNursingUpdatedAt });
     }
   }, []);
 
@@ -550,12 +554,14 @@ export function useStore() {
       const cur = storeRef.current;
       const sameEvents = JSON.stringify(cur.newbornEvents ?? []) === JSON.stringify(d.events);
       const sameName = (cur.newbornBabyName ?? "Baby") === d.babyName;
+      const sameBirthDate = (cur.newbornBabyBirthDate ?? undefined) === (d.babyBirthDate ?? undefined);
       const sameNursing = JSON.stringify(cur.newbornActiveNursing ?? null) === JSON.stringify(d.activeNursing ?? null);
-      if (!sameEvents || !sameName || !sameNursing) {
+      if (!sameEvents || !sameName || !sameBirthDate || !sameNursing) {
         update((s) => ({
           ...s,
           newbornEvents: d.events,
           newbornBabyName: d.babyName,
+          newbornBabyBirthDate: d.babyBirthDate,
           newbornActiveNursing: d.activeNursing ?? null,
           newbornActiveNursingUpdatedAt: d.activeNursingUpdatedAt ?? s.newbornActiveNursingUpdatedAt,
         }));

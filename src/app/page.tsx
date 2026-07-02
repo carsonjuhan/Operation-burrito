@@ -29,7 +29,7 @@ export default function DashboardPage() {
   const { items, classes, materials, birthPlan, notes, hospitalBag, appointments, contacts, registryUrl } = store;
 
   // ── Newborn tracker summary (today) ─────────────────────────────────────
-  const [tracker, setTracker] = useState({ babyName: "Baby", feeds: 0, diapers: 0, sleepMins: 0, hasEvents: false });
+  const [tracker, setTracker] = useState({ babyName: "Baby", feeds: 0, diapers: 0, sleepMins: 0, hasEvents: false, birthDate: undefined as string | undefined });
   const [showPrepArchive, setShowPrepArchive] = useState(false);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function DashboardPage() {
           sleepMins += (end - new Date(e.startTime).getTime()) / 60000;
         }
       }
-      setTracker({ babyName: d.babyName, feeds, diapers, sleepMins, hasEvents: d.events.length > 0 });
+      setTracker({ babyName: d.babyName, feeds, diapers, sleepMins, hasEvents: d.events.length > 0, birthDate: d.babyBirthDate });
     };
     compute();
     window.addEventListener(NEWBORN_UPDATED_EVENT, compute);
@@ -140,14 +140,22 @@ export default function DashboardPage() {
   const laborWatch = !babyArrived && daysLeft != null && daysLeft >= 0 && daysLeft <= 14;
 
   const babyAgeStr = useMemo(() => {
-    if (daysLeft == null || daysLeft >= 0) return null;
-    const ageDays = Math.abs(daysLeft);
+    // Prefer the baby's actual birth date (set on the Newborn Tracker page)
+    // over the due date — babies rarely arrive exactly on their due date.
+    let ageDays: number;
+    if (tracker.birthDate) {
+      const daysSinceBirth = getDaysUntil(tracker.birthDate);
+      ageDays = daysSinceBirth == null ? 0 : Math.max(0, -daysSinceBirth);
+    } else {
+      if (daysLeft == null || daysLeft >= 0) return null;
+      ageDays = Math.abs(daysLeft);
+    }
     const w = Math.floor(ageDays / 7);
     const d = ageDays % 7;
     if (w === 0) return `${d} day${d !== 1 ? "s" : ""} old`;
     if (d === 0) return `${w} week${w !== 1 ? "s" : ""} old`;
     return `${w}w ${d}d old`;
-  }, [daysLeft]);
+  }, [daysLeft, tracker.birthDate]);
 
   const laborContact = useMemo(
     () => contacts.find((c) => (c.role === "Midwife" || c.role === "OB / Doctor" || c.role === "Hospital") && c.phone),
