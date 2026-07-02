@@ -238,12 +238,19 @@ function saveStore(store: AppStore): boolean {
   if (typeof window === "undefined") return true;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
-    // Keep the newborn tracker key in sync so the page can still read it directly
+    // Keep the newborn tracker key in sync so the page can still read it directly.
+    // Spread the existing blob first: fields the store doesn't own here (the live
+    // activeNursing timer and its timestamp) must survive this rewrite — remote
+    // updates to them flow through writeNewbornToLocal's LWW instead.
     if (store.newbornEvents !== undefined) {
+      let existing: Record<string, unknown> = {};
+      try { existing = JSON.parse(localStorage.getItem("newborn_tracker") ?? "{}"); } catch { /* corrupt blob */ }
       localStorage.setItem("newborn_tracker", JSON.stringify({
+        ...existing,
         events: store.newbornEvents,
         babyName: store.newbornBabyName ?? "Baby",
         babyBirthDate: store.newbornBabyBirthDate,
+        babyBirthDateUpdatedAt: store.newbornBabyBirthDateUpdatedAt ?? existing.babyBirthDateUpdatedAt,
       }));
     }
     return true;
@@ -411,7 +418,14 @@ export function useStore() {
     const tomb = s.deletedIds ?? {};
     const events = mergeNewbornEvents(local.events, s.newbornEvents).filter((e) => !tomb[e.id]);
     const babyName = s.newbornBabyName && s.newbornBabyName !== "Baby" ? s.newbornBabyName : local.babyName;
-    const babyBirthDate = s.newbornBabyBirthDate ?? local.babyBirthDate;
+    const localBirthDateTime = new Date(local.babyBirthDateUpdatedAt ?? 0).getTime() || 0;
+    const remoteBirthDateTime = new Date(s.newbornBabyBirthDateUpdatedAt ?? 0).getTime() || 0;
+    // On a tie, prefer whichever side has a value set (see storeMerge.ts).
+    const birthDateRemoteWins = remoteBirthDateTime !== localBirthDateTime
+      ? remoteBirthDateTime > localBirthDateTime
+      : !local.babyBirthDate && !!s.newbornBabyBirthDate;
+    const babyBirthDate = birthDateRemoteWins ? s.newbornBabyBirthDate : local.babyBirthDate;
+    const babyBirthDateUpdatedAt = birthDateRemoteWins ? s.newbornBabyBirthDateUpdatedAt : local.babyBirthDateUpdatedAt;
     // Active nursing timer: newest updatedAt wins, same rule as the store merge.
     const localNursingTime = new Date(local.activeNursingUpdatedAt ?? 0).getTime() || 0;
     const remoteNursingTime = new Date(s.newbornActiveNursingUpdatedAt ?? 0).getTime() || 0;
@@ -424,7 +438,7 @@ export function useStore() {
       babyBirthDate !== local.babyBirthDate ||
       JSON.stringify(activeNursing ?? null) !== JSON.stringify(local.activeNursing ?? null)
     ) {
-      saveNewbornData({ events, babyName, babyBirthDate, activeNursing: activeNursing ?? undefined, activeNursingUpdatedAt });
+      saveNewbornData({ events, babyName, babyBirthDate, babyBirthDateUpdatedAt, activeNursing: activeNursing ?? undefined, activeNursingUpdatedAt });
     }
   }, []);
 
@@ -562,6 +576,7 @@ export function useStore() {
           newbornEvents: d.events,
           newbornBabyName: d.babyName,
           newbornBabyBirthDate: d.babyBirthDate,
+          newbornBabyBirthDateUpdatedAt: d.babyBirthDateUpdatedAt ?? s.newbornBabyBirthDateUpdatedAt,
           newbornActiveNursing: d.activeNursing ?? null,
           newbornActiveNursingUpdatedAt: d.activeNursingUpdatedAt ?? s.newbornActiveNursingUpdatedAt,
         }));

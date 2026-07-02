@@ -13,6 +13,9 @@ export interface ReminderSettings {
   medEnabled: boolean;
   medHours: number;
   soundEnabled: boolean;
+  // Nursing/sleep timers are considered "overdue" once running longer than these.
+  nursingMaxMinutes: number;
+  sleepMaxHours: number;
   // Set whenever these settings change; used to pick the newer copy when
   // merging two devices' settings (e.g. medHours changed on one phone).
   updatedAt?: string;
@@ -25,6 +28,8 @@ export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
   medEnabled: true,
   medHours: 4,
   soundEnabled: true,
+  nursingMaxMinutes: 60,
+  sleepMaxHours: 3.5,
 };
 
 // Feeds within this gap are treated as one session (e.g. left then right

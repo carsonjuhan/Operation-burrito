@@ -355,6 +355,7 @@ export interface AppStore {
   newbornEvents?: NewbornLogEvent[];
   newbornBabyName?: string;
   newbornBabyBirthDate?: string;
+  newbornBabyBirthDateUpdatedAt?: string;
   // Live nursing timer, mirrored so it shows on other devices while running.
   newbornActiveNursing?: { feedType: FeedType; startTime: string } | null;
   newbornActiveNursingUpdatedAt?: string;
@@ -435,6 +436,7 @@ export interface NewbornTrackerData {
   events: NewbornLogEvent[];
   babyName: string;
   babyBirthDate?: string;
+  babyBirthDateUpdatedAt?: string;
   // Live nursing timer, mirrored into AppStore.newbornActiveNursing so it
   // shows on other devices while running (see hooks/useStore.ts).
   activeNursing?: { feedType: FeedType; startTime: string };

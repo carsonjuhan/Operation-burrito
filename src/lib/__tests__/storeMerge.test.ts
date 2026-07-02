@@ -58,10 +58,10 @@ describe("mergeStores birth plan", () => {
 describe("mergeStores reminder settings", () => {
   it("newest updatedAt wins (e.g. med interval changed on one phone)", () => {
     const local = makeStore({
-      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 4, soundEnabled: true, updatedAt: "2026-06-01T00:00:00Z" },
+      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 4, soundEnabled: true, nursingMaxMinutes: 60, sleepMaxHours: 3.5, updatedAt: "2026-06-01T00:00:00Z" },
     });
     const remote = makeStore({
-      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 6, soundEnabled: true, updatedAt: "2026-06-10T00:00:00Z" },
+      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 6, soundEnabled: true, nursingMaxMinutes: 60, sleepMaxHours: 3.5, updatedAt: "2026-06-10T00:00:00Z" },
     });
     expect(mergeStores(local, remote).reminderSettings?.medHours).toBe(6);
     expect(mergeStores(remote, local).reminderSettings?.medHours).toBe(6);
@@ -69,7 +69,7 @@ describe("mergeStores reminder settings", () => {
 
   it("keeps local when remote has no reminderSettings yet", () => {
     const local = makeStore({
-      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 6, soundEnabled: true, updatedAt: "2026-06-01T00:00:00Z" },
+      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 6, soundEnabled: true, nursingMaxMinutes: 60, sleepMaxHours: 3.5, updatedAt: "2026-06-01T00:00:00Z" },
     });
     const remote = makeStore();
     expect(mergeStores(local, remote).reminderSettings?.medHours).toBe(6);
@@ -97,6 +97,66 @@ describe("mergeStores newborn tracker", () => {
     const remote = makeStore({ newbornBabyName: "Luna" });
     expect(mergeStores(local, remote).newbornBabyName).toBe("Luna");
     expect(mergeStores(remote, local).newbornBabyName).toBe("Luna");
+  });
+});
+
+describe("mergeStores birth date", () => {
+  it("newer remote timestamp wins", () => {
+    const local = makeStore({
+      newbornBabyBirthDate: "2026-06-01",
+      newbornBabyBirthDateUpdatedAt: "2026-06-01T00:00:00Z",
+    });
+    const remote = makeStore({
+      newbornBabyBirthDate: "2026-06-02",
+      newbornBabyBirthDateUpdatedAt: "2026-06-05T00:00:00Z",
+    });
+    const merged = mergeStores(local, remote);
+    expect(merged.newbornBabyBirthDate).toBe("2026-06-02");
+    expect(merged.newbornBabyBirthDateUpdatedAt).toBe("2026-06-05T00:00:00Z");
+  });
+
+  it("newer local timestamp wins", () => {
+    const local = makeStore({
+      newbornBabyBirthDate: "2026-06-02",
+      newbornBabyBirthDateUpdatedAt: "2026-06-05T00:00:00Z",
+    });
+    const remote = makeStore({
+      newbornBabyBirthDate: "2026-06-01",
+      newbornBabyBirthDateUpdatedAt: "2026-06-01T00:00:00Z",
+    });
+    const merged = mergeStores(local, remote);
+    expect(merged.newbornBabyBirthDate).toBe("2026-06-02");
+    expect(merged.newbornBabyBirthDateUpdatedAt).toBe("2026-06-05T00:00:00Z");
+  });
+
+  it("timestamp tie (both missing) prefers the side that has a value set", () => {
+    const local = makeStore(); // no birth date, no timestamp
+    const remote = makeStore({ newbornBabyBirthDate: "2026-06-02" }); // value set, no timestamp
+    const merged = mergeStores(local, remote);
+    expect(merged.newbornBabyBirthDate).toBe("2026-06-02");
+  });
+
+  it("timestamp tie (equal) prefers the side that has a value set", () => {
+    const local = makeStore({ newbornBabyBirthDateUpdatedAt: "2026-06-01T00:00:00Z" }); // no value, timestamp set
+    const remote = makeStore({
+      newbornBabyBirthDate: "2026-06-02",
+      newbornBabyBirthDateUpdatedAt: "2026-06-01T00:00:00Z",
+    });
+    const merged = mergeStores(local, remote);
+    expect(merged.newbornBabyBirthDate).toBe("2026-06-02");
+  });
+
+  it("tie with both set keeps local", () => {
+    const local = makeStore({
+      newbornBabyBirthDate: "2026-06-01",
+      newbornBabyBirthDateUpdatedAt: "2026-06-01T00:00:00Z",
+    });
+    const remote = makeStore({
+      newbornBabyBirthDate: "2026-06-09",
+      newbornBabyBirthDateUpdatedAt: "2026-06-01T00:00:00Z",
+    });
+    const merged = mergeStores(local, remote);
+    expect(merged.newbornBabyBirthDate).toBe("2026-06-01");
   });
 });
 

@@ -27,6 +27,22 @@ import {
   saveNewbornData as saveData,
   vibrate,
 } from "@/lib/newbornTracker";
+import {
+  getActiveSleep,
+  suggestedNextSide,
+  startNursing,
+  finishNursing as finishNursingAction,
+  cancelNursing as cancelNursingAction,
+  restoreNursing,
+  logInstantFeed,
+  startSleep as startSleepAction,
+  endSleep as endSleepAction,
+  finishNursingAndStartSleep,
+  logDiaper as logDiaperAction,
+  logMed as logMedAction,
+  nursingOverdueAt,
+  sleepOverdueAt,
+} from "@/lib/newbornActions";
 
 const NIGHT_MODE_KEY = "nb-night-mode";
 
@@ -561,6 +577,12 @@ export default function NewbornTrackerPage() {
   // Track which due-time we've already alerted for, so each cycle alerts once
   const alertedFeedRef = useRef<number>(0);
   const alertedMedRef = useRef<number>(0);
+  const alertedNursingRef = useRef<number>(0);
+  const alertedSleepRef = useRef<number>(0);
+  // Two-tap confirm for starting sleep while nursing is active
+  const [sleepConfirm, setSleepConfirm] = useState(false);
+  const sleepConfirmTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (sleepConfirmTimeout.current) clearTimeout(sleepConfirmTimeout.current); }, []);
 
   const updateReminders = updateReminderSettings;
 
@@ -628,13 +650,16 @@ export default function NewbornTrackerPage() {
 
   const lastFeed = allEvents.find(e => e.type === "feed") as FeedEvent | undefined;
   // Suggest alternating breast side based on the last nursing feed
-  const lastNursing = allEvents.find(e => e.type === "feed" && ["breast-left", "breast-right"].includes((e as FeedEvent).feedType)) as FeedEvent | undefined;
-  const suggestedSide: FeedType | null = lastNursing
-    ? (lastNursing.feedType === "breast-left" ? "breast-right" : "breast-left")
-    : null;
-  const activeSleep = allEvents.find(e => e.type === "sleep" && !(e as SleepEvent).endTime) as SleepEvent | undefined;
+  const suggestedSide: FeedType | null = suggestedNextSide(allEvents);
+  const activeSleep = getActiveSleep(data.events);
   const lastEndedSleep = allEvents.find(e => e.type === "sleep" && !!(e as SleepEvent).endTime) as SleepEvent | undefined;
   const lastMed = allEvents.find(e => e.type === "med") as MedEvent | undefined;
+
+  // Threshold alerts for stuck nursing/sleep timers
+  const nursingDueAt = nursingOverdueAt(data.activeNursing, reminders.nursingMaxMinutes);
+  const sleepDueAt = sleepOverdueAt(activeSleep, reminders.sleepMaxHours);
+  const nursingOverdue = data.activeNursing != null && nursingDueAt !== null && now >= nursingDueAt;
+  const sleepOverdue = activeSleep != null && sleepDueAt !== null && now >= sleepDueAt;
 
   // Feed window: anchored to the FIRST feed of the latest cluster (so logging
   // both breasts in one session doesn't push the next feed out). Window opens
@@ -651,10 +676,15 @@ export default function NewbornTrackerPage() {
   // Fast tick while a sleep timer is running OR a reminder is active, so the
   // counter ticks live and we catch the due moment within a second.
   useEffect(() => {
-    if (!activeSleep && feedWindowStart === null && medDueAt === null) return;
+    if (!activeSleep && feedWindowStart === null && medDueAt === null && nursingDueAt === null && sleepDueAt === null) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, [activeSleep?.id, feedWindowStart, medDueAt]);
+    // `activeSleep` is a fresh object every render (derived via .find() over a
+    // freshly-sorted array), so depending on it directly would tear down and
+    // restart the interval every render. We only care about which sleep event
+    // is active, so `activeSleep?.id` is the correct dependency.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSleep?.id, feedWindowStart, medDueAt, nursingDueAt, sleepDueAt]);
 
   // Fire the alert (sound + vibrate + notification) once when a timer comes due
   useEffect(() => {
@@ -675,7 +705,15 @@ export default function NewbornTrackerPage() {
       alertedMedRef.current = medDueAt;
       fire("💊 Meds due");
     }
-  }, [now, feedWindowStart, medDueAt, reminders.soundEnabled, notifPermission, addToast]);
+    if (nursingDueAt !== null && now >= nursingDueAt && alertedNursingRef.current !== nursingDueAt) {
+      alertedNursingRef.current = nursingDueAt;
+      fire(`🤱 Nursing timer running ${reminders.nursingMaxMinutes}+ min — forgot to finish?`);
+    }
+    if (sleepDueAt !== null && now >= sleepDueAt && alertedSleepRef.current !== sleepDueAt) {
+      alertedSleepRef.current = sleepDueAt;
+      fire(`😴 Sleep over ${reminders.sleepMaxHours}h — time for a feed?`);
+    }
+  }, [now, feedWindowStart, medDueAt, nursingDueAt, sleepDueAt, reminders.soundEnabled, reminders.nursingMaxMinutes, reminders.sleepMaxHours, notifPermission, addToast]);
 
   const todayFeedings = todayEvents.filter(e => e.type === "feed").length;
   const todayDiapers = todayEvents.filter(e => e.type === "diaper").length;
@@ -742,88 +780,129 @@ export default function NewbornTrackerPage() {
     }
   }, [update, addToast]);
 
-  const logFeed = (feedType: FeedType) => {
-    unlockAudio(); // prime audio within this tap so the timer can beep later
-    // Nursing feeds start a live timer; bottle/formula log instantly
-    if (feedType === "breast-left" || feedType === "breast-right" || feedType === "both") {
-      const startTime = new Date().toISOString();
-      update(d => ({ ...d, activeNursing: { feedType, startTime }, activeNursingUpdatedAt: startTime }));
-      vibrate();
-      return;
-    }
-    const id = Date.now().toString();
+  // Undo for a feed-that-ended-sleep: restores the sleep event's endTime and
+  // removes the feed event that was logged (or cancels the nursing timer that
+  // was started, when no feed event exists yet).
+  const undoFeedEndedSleep = useCallback((ended: SleepEvent, feedEventId?: string) => {
     update(d => ({
       ...d,
-      events: [...d.events, { id, type: "feed", timestamp: new Date().toISOString(), feedType, updatedAt: new Date().toISOString() } as FeedEvent],
+      activeNursing: feedEventId ? d.activeNursing : undefined,
+      activeNursingUpdatedAt: feedEventId ? d.activeNursingUpdatedAt : new Date().toISOString(),
+      events: d.events
+        .filter(e => e.id !== feedEventId)
+        .map(e => e.id === ended.id ? { ...e, endTime: undefined, updatedAt: new Date().toISOString() } : e),
     }));
+  }, [update]);
+
+  const notifySleepEndedByFeed = useCallback((ended: SleepEvent, feedEventId?: string) => {
+    // No feed event id means a nursing timer was started rather than an instant feed
+    addToast(`Sleep ended · ${durationStr(ended.startTime)} — ${feedEventId ? "feed logged" : "nursing started"}`, "info", {
+      label: "Undo",
+      onClick: () => undoFeedEndedSleep(ended, feedEventId),
+    });
+  }, [addToast, undoFeedEndedSleep]);
+
+  // Handlers compute action results synchronously from the current `data`
+  // state, then commit with `update(() => res.data)`. Capturing results from
+  // inside the updater doesn't work — React runs updaters during render,
+  // after the handler has already built its toasts.
+  const logFeed = (feedType: FeedType) => {
+    unlockAudio(); // prime audio within this tap so the timer can beep later
+    const nowISO = new Date().toISOString();
+    // Nursing feeds start a live timer; bottle/formula log instantly
+    if (feedType === "breast-left" || feedType === "breast-right" || feedType === "both") {
+      const res = startNursing(data, feedType, nowISO);
+      update(() => res.data);
+      vibrate();
+      if (res.endedSleep) notifySleepEndedByFeed(res.endedSleep);
+      return;
+    }
+    const res = logInstantFeed(data, feedType, nowISO);
+    update(() => res.data);
     vibrate();
-    addToast(`Logged ${FEED_LABELS[feedType]}`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
+    addToast(`Logged ${FEED_LABELS[feedType]}`, "success", { label: "Undo", onClick: () => deleteEvent(res.event.id) });
+    if (res.endedSleep) notifySleepEndedByFeed(res.endedSleep, res.event.id);
   };
 
   const finishNursing = () => {
-    const nursing = data.activeNursing;
-    if (!nursing) return;
-    const id = Date.now().toString();
-    const durationMin = Math.max(1, Math.round((Date.now() - new Date(nursing.startTime).getTime()) / 60000));
-    update(d => ({
-      ...d,
-      activeNursing: undefined,
-      activeNursingUpdatedAt: new Date().toISOString(),
-      events: [...d.events, {
-        id, type: "feed", timestamp: nursing.startTime, feedType: nursing.feedType, durationMin, updatedAt: new Date().toISOString(),
-      } as FeedEvent],
-    }));
+    if (!data.activeNursing) return;
+    const res = finishNursingAction(data, new Date().toISOString());
+    update(() => res.data);
+    if (!res.event) return;
+    const logged = res.event;
     vibrate();
-    addToast(`Logged ${FEED_LABELS[nursing.feedType]} · ${durationMin}min`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
+    addToast(`Logged ${FEED_LABELS[logged.feedType]} · ${logged.durationMin}min`, "success", { label: "Undo", onClick: () => deleteEvent(logged.id) });
   };
 
   const cancelNursing = () => {
-    const nursing = data.activeNursing;
-    if (!nursing) return;
-    update(d => ({ ...d, activeNursing: undefined, activeNursingUpdatedAt: new Date().toISOString() }));
+    if (!data.activeNursing) return;
+    const res = cancelNursingAction(data, new Date().toISOString());
+    update(() => res.data);
+    if (!res.cancelled) return;
+    const nursing = res.cancelled;
     addToast("Nursing timer cancelled", "info", {
       label: "Undo",
-      onClick: () => update(d => ({ ...d, activeNursing: nursing, activeNursingUpdatedAt: new Date().toISOString() })),
+      onClick: () => update(d => restoreNursing(d, nursing, new Date().toISOString()).data),
     });
   };
 
   const toggleSleep = () => {
     vibrate();
     if (activeSleep) {
-      update(d => ({
-        ...d,
-        events: d.events.map(e => e.id === activeSleep.id ? { ...e, endTime: new Date().toISOString(), updatedAt: new Date().toISOString() } : e),
-      }));
-      addToast(`Sleep ended · ${durationStr(activeSleep.startTime)}`, "success");
-    } else {
-      const id = Date.now().toString();
-      update(d => ({
-        ...d,
-        events: [...d.events, { id, type: "sleep", startTime: new Date().toISOString(), updatedAt: new Date().toISOString() } as SleepEvent],
-      }));
-      addToast("Sleep started", "success", { label: "Undo", onClick: () => deleteEvent(id) });
+      const res = endSleepAction(data, activeSleep.id, new Date().toISOString());
+      update(() => res.data);
+      if (!res.endedSleep) return;
+      const ended = res.endedSleep;
+      addToast(`Sleep ended · ${durationStr(ended.startTime)}`, "success", {
+        label: "Undo",
+        onClick: () => update(d => ({
+          ...d,
+          events: d.events.map(e => e.id === ended.id ? { ...e, endTime: undefined, updatedAt: new Date().toISOString() } : e),
+        })),
+      });
+      return;
     }
+
+    if (data.activeNursing) {
+      // Two-tap confirm: starting sleep while nursing is running finishes the
+      // feed first, so require an explicit second tap.
+      if (!sleepConfirm) {
+        setSleepConfirm(true);
+        if (sleepConfirmTimeout.current) clearTimeout(sleepConfirmTimeout.current);
+        sleepConfirmTimeout.current = setTimeout(() => setSleepConfirm(false), 4000);
+        return;
+      }
+      setSleepConfirm(false);
+      if (sleepConfirmTimeout.current) clearTimeout(sleepConfirmTimeout.current);
+      const res = finishNursingAndStartSleep(data, new Date().toISOString());
+      update(() => res.data);
+      addToast(
+        res.feedEvent
+          ? `Logged ${FEED_LABELS[res.feedEvent.feedType]} · ${res.feedEvent.durationMin}min — sleep started`
+          : "Sleep started",
+        "success"
+      );
+      return;
+    }
+
+    const res = startSleepAction(data, new Date().toISOString());
+    update(() => res.data);
+    addToast("Sleep started", "success", { label: "Undo", onClick: () => deleteEvent(res.event.id) });
   };
 
   const logDiaper = (diaperType: DiaperType) => {
-    const id = Date.now().toString();
-    update(d => ({
-      ...d,
-      events: [...d.events, { id, type: "diaper", timestamp: new Date().toISOString(), diaperType, updatedAt: new Date().toISOString() } as DiaperEvent],
-    }));
+    const res = logDiaperAction(data, diaperType, new Date().toISOString());
+    update(() => res.data);
     vibrate();
-    addToast(`Logged ${diaperType} diaper`, "success", { label: "Undo", onClick: () => deleteEvent(id) });
+    addToast(`Logged ${diaperType} diaper`, "success", { label: "Undo", onClick: () => deleteEvent(res.event.id) });
   };
 
   const logMed = () => {
     unlockAudio(); // prime audio within this tap so the timer can beep later
-    const id = Date.now().toString();
-    update(d => ({
-      ...d,
-      events: [...d.events, { id, type: "med", timestamp: new Date().toISOString(), updatedAt: new Date().toISOString() } as MedEvent],
-    }));
+    const res = logMedAction(data, new Date().toISOString());
+    update(() => res.data);
     vibrate();
-    addToast("Logged medication", "success", { label: "Undo", onClick: () => deleteEvent(id) });
+    addToast("Logged medication", "success", { label: "Undo", onClick: () => deleteEvent(res.event.id) });
   };
 
   const saveEditedEvent = useCallback((updated: NewbornLogEvent) => {
@@ -838,7 +917,7 @@ export default function NewbornTrackerPage() {
   };
 
   const saveBirthDate = () => {
-    update(d => ({ ...d, babyBirthDate: birthDateInput || undefined }));
+    update(d => ({ ...d, babyBirthDate: birthDateInput || undefined, babyBirthDateUpdatedAt: new Date().toISOString() }));
     setEditingBirthDate(false);
   };
 
@@ -925,7 +1004,7 @@ export default function NewbornTrackerPage() {
           ) : (
             <button onClick={() => { setBirthDateInput(data.babyBirthDate ?? ""); setEditingBirthDate(true); }} className="text-sm text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors">
               Born: <span className="font-medium text-stone-600 dark:text-stone-300">
-                {data.babyBirthDate ? new Date(data.babyBirthDate).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }) : "Set birth date"}
+                {data.babyBirthDate ? (() => { const [y, m, d] = data.babyBirthDate.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }); })() : "Set birth date"}
               </span>
             </button>
           )}
@@ -933,11 +1012,17 @@ export default function NewbornTrackerPage() {
       </div>
 
       {/* Nocturnal hero — the number you want at 3am */}
-      <div className="mb-5 rounded-2xl p-5 bg-gradient-to-br from-indigo-950 via-stone-900 to-stone-950 border border-indigo-900/50 text-white shadow-lg shadow-indigo-950/20">
+      <div className={clsx(
+        "mb-5 rounded-2xl p-5 bg-gradient-to-br from-indigo-950 via-stone-900 to-stone-950 border text-white shadow-lg shadow-indigo-950/20",
+        (nursingOverdue || sleepOverdue) ? "border-amber-500/60 ring-2 ring-amber-500/30" : "border-indigo-900/50"
+      )}>
         {data.activeNursing ? (
           <>
             <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">Nursing now · {FEED_LABELS[data.activeNursing.feedType]}</p>
             <p className="font-display text-5xl leading-none tabular-nums">{clockStr(data.activeNursing.startTime, now)}</p>
+            {nursingOverdue && (
+              <p className="text-[11px] text-amber-300 mt-1.5 flex items-center gap-1">⚠️ Running long — forgot to end?</p>
+            )}
             <div className="flex gap-2 mt-4">
               <button
                 onClick={finishNursing}
@@ -957,6 +1042,9 @@ export default function NewbornTrackerPage() {
           <>
             <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">😴 Sleeping now</p>
             <p className="font-display text-5xl leading-none tabular-nums">{clockStr(activeSleep.startTime, now)}</p>
+            {sleepOverdue && (
+              <p className="text-[11px] text-amber-300 mt-1.5 flex items-center gap-1">⚠️ Running long — forgot to end?</p>
+            )}
             <div className="flex gap-2 mt-4">
               <button
                 onClick={toggleSleep}
@@ -1165,6 +1253,32 @@ export default function NewbornTrackerPage() {
                 <span className="text-[11px] text-stone-400">h</span>
               </div>
             </div>
+            {/* Nursing timer overdue warning */}
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs text-stone-600 dark:text-stone-300">Nursing timer warning (min)</span>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number" min={10} step={5}
+                  value={reminders.nursingMaxMinutes}
+                  onChange={e => updateReminders({ nursingMaxMinutes: Math.max(10, Number(e.target.value) || reminders.nursingMaxMinutes) })}
+                  className="w-14 px-2 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center"
+                />
+                <span className="text-[11px] text-stone-400">min</span>
+              </div>
+            </div>
+            {/* Sleep overdue warning */}
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs text-stone-600 dark:text-stone-300">Sleep warning (hours)</span>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number" min={0.5} step={0.5}
+                  value={reminders.sleepMaxHours}
+                  onChange={e => updateReminders({ sleepMaxHours: Math.max(0.5, Number(e.target.value) || reminders.sleepMaxHours) })}
+                  className="w-14 px-2 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center"
+                />
+                <span className="text-[11px] text-stone-400">h</span>
+              </div>
+            </div>
             <div className="flex items-center justify-between gap-3 pt-1">
               <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300">
                 <input
@@ -1234,10 +1348,15 @@ export default function NewbornTrackerPage() {
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">🌙 Sleep</p>
           <button
             onClick={toggleSleep}
-            className="w-full min-h-[56px] px-4 py-2 rounded-xl text-sm font-semibold border transition-all select-none touch-manipulation bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 active:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:border-stone-700"
+            className={clsx(
+              "w-full min-h-[56px] px-4 py-2 rounded-xl text-sm font-semibold border transition-all select-none touch-manipulation",
+              sleepConfirm && data.activeNursing
+                ? "bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700"
+                : "bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 active:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:border-stone-700"
+            )}
           >
             <Moon size={15} className="inline mr-1.5 -mt-0.5" />
-            Start Sleep
+            {sleepConfirm && data.activeNursing ? "Nursing running — finish feed & sleep?" : "Start Sleep"}
           </button>
         </div>
         )}

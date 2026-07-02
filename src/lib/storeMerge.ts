@@ -90,6 +90,15 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
   const remoteNursingTime = new Date(remote.newbornActiveNursingUpdatedAt ?? 0).getTime() || 0;
   const nursingRemoteWins = remoteNursingTime > localNursingTime;
 
+  const localBirthDateTime = new Date(local.newbornBabyBirthDateUpdatedAt ?? 0).getTime() || 0;
+  const remoteBirthDateTime = new Date(remote.newbornBabyBirthDateUpdatedAt ?? 0).getTime() || 0;
+  // On a tie (neither side has re-saved since this field started being
+  // timestamped, e.g. right after this fix ships) prefer whichever side has
+  // a value set, so a set birth date still propagates to an unset device.
+  const birthDateRemoteWins = remoteBirthDateTime !== localBirthDateTime
+    ? remoteBirthDateTime > localBirthDateTime
+    : !local.newbornBabyBirthDate && !!remote.newbornBabyBirthDate;
+
   return {
     ...local,
     items: dropTombstoned(mergeById(local.items, remote.items ?? []), deletedIds),
@@ -110,6 +119,15 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
       local.newbornBabyName && local.newbornBabyName !== "Baby"
         ? local.newbornBabyName
         : remote.newbornBabyName ?? local.newbornBabyName,
+    // Birth date: newest edit wins, same rule as the nursing timer — otherwise
+    // whichever device set it first "wins" forever and corrections on other
+    // devices never propagate.
+    newbornBabyBirthDate: birthDateRemoteWins
+      ? remote.newbornBabyBirthDate
+      : local.newbornBabyBirthDate,
+    newbornBabyBirthDateUpdatedAt: birthDateRemoteWins
+      ? remote.newbornBabyBirthDateUpdatedAt
+      : local.newbornBabyBirthDateUpdatedAt,
     // Checklist boolean ID lists: union
     checklistSkipped: Array.from(new Set([
       ...(local.checklistSkipped ?? []),
