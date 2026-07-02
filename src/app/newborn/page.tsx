@@ -924,6 +924,19 @@ export default function NewbornTrackerPage() {
               </button>
             </div>
           </>
+        ) : activeSleep ? (
+          <>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">😴 Sleeping now</p>
+            <p className="font-display text-5xl leading-none tabular-nums">{clockStr(activeSleep.startTime, now)}</p>
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={toggleSleep}
+                className="flex-1 min-h-[48px] flex items-center justify-center gap-2 bg-sage-500 hover:bg-sage-600 active:bg-sage-700 text-white rounded-xl text-sm font-semibold transition-colors"
+              >
+                <Square size={13} fill="currentColor" /> End Sleep
+              </button>
+            </div>
+          </>
         ) : (
           <>
             <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">Since last feed</p>
@@ -932,7 +945,6 @@ export default function NewbornTrackerPage() {
             </p>
             <p className="text-xs text-indigo-200/60 mt-2">
               {lastFeed ? `${FEED_LABELS[lastFeed.feedType]} at ${formatTime(lastFeed.timestamp)}` : "No feeds logged yet"}
-              {activeSleep && <span className="text-indigo-300"> · 😴 sleeping {durationStr(activeSleep.startTime)}</span>}
             </p>
           </>
         )}
@@ -1188,23 +1200,18 @@ export default function NewbornTrackerPage() {
         </div>
         )}
 
+        {!activeSleep && (
         <div className="mb-4">
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">🌙 Sleep</p>
           <button
             onClick={toggleSleep}
-            className={clsx(
-              "w-full min-h-[56px] px-4 py-2 rounded-xl text-sm font-semibold border transition-all select-none touch-manipulation",
-              activeSleep
-                ? "bg-indigo-100 text-indigo-700 border-indigo-200 hover:bg-indigo-200 active:bg-indigo-300 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-700 shadow-sm"
-                : "bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 active:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:border-stone-700"
-            )}
+            className="w-full min-h-[56px] px-4 py-2 rounded-xl text-sm font-semibold border transition-all select-none touch-manipulation bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100 active:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:border-stone-700"
           >
             <Moon size={15} className="inline mr-1.5 -mt-0.5" />
-            {activeSleep
-              ? `End Sleep · ${clockStr(activeSleep.startTime, now)}`
-              : "Start Sleep"}
+            Start Sleep
           </button>
         </div>
+        )}
 
         <div>
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">💧 Diaper</p>
