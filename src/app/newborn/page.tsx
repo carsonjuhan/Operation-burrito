@@ -875,11 +875,13 @@ export default function NewbornTrackerPage() {
             {nightMode ? <Sun size={16} /> : <Moon size={16} />}
           </button>
         </div>
-        {syncedAgo && (
-          <p className="text-[10px] text-stone-400 dark:text-stone-500">
-            ☁️ Synced {syncedAgo}
-          </p>
-        )}
+        <p className="text-[10px] text-stone-400 dark:text-stone-500 flex flex-wrap items-center gap-x-1.5">
+          {syncedAgo && <span>☁️ Synced {syncedAgo}</span>}
+          <span className={clsx(syncedAgo && "text-stone-300 dark:text-stone-600")}>
+            Built {new Date(process.env.NEXT_PUBLIC_BUILD_TIME!).toLocaleString("en-CA", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+            {" · "}<span className="font-mono">{process.env.NEXT_PUBLIC_COMMIT_SHA}</span>
+          </span>
+        </p>
         <div className="flex items-center gap-2">
           {editingName ? (
             <form onSubmit={(e) => { e.preventDefault(); saveName(); }} className="flex items-center gap-2">

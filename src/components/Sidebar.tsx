@@ -11,7 +11,7 @@ import {
   Stethoscope, TrendingUp, Star, ClipboardList,
 } from "lucide-react";
 import clsx from "clsx";
-import { getPAT, getGistId, getLastSynced } from "@/lib/gistSync";
+import { getPAT, getGistId, getLastSynced, getDeviceId } from "@/lib/gistSync";
 import { isStorageWarning } from "@/lib/storageMonitor";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { useToast } from "@/contexts/ToastContext";
@@ -102,7 +102,7 @@ export function Sidebar() {
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(
     () => new Set(NAV_SECTIONS.filter(s => s.heading).map(s => s.heading!))
   );
-  const [syncState, setSyncState] = useState({ connected: false, lastSynced: "" });
+  const [syncState, setSyncState] = useState({ connected: false, lastSynced: "", deviceId: "" });
   const [storageWarning, setStorageWarning] = useState(false);
   const sidebarRef = useRef<HTMLElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -135,13 +135,13 @@ export function Sidebar() {
   }, [setSyncErrorCallback, setSyncSuccessCallback, addToast]);
 
   useEffect(() => {
-    setSyncState({ connected: !!(getPAT() && getGistId()), lastSynced: getLastSynced() });
+    setSyncState({ connected: !!(getPAT() && getGistId()), lastSynced: getLastSynced(), deviceId: getDeviceId() });
     setStorageWarning(isStorageWarning());
   }, [pathname]);
 
   useEffect(() => {
     if (!autoSyncing) {
-      setSyncState({ connected: !!(getPAT() && getGistId()), lastSynced: getLastSynced() });
+      setSyncState({ connected: !!(getPAT() && getGistId()), lastSynced: getLastSynced(), deviceId: getDeviceId() });
     }
   }, [autoSyncing]);
 
@@ -342,6 +342,7 @@ export function Sidebar() {
                 {!syncFailureState.isPaused && syncState.lastSynced && (
                   <p className="text-xs text-stone-500 truncate">
                     {new Date(syncState.lastSynced).toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    {syncState.deviceId && <span className="font-mono"> · {syncState.deviceId}</span>}
                   </p>
                 )}
               </div>
@@ -349,6 +350,11 @@ export function Sidebar() {
               <p className="text-xs text-stone-500">Not synced to GitHub</p>
             )}
           </div>
+          {process.env.NEXT_PUBLIC_BUILD_TIME && (
+            <p className="text-xs text-stone-400 dark:text-stone-500 mt-1">
+              Deployed {new Date(process.env.NEXT_PUBLIC_BUILD_TIME).toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+            </p>
+          )}
 
           {/* Sync failure warning with retry/dismiss */}
           {syncFailureState.isPaused && (
@@ -407,6 +413,12 @@ export function Sidebar() {
               {syncState.connected && syncState.lastSynced && (
                 <p className="text-[10px] text-stone-400 dark:text-stone-500 leading-none mt-0.5">
                   {autoSyncing ? "Syncing…" : `synced ${new Date(syncState.lastSynced).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
+                  {syncState.deviceId && <span className="font-mono"> · {syncState.deviceId}</span>}
+                </p>
+              )}
+              {process.env.NEXT_PUBLIC_BUILD_TIME && (
+                <p className="text-[10px] text-stone-400 dark:text-stone-500 leading-none mt-0.5">
+                  {`deployed ${new Date(process.env.NEXT_PUBLIC_BUILD_TIME).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
                 </p>
               )}
             </div>
