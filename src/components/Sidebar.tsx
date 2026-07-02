@@ -8,7 +8,7 @@ import {
   Heart, StickyNote, Settings, Github, Briefcase, Calendar,
   Phone, Timer, Search, X, Menu, PiggyBank, AlertTriangle,
   RefreshCw, XCircle, WifiOff, UtensilsCrossed, ChevronRight, Baby,
-  Moon, Stethoscope, TrendingUp, Star, ClipboardList, Wind,
+  Stethoscope, TrendingUp, Star, ClipboardList,
 } from "lucide-react";
 import clsx from "clsx";
 import { getPAT, getGistId, getLastSynced } from "@/lib/gistSync";
@@ -56,7 +56,6 @@ const NAV_SECTIONS: NavSection[] = [
     heading: "Resources",
     items: [
       { href: "/recipes", label: "Postpartum Recipes", icon: UtensilsCrossed },
-      { href: "/guides/recovery", label: "Recovery Guide", icon: Wind },
       { href: "/materials", label: "Materials", icon: BookOpen },
       { href: "/notes", label: "Notes", icon: StickyNote },
     ],
@@ -66,8 +65,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: "/postbirth", label: "Post-Birth Tasks", icon: ClipboardList },
       { href: "/newborn", label: "Newborn Tracker", icon: Baby },
-      { href: "/guides/feeding", label: "Feeding Guide", icon: Heart },
-      { href: "/guides/sleeping", label: "Sleeping Guide", icon: Moon },
+      { href: "/guides", label: "Guides", icon: BookOpen },
       { href: "/soothe", label: "Soothe Techniques", icon: Baby },
       { href: "/symptoms", label: "Symptom Checker", icon: Stethoscope },
       { href: "/growth", label: "Growth Tracker", icon: TrendingUp },

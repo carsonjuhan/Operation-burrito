@@ -1,442 +1,61 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useStoreContext } from "@/contexts/StoreContext";
-import { Note, NoteCategory } from "@/types";
-import { useUndoDelete } from "@/hooks/useUndoDelete";
-import { Modal } from "@/components/Modal";
-import { EmptyState } from "@/components/EmptyState";
-import { Plus, Pencil, Trash2, Pin, Search, ClipboardPaste, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { NotebookPen, Calendar } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
-import { PhotoAttachment, PhotoThumbnails } from "@/components/PhotoAttachment";
+import { NotesPanel } from "@/components/NotesPanel";
+import { AppointmentsPanel } from "@/components/AppointmentsPanel";
 
-const CATEGORIES: NoteCategory[] = [
-  "Appointment", "Milestone", "Question for Doctor", "Hospital Bag", "Postpartum Plan", "General",
-];
+type PlannerTab = "notes" | "appointments";
 
-const CATEGORY_COLORS: Record<NoteCategory, string> = {
-  "Appointment": "bg-sky-100 text-sky-700",
-  "Milestone": "bg-violet-100 text-violet-700",
-  "Question for Doctor": "bg-amber-100 text-amber-700",
-  "Hospital Bag": "bg-rose-100 text-rose-700",
-  "Postpartum Plan": "bg-emerald-100 text-emerald-700",
-  "General": "bg-stone-100 text-stone-600",
-};
+export default function PlannerPage() {
+  const [tab, setTab] = useState<PlannerTab>("notes");
 
-const DEFAULT_FORM = {
-  title: "",
-  content: "",
-  category: "General" as NoteCategory,
-  pinned: false,
-  photos: [] as string[],
-};
+  // Sync the active sub-tab with the URL (?tab=appointments) so the bottom-nav
+  // and the /appointments redirect can deep-link straight to the right panel.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("tab") === "appointments") setTab("appointments");
+  }, []);
 
-// ── Paste import parser ────────────────────────────────────────────────────
-
-interface ParsedNote {
-  title: string;
-  content: string;
-  category: NoteCategory;
-}
-
-// Matches lines that are purely a date: "06/09", "5/26", "05/24/26", etc.
-const DATE_LINE_RE = /^\s*(\d{1,2}[\/\-]\d{1,2}(?:[\/\-]\d{2,4})?)\s*$/;
-
-function guessCategory(text: string): NoteCategory {
-  const t = text.toLowerCase();
-  if (/\bdr\.|\bdoctor\b|\bappointment\b|\bclinic\b|\bmidwife\b|\bhospital\b|\bnoakes\b/.test(t))
-    return "Appointment";
-  if (/\?|question|ask|wondering|should i|what is|what are/.test(t))
-    return "Question for Doctor";
-  return "General";
-}
-
-function parseNotesFromText(raw: string): ParsedNote[] {
-  const lines = raw.split("\n");
-  const sections: { header: string | null; body: string[] }[] = [];
-  let current: { header: string | null; body: string[] } = { header: null, body: [] };
-
-  for (const line of lines) {
-    const m = line.match(DATE_LINE_RE);
-    if (m) {
-      if (current.body.some(l => l.trim()) || current.header) sections.push(current);
-      current = { header: m[1], body: [] };
-    } else {
-      current.body.push(line);
-    }
-  }
-  if (current.body.some(l => l.trim()) || current.header) sections.push(current);
-
-  return sections
-    .filter(s => s.body.some(l => l.trim()))
-    .map(s => {
-      const content = s.body.join("\n").trim();
-      const title = s.header ? `Notes — ${s.header}` : "Imported Notes";
-      return { title, content, category: guessCategory(content) };
-    });
-}
-
-export default function NotesPage() {
-  const { store, loaded, addNote, updateNote, deleteNote, restoreNote } = useStoreContext();
-  const { handleDelete: handleUndoDelete } = useUndoDelete<Note>(deleteNote, restoreNote, (n) => n.title);
-  const [showModal, setShowModal] = useState(false);
-  const [editing, setEditing] = useState<Note | null>(null);
-  const [form, setForm] = useState(DEFAULT_FORM);
-  const [search, setSearch] = useState("");
-  const [filterCategory, setFilterCategory] = useState<NoteCategory | "All">("All");
-  const [showPasteModal, setShowPasteModal] = useState(false);
-  const [pasteText, setPasteText] = useState("");
-  const [pastePreview, setPastePreview] = useState<ParsedNote[]>([]);
-
-  const filtered = useMemo(() => {
-    return store.notes.filter((n) => {
-      if (filterCategory !== "All" && n.category !== filterCategory) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        return n.title.toLowerCase().includes(q) || n.content.toLowerCase().includes(q);
-      }
-      return true;
-    });
-  }, [store.notes, search, filterCategory]);
-
-  const pinned = useMemo(
-    () => filtered.filter((n) => n.pinned),
-    [filtered]
-  );
-
-  const unpinned = useMemo(
-    () => filtered
-      .filter((n) => !n.pinned)
-      .sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1)),
-    [filtered]
-  );
-
-  if (!loaded) return null;
-
-  const { notes } = store;
-
-  function openAdd() {
-    setEditing(null);
-    setForm(DEFAULT_FORM);
-    setShowModal(true);
-  }
-
-  function openEdit(note: Note) {
-    setEditing(note);
-    setForm({
-      title: note.title,
-      content: note.content,
-      category: note.category,
-      pinned: note.pinned,
-      photos: note.photos ?? [],
-    });
-    setShowModal(true);
-  }
-
-  function handlePasteChange(text: string) {
-    setPasteText(text);
-    setPastePreview(text.trim() ? parseNotesFromText(text) : []);
-  }
-
-  function handlePasteImport() {
-    const now = new Date().toISOString();
-    for (const n of pastePreview) {
-      addNote({ title: n.title, content: n.content, category: n.category, pinned: false });
-    }
-    setPasteText("");
-    setPastePreview([]);
-    setShowPasteModal(false);
-  }
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const payload = {
-      title: form.title.trim(),
-      content: form.content.trim(),
-      category: form.category,
-      pinned: form.pinned,
-      photos: form.photos.length > 0 ? form.photos : undefined,
-    };
-    if (editing) {
-      updateNote(editing.id, payload);
-    } else {
-      addNote(payload);
-    }
-    setShowModal(false);
-  }
+  const selectTab = (next: PlannerTab) => {
+    setTab(next);
+    const url = next === "appointments" ? "?tab=appointments" : window.location.pathname;
+    window.history.replaceState(null, "", url);
+  };
 
   return (
     <PageTransition className="max-w-3xl mx-auto">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800">Notes</h1>
-          <p className="text-sm text-stone-400 mt-1">{notes.length} note{notes.length !== 1 ? "s" : ""}</p>
-        </div>
-        <div className="flex gap-2">
-          <button onClick={() => setShowPasteModal(true)} className="btn-secondary">
-            <ClipboardPaste size={16} /> Paste & Import
-          </button>
-          <button onClick={openAdd} className="btn-primary">
-            <Plus size={16} /> Add Note
-          </button>
-        </div>
+      <div className="mb-5">
+        <h1 className="text-2xl md:text-3xl font-display font-bold text-stone-800 dark:text-stone-100">Planner</h1>
+        <p className="text-sm text-stone-400 mt-1">Notes & appointments in one place.</p>
       </div>
 
-      {/* Search + filter */}
-      {notes.length > 0 && (
-        <div className="card p-4 mb-6 flex flex-wrap gap-3 items-center">
-          <div className="flex items-center gap-2 flex-1 min-w-[180px]">
-            <Search size={14} className="text-stone-400 shrink-0" aria-hidden="true" />
-            <input
-              className="text-sm bg-transparent focus:outline-none w-full"
-              placeholder="Search notes…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              aria-label="Search notes"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-stone-500">Category</span>
-            <select
-              className="text-xs border border-stone-200 rounded-md px-2 py-1 bg-white focus:outline-none"
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value as NoteCategory | "All")}
-              aria-label="Filter by category"
-            >
-              <option value="All">All</option>
-              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-            </select>
-          </div>
-        </div>
-      )}
-
-      {notes.length === 0 ? (
-        <EmptyState
-          icon="📝"
-          title="No notes yet"
-          description="Jot down appointments, questions for your doctor, hospital bag lists, milestones, and more."
-          action={
-            <button onClick={openAdd} className="btn-primary">
-              <Plus size={16} /> Add your first note
-            </button>
-          }
-        />
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-12 text-stone-400 text-sm">No notes match your search.</div>
-      ) : (
-        <div className="space-y-6">
-          {pinned.length > 0 && (
-            <Section title="Pinned">
-              {pinned.map((note) => (
-                <NoteCard
-                  key={note.id}
-                  note={note}
-                  onTogglePin={() => updateNote(note.id, { pinned: !note.pinned })}
-                  onEdit={() => openEdit(note)}
-                  onDelete={() => handleUndoDelete(note)}
-                />
-              ))}
-            </Section>
-          )}
-          {unpinned.length > 0 && (
-            <Section title={pinned.length > 0 ? "Other Notes" : "Notes"}>
-              {unpinned.map((note) => (
-                <NoteCard
-                  key={note.id}
-                  note={note}
-                  onTogglePin={() => updateNote(note.id, { pinned: !note.pinned })}
-                  onEdit={() => openEdit(note)}
-                  onDelete={() => handleUndoDelete(note)}
-                />
-              ))}
-            </Section>
-          )}
-        </div>
-      )}
-
-      {/* Paste & Import modal */}
-      {showPasteModal && (
-        <Modal title="Paste & Import Notes" onClose={() => { setShowPasteModal(false); setPasteText(""); setPastePreview([]); }}>
-          <div className="space-y-4">
-            <p className="text-sm text-stone-500">
-              Paste raw text from Apple Notes. Sections starting with a date like <code className="bg-stone-100 px-1 rounded text-xs">06/09</code> or <code className="bg-stone-100 px-1 rounded text-xs">05/26</code> will each become a separate note.
-            </p>
-            <div>
-              <label className="label">Paste text here</label>
-              <textarea
-                className="textarea"
-                rows={10}
-                placeholder={"06/09\n- Water break signs\n- Head position\n\n05/26\n- Friend's baby had hand foot mouth\n- Private room?"}
-                value={pasteText}
-                onChange={e => handlePasteChange(e.target.value)}
-                autoFocus
-              />
-            </div>
-
-            {pastePreview.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide">
-                  Preview — {pastePreview.length} note{pastePreview.length !== 1 ? "s" : ""} will be created
-                </p>
-                <div className="space-y-1.5 max-h-48 overflow-y-auto">
-                  {pastePreview.map((n, i) => (
-                    <div key={i} className="flex items-start gap-2 px-3 py-2 bg-stone-50 rounded-lg">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-stone-700 truncate">{n.title}</p>
-                        <p className="text-xs text-stone-400 truncate">{n.content.slice(0, 80)}{n.content.length > 80 ? "…" : ""}</p>
-                      </div>
-                      <span className={`badge shrink-0 ${CATEGORY_COLORS[n.category]}`}>{n.category}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {pasteText.trim() && pastePreview.length === 0 && (
-              <p className="text-sm text-stone-400">No sections detected — will create 1 note with all content.</p>
-            )}
-
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={handlePasteImport}
-                disabled={!pasteText.trim()}
-                className="btn-primary flex-1 justify-center disabled:opacity-40"
-              >
-                Import {pastePreview.length > 0 ? `${pastePreview.length} note${pastePreview.length !== 1 ? "s" : ""}` : ""}
-              </button>
-              <button
-                onClick={() => { setShowPasteModal(false); setPasteText(""); setPastePreview([]); }}
-                className="btn-secondary flex-1 justify-center"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </Modal>
-      )}
-
-      {/* Modal */}
-      {showModal && (
-        <Modal title={editing ? "Edit Note" : "Add Note"} onClose={() => setShowModal(false)}>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="label">Title *</label>
-              <input
-                className="input"
-                required
-                placeholder="e.g. Questions for 36-week appointment"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="label">Category</label>
-              <select
-                className="select"
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value as NoteCategory })}
-              >
-                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="label">Content</label>
-              <textarea
-                className="textarea"
-                rows={6}
-                placeholder="Write your note here…"
-                value={form.content}
-                onChange={(e) => setForm({ ...form, content: e.target.value })}
-              />
-            </div>
-            <PhotoAttachment
-              photos={form.photos}
-              onChange={(photos) => setForm({ ...form, photos })}
-            />
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.pinned}
-                onChange={(e) => setForm({ ...form, pinned: e.target.checked })}
-                className="rounded border-stone-300 text-sage-600 focus:ring-sage-400"
-              />
-              <span className="text-sm text-stone-600">Pin this note</span>
-            </label>
-            <div className="flex gap-3 pt-2">
-              <button type="submit" className="btn-primary flex-1 justify-center">
-                {editing ? "Save Changes" : "Add Note"}
-              </button>
-              <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1 justify-center">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </Modal>
-      )}
-    </PageTransition>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h2 className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-2 px-1">{title}</h2>
-      <div className="grid grid-cols-1 gap-3">{children}</div>
-    </div>
-  );
-}
-
-function NoteCard({
-  note,
-  onTogglePin,
-  onEdit,
-  onDelete,
-}: {
-  note: Note;
-  onTogglePin: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
-}) {
-  return (
-    <div className={clsx("card p-4 group", note.pinned && "border-amber-200 bg-amber-50/30")}>
-      <div className="flex items-start gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className="text-sm font-semibold text-stone-700">{note.title}</span>
-            <span className={`badge ${CATEGORY_COLORS[note.category]}`}>{note.category}</span>
-            {note.pinned && <span className="badge bg-amber-100 text-amber-600">Pinned</span>}
-          </div>
-          {note.content && (
-            <p className="text-sm text-stone-500 whitespace-pre-wrap">{note.content}</p>
-          )}
-          <PhotoThumbnails photos={note.photos} />
-          <p className="text-xs text-stone-500 mt-2">
-            {new Date(note.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-          </p>
-        </div>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity shrink-0">
+      {/* Sub-tabs */}
+      <div className="flex gap-1 mb-6 p-1 rounded-2xl bg-stone-100 dark:bg-stone-800/60 max-w-xs">
+        {([
+          { id: "notes", label: "Notes", icon: NotebookPen },
+          { id: "appointments", label: "Appointments", icon: Calendar },
+        ] as const).map(({ id, label, icon: Icon }) => (
           <button
-            onClick={onTogglePin}
+            key={id}
+            onClick={() => selectTab(id)}
             className={clsx(
-              "p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded transition-colors",
-              note.pinned
-                ? "text-amber-500 hover:bg-amber-100"
-                : "text-stone-400 hover:bg-stone-100"
+              "flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-sm font-semibold transition-colors",
+              tab === id
+                ? "bg-white dark:bg-stone-700 text-sage-700 dark:text-sage-300 shadow-sm"
+                : "text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200"
             )}
-            aria-label={note.pinned ? `Unpin ${note.title}` : `Pin ${note.title}`}
+            aria-current={tab === id ? "true" : undefined}
           >
-            <Pin size={14} />
+            <Icon size={15} /> {label}
           </button>
-          <button onClick={onEdit} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-stone-100 text-stone-400" aria-label={`Edit ${note.title}`}>
-            <Pencil size={14} />
-          </button>
-          <button onClick={onDelete} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded hover:bg-red-50 text-stone-400 hover:text-red-500" aria-label={`Delete ${note.title}`}>
-            <Trash2 size={14} />
-          </button>
-        </div>
+        ))}
       </div>
-    </div>
+
+      {tab === "notes" ? <NotesPanel /> : <AppointmentsPanel />}
+    </PageTransition>
   );
 }

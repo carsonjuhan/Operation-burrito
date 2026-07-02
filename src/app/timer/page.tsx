@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { Contraction } from "@/types";
-import { Timer, StopCircle, PlayCircle, Trash2, AlertTriangle, Activity } from "lucide-react";
+import { Timer, StopCircle, PlayCircle, Trash2, AlertTriangle, Activity, X, Check } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
 
@@ -52,13 +52,14 @@ function check511Rule(contractions: Contraction[]): boolean {
 type Phase = "idle" | "timing" | "between";
 
 export default function TimerPage() {
-  const { store, loaded, addContraction, clearContractions } = useStoreContext();
+  const { store, loaded, addContraction, deleteContraction, clearContractions } = useStoreContext();
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [lastContractionStart, setLastContractionStart] = useState<Date | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -310,11 +311,12 @@ export default function TimerPage() {
           </div>
 
           {/* Table header */}
-          <div className="grid grid-cols-4 px-4 py-2 text-xs font-medium text-stone-400 uppercase tracking-wide border-b border-stone-50">
+          <div className="grid grid-cols-[1.5rem_1fr_1fr_1fr_2rem] gap-2 px-4 py-2 text-xs font-medium text-stone-400 uppercase tracking-wide border-b border-stone-50">
             <span>#</span>
             <span>Duration</span>
             <span>Interval</span>
             <span>Time</span>
+            <span className="sr-only">Actions</span>
           </div>
 
           <div className="divide-y divide-stone-50">
@@ -322,12 +324,13 @@ export default function TimerPage() {
               const number = contractions.length - idx;
               const longEnough = c.duration >= 60;
               const closeEnough = c.interval > 0 && c.interval <= 5 * 60;
+              const confirming = confirmDeleteId === c.id;
               return (
                 <div
                   key={c.id}
                   className={clsx(
-                    "grid grid-cols-4 px-4 py-3 text-sm items-center",
-                    idx === 0 && "bg-stone-50/50"
+                    "grid grid-cols-[1.5rem_1fr_1fr_1fr_2rem] gap-2 px-4 py-3 text-sm items-center transition-colors",
+                    confirming ? "bg-rose-50/60" : idx === 0 && "bg-stone-50/50"
                   )}
                 >
                   <span className="text-stone-400 font-mono text-xs">{number}</span>
@@ -351,9 +354,38 @@ export default function TimerPage() {
                   >
                     {c.interval === 0 ? "—" : formatSeconds(c.interval)}
                   </span>
-                  <span className="text-stone-400 text-xs tabular-nums">
-                    {formatTimeOfDay(c.startTime)}
-                  </span>
+                  {confirming ? (
+                    <span className="col-span-2 flex items-center justify-end gap-1.5">
+                      <span className="text-xs text-rose-600 mr-auto">Delete this one?</span>
+                      <button
+                        onClick={() => { deleteContraction(c.id); setConfirmDeleteId(null); }}
+                        className="p-1.5 rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 active:bg-rose-300 transition-colors"
+                        aria-label={`Confirm delete contraction ${number}`}
+                      >
+                        <Check size={14} />
+                      </button>
+                      <button
+                        onClick={() => setConfirmDeleteId(null)}
+                        className="p-1.5 rounded-lg bg-stone-100 text-stone-500 hover:bg-stone-200 active:bg-stone-300 transition-colors"
+                        aria-label="Cancel delete"
+                      >
+                        <X size={14} />
+                      </button>
+                    </span>
+                  ) : (
+                    <>
+                      <span className="text-stone-400 text-xs tabular-nums">
+                        {formatTimeOfDay(c.startTime)}
+                      </span>
+                      <button
+                        onClick={() => setConfirmDeleteId(c.id)}
+                        className="justify-self-end p-1.5 rounded-lg text-stone-300 hover:text-rose-500 hover:bg-rose-50 active:bg-rose-100 transition-colors"
+                        aria-label={`Delete contraction ${number}`}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </>
+                  )}
                 </div>
               );
             })}

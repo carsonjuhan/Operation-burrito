@@ -3,20 +3,28 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Baby, StickyNote, Calendar, Timer, Plus } from "lucide-react";
+import { LayoutDashboard, Baby, NotebookPen, BookOpen, Timer, Plus } from "lucide-react";
 import clsx from "clsx";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { QuickLogSheet } from "@/components/QuickLogSheet";
 import { NEWBORN_UPDATED_EVENT, loadNewbornData } from "@/lib/newbornTracker";
 
-const LEFT_TABS = [
+interface Tab {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  /** Extra paths that should also mark this tab active (e.g. merged/redirected routes) */
+  match?: string[];
+}
+
+const LEFT_TABS: Tab[] = [
   { href: "/", label: "Home", icon: LayoutDashboard },
   { href: "/newborn", label: "Tracker", icon: Baby },
 ];
 
-const RIGHT_TABS = [
-  { href: "/notes", label: "Notes", icon: StickyNote },
-  { href: "/appointments", label: "Appts", icon: Calendar },
+const RIGHT_TABS: Tab[] = [
+  { href: "/notes", label: "Planner", icon: NotebookPen, match: ["/appointments"] },
+  { href: "/guides", label: "Guides", icon: BookOpen },
 ];
 
 function daysUntil(dateStr: string): number | null {
@@ -45,31 +53,30 @@ export function BottomNav() {
   const daysLeft = daysUntil(store.birthPlan?.personalInfo?.dueDate ?? "");
   const babyHere = (daysLeft != null && daysLeft < 0) || hasEvents;
 
-  const renderTab = ({ href, label, icon: Icon }: typeof LEFT_TABS[number]) => {
-    const active = pathname === href;
+  const renderTab = ({ href, label, icon: Icon, match }: Tab) => {
+    const active = pathname === href || (href !== "/" && pathname.startsWith(href)) || (match?.some(m => pathname.startsWith(m)) ?? false);
     return (
       <Link
         key={href}
         href={href}
         className={clsx(
-          "flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors active:scale-95",
+          "flex-1 flex items-center justify-center transition-colors active:scale-95",
           active
             ? "text-sage-600 dark:text-sage-400"
             : "text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300"
         )}
         aria-current={active ? "page" : undefined}
+        aria-label={label}
+        title={label}
       >
-        <Icon size={20} strokeWidth={active ? 2.5 : 1.75} />
-        <span className={clsx("text-[10px] font-medium", active ? "text-sage-600 dark:text-sage-400" : "")}>
-          {label}
-        </span>
+        <Icon size={23} strokeWidth={active ? 2.5 : 1.75} />
       </Link>
     );
   };
 
   const fabCls =
     "w-14 h-14 -mt-5 rounded-full bg-gradient-to-br from-sage-500 to-sage-700 text-white shadow-lg shadow-sage-600/30 " +
-    "flex flex-col items-center justify-center active:scale-95 transition-transform border-4 border-stone-50 dark:border-stone-900";
+    "flex items-center justify-center active:scale-95 transition-transform border-4 border-stone-50 dark:border-stone-900";
 
   return (
     <>
@@ -86,14 +93,12 @@ export function BottomNav() {
           {/* Center action: contraction timer pre-birth, quick log once baby is here */}
           <div className="flex-1 flex items-start justify-center">
             {babyHere ? (
-              <button onClick={() => setSheetOpen(true)} className={fabCls} aria-label="Quick log feed, sleep or diaper">
-                <Plus size={22} strokeWidth={2.5} />
-                <span className="text-[8px] font-semibold -mt-0.5">Log</span>
+              <button onClick={() => setSheetOpen(true)} className={fabCls} aria-label="Quick log feed, sleep or diaper" title="Quick log">
+                <Plus size={26} strokeWidth={2.5} />
               </button>
             ) : (
-              <Link href="/timer" className={fabCls} aria-label="Contraction timer">
-                <Timer size={20} strokeWidth={2.25} />
-                <span className="text-[8px] font-semibold -mt-0.5">Timer</span>
+              <Link href="/timer" className={fabCls} aria-label="Contraction timer" title="Contraction timer">
+                <Timer size={24} strokeWidth={2.25} />
               </Link>
             )}
           </div>

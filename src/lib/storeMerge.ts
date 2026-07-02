@@ -86,6 +86,10 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
   const localRemTime = new Date(local.reminderSettings?.updatedAt ?? 0).getTime() || 0;
   const remoteRemTime = new Date(remote.reminderSettings?.updatedAt ?? 0).getTime() || 0;
 
+  const localNursingTime = new Date(local.newbornActiveNursingUpdatedAt ?? 0).getTime() || 0;
+  const remoteNursingTime = new Date(remote.newbornActiveNursingUpdatedAt ?? 0).getTime() || 0;
+  const nursingRemoteWins = remoteNursingTime > localNursingTime;
+
   return {
     ...local,
     items: dropTombstoned(mergeById(local.items, remote.items ?? []), deletedIds),
@@ -135,6 +139,14 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
     reminderSettings: remote.reminderSettings && remoteRemTime > localRemTime
       ? remote.reminderSettings
       : local.reminderSettings,
+    // Active nursing timer: newest start/finish/cancel wins so it shows live
+    // on other devices, and a finish/cancel isn't clobbered by a stale copy.
+    newbornActiveNursing: nursingRemoteWins
+      ? (remote.newbornActiveNursing ?? null)
+      : (local.newbornActiveNursing ?? null),
+    newbornActiveNursingUpdatedAt: nursingRemoteWins
+      ? remote.newbornActiveNursingUpdatedAt
+      : local.newbornActiveNursingUpdatedAt,
     registryUrl: local.registryUrl || remote.registryUrl || "",
   };
 }

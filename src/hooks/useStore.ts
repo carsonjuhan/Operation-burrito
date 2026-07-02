@@ -409,8 +409,18 @@ export function useStore() {
     const tomb = s.deletedIds ?? {};
     const events = mergeNewbornEvents(local.events, s.newbornEvents).filter((e) => !tomb[e.id]);
     const babyName = s.newbornBabyName && s.newbornBabyName !== "Baby" ? s.newbornBabyName : local.babyName;
-    if (JSON.stringify(events) !== JSON.stringify(local.events) || babyName !== local.babyName) {
-      saveNewbornData({ events, babyName });
+    // Active nursing timer: newest updatedAt wins, same rule as the store merge.
+    const localNursingTime = new Date(local.activeNursingUpdatedAt ?? 0).getTime() || 0;
+    const remoteNursingTime = new Date(s.newbornActiveNursingUpdatedAt ?? 0).getTime() || 0;
+    const nursingRemoteWins = remoteNursingTime > localNursingTime;
+    const activeNursing = nursingRemoteWins ? (s.newbornActiveNursing ?? undefined) : local.activeNursing;
+    const activeNursingUpdatedAt = nursingRemoteWins ? s.newbornActiveNursingUpdatedAt : local.activeNursingUpdatedAt;
+    if (
+      JSON.stringify(events) !== JSON.stringify(local.events) ||
+      babyName !== local.babyName ||
+      JSON.stringify(activeNursing ?? null) !== JSON.stringify(local.activeNursing ?? null)
+    ) {
+      saveNewbornData({ events, babyName, activeNursing: activeNursing ?? undefined, activeNursingUpdatedAt });
     }
   }, []);
 
@@ -540,8 +550,15 @@ export function useStore() {
       const cur = storeRef.current;
       const sameEvents = JSON.stringify(cur.newbornEvents ?? []) === JSON.stringify(d.events);
       const sameName = (cur.newbornBabyName ?? "Baby") === d.babyName;
-      if (!sameEvents || !sameName) {
-        update((s) => ({ ...s, newbornEvents: d.events, newbornBabyName: d.babyName }));
+      const sameNursing = JSON.stringify(cur.newbornActiveNursing ?? null) === JSON.stringify(d.activeNursing ?? null);
+      if (!sameEvents || !sameName || !sameNursing) {
+        update((s) => ({
+          ...s,
+          newbornEvents: d.events,
+          newbornBabyName: d.babyName,
+          newbornActiveNursing: d.activeNursing ?? null,
+          newbornActiveNursingUpdatedAt: d.activeNursingUpdatedAt ?? s.newbornActiveNursingUpdatedAt,
+        }));
       }
     };
     mirror(); // seed once on load

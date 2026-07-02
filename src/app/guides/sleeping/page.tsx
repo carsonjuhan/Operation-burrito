@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Moon, Search, X, ChevronDown, ChevronUp, AlertTriangle, Phone, Lightbulb } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
+import { SleepReference } from "@/components/SleepReference";
 import type { GuideSection, GuideCategory } from "@/types";
 import sleepingData from "../../../../data/sleeping_guide.json";
 
@@ -61,6 +62,9 @@ export default function SleepingGuidePage() {
             <p className="text-xs text-neutral-500 dark:text-neutral-400">{ALL_SECTIONS.length} topics · safe sleep, routines & troubleshooting</p>
           </div>
         </div>
+
+        {/* Visual quick-reference tables */}
+        <SleepReference />
 
         {/* Search */}
         <div className="relative">

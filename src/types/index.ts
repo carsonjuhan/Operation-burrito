@@ -354,6 +354,9 @@ export interface AppStore {
   // Newborn tracker (synced across devices)
   newbornEvents?: NewbornLogEvent[];
   newbornBabyName?: string;
+  // Live nursing timer, mirrored so it shows on other devices while running.
+  newbornActiveNursing?: { feedType: FeedType; startTime: string } | null;
+  newbornActiveNursingUpdatedAt?: string;
   reminderSettings?: ReminderSettings;
   // Tombstones: id → deletedAt ISO. Lets deletes propagate across devices
   // instead of resurrecting on merge. Purged after 30 days.
@@ -430,8 +433,10 @@ export type NewbornLogEvent = FeedEvent | SleepEvent | DiaperEvent | MedEvent;
 export interface NewbornTrackerData {
   events: NewbornLogEvent[];
   babyName: string;
-  // Live nursing timer (transient, device-local — not synced)
+  // Live nursing timer, mirrored into AppStore.newbornActiveNursing so it
+  // shows on other devices while running (see hooks/useStore.ts).
   activeNursing?: { feedType: FeedType; startTime: string };
+  activeNursingUpdatedAt?: string;
 }
 
 // ── Guides (Feeding / Sleeping) ───────────────────────────────────────────────

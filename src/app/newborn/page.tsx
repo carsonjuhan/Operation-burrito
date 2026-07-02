@@ -164,6 +164,64 @@ function buildDayData(events: NewbornLogEvent[]): DayData[] {
   return Object.values(days).sort((a, b) => b.key.localeCompare(a.key));
 }
 
+// ── Daily trends bar chart (sleep hours / feed count / diaper count) ──────────
+
+function DailyTrendsChart({ events }: { events: NewbornLogEvent[] }) {
+  const days = buildDayData(events).slice(0, 14).reverse(); // ascending, most recent 14
+  if (days.length < 2) return null;
+
+  const maxSleepH = Math.max(...days.map(d => d.sleepMins / 60), 1);
+  const maxFeeds = Math.max(...days.map(d => d.feedCount), 1);
+  const maxDiapers = Math.max(...days.map(d => d.diaperCount), 1);
+
+  return (
+    <div>
+      <div className="flex items-end gap-1.5 h-[90px]">
+        {days.map(day => (
+          <div
+            key={day.key}
+            className="flex-1 flex flex-col items-center justify-end gap-1 h-full"
+            title={`${day.label}: ${(day.sleepMins / 60).toFixed(1)}h sleep, ${day.feedCount} feeds, ${day.diaperCount} diapers`}
+          >
+            <div className="flex items-end gap-0.5 h-full w-full justify-center">
+              <div
+                className="w-1.5 bg-indigo-300 dark:bg-indigo-500/60 rounded-t-sm min-h-[2px]"
+                style={{ height: `${Math.max((day.sleepMins / 60 / maxSleepH) * 100, day.sleepMins > 0 ? 3 : 0)}%` }}
+              />
+              <div
+                className="w-1.5 bg-sage-400 dark:bg-sage-500 rounded-t-sm min-h-[2px]"
+                style={{ height: `${Math.max((day.feedCount / maxFeeds) * 100, day.feedCount > 0 ? 3 : 0)}%` }}
+              />
+              <div
+                className="w-1.5 bg-amber-400 dark:bg-amber-500 rounded-t-sm min-h-[2px]"
+                style={{ height: `${Math.max((day.diaperCount / maxDiapers) * 100, day.diaperCount > 0 ? 3 : 0)}%` }}
+              />
+            </div>
+            <span className="text-[8px] text-stone-400 dark:text-stone-500 whitespace-nowrap">
+              {day.label.split(" ")[1]}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-3 pt-2">
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm bg-indigo-300 dark:bg-indigo-500/60" />
+          <span className="text-[9px] text-stone-400">Sleep (h)</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm bg-sage-400" />
+          <span className="text-[9px] text-stone-400">Feeds</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm bg-amber-400" />
+          <span className="text-[9px] text-stone-400">Diapers</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const HOUR_LABELS = ["12a", "3", "6", "9", "12p", "3", "6", "9", "12a"];
 
 function TimelineChart({ events }: { events: NewbornLogEvent[] }) {
@@ -686,7 +744,8 @@ export default function NewbornTrackerPage() {
     unlockAudio(); // prime audio within this tap so the timer can beep later
     // Nursing feeds start a live timer; bottle/formula log instantly
     if (feedType === "breast-left" || feedType === "breast-right" || feedType === "both") {
-      update(d => ({ ...d, activeNursing: { feedType, startTime: new Date().toISOString() } }));
+      const startTime = new Date().toISOString();
+      update(d => ({ ...d, activeNursing: { feedType, startTime }, activeNursingUpdatedAt: startTime }));
       vibrate();
       return;
     }
@@ -707,6 +766,7 @@ export default function NewbornTrackerPage() {
     update(d => ({
       ...d,
       activeNursing: undefined,
+      activeNursingUpdatedAt: new Date().toISOString(),
       events: [...d.events, {
         id, type: "feed", timestamp: nursing.startTime, feedType: nursing.feedType, durationMin, updatedAt: new Date().toISOString(),
       } as FeedEvent],
@@ -718,10 +778,10 @@ export default function NewbornTrackerPage() {
   const cancelNursing = () => {
     const nursing = data.activeNursing;
     if (!nursing) return;
-    update(d => ({ ...d, activeNursing: undefined }));
+    update(d => ({ ...d, activeNursing: undefined, activeNursingUpdatedAt: new Date().toISOString() }));
     addToast("Nursing timer cancelled", "info", {
       label: "Undo",
-      onClick: () => update(d => ({ ...d, activeNursing: nursing })),
+      onClick: () => update(d => ({ ...d, activeNursing: nursing, activeNursingUpdatedAt: new Date().toISOString() })),
     });
   };
 
@@ -1246,6 +1306,14 @@ export default function NewbornTrackerPage() {
               </span>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Daily trends over time */}
+      {allEvents.length > 0 && (
+        <div className="card p-4 mb-4">
+          <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-3">Trends Over Time</p>
+          <DailyTrendsChart events={allEvents} />
         </div>
       )}
 
