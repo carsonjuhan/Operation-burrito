@@ -110,6 +110,7 @@ export interface MockStoreActions {
   addContraction: ReturnType<typeof vi.fn>;
   clearContractions: ReturnType<typeof vi.fn>;
   updateRegistryUrl: ReturnType<typeof vi.fn>;
+  updateReminderSettings: ReturnType<typeof vi.fn>;
   loadFromExternal: ReturnType<typeof vi.fn>;
 }
 
@@ -147,6 +148,7 @@ export function createMockActions(): MockStoreActions {
     addContraction: vi.fn(),
     clearContractions: vi.fn(),
     updateRegistryUrl: vi.fn(),
+    updateReminderSettings: vi.fn(),
     loadFromExternal: vi.fn(),
   };
 }

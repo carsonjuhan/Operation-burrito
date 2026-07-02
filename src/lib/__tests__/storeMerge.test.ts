@@ -55,6 +55,27 @@ describe("mergeStores birth plan", () => {
   });
 });
 
+describe("mergeStores reminder settings", () => {
+  it("newest updatedAt wins (e.g. med interval changed on one phone)", () => {
+    const local = makeStore({
+      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 4, soundEnabled: true, updatedAt: "2026-06-01T00:00:00Z" },
+    });
+    const remote = makeStore({
+      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 6, soundEnabled: true, updatedAt: "2026-06-10T00:00:00Z" },
+    });
+    expect(mergeStores(local, remote).reminderSettings?.medHours).toBe(6);
+    expect(mergeStores(remote, local).reminderSettings?.medHours).toBe(6);
+  });
+
+  it("keeps local when remote has no reminderSettings yet", () => {
+    const local = makeStore({
+      reminderSettings: { feedEnabled: true, feedMinHours: 1.5, feedMaxHours: 3, medEnabled: true, medHours: 6, soundEnabled: true, updatedAt: "2026-06-01T00:00:00Z" },
+    });
+    const remote = makeStore();
+    expect(mergeStores(local, remote).reminderSettings?.medHours).toBe(6);
+  });
+});
+
 describe("mergeStores newborn tracker", () => {
   const feed = (id: string, ts: string): FeedEvent => ({ id, type: "feed", timestamp: ts, feedType: "bottle" });
 

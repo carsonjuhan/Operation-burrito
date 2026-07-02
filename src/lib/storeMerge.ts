@@ -83,6 +83,9 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
   const localBpTime = new Date(local.birthPlan?.updatedAt ?? 0).getTime() || 0;
   const remoteBpTime = new Date(remote.birthPlan?.updatedAt ?? 0).getTime() || 0;
 
+  const localRemTime = new Date(local.reminderSettings?.updatedAt ?? 0).getTime() || 0;
+  const remoteRemTime = new Date(remote.reminderSettings?.updatedAt ?? 0).getTime() || 0;
+
   return {
     ...local,
     items: dropTombstoned(mergeById(local.items, remote.items ?? []), deletedIds),
@@ -128,6 +131,10 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
     contractions: local.contractions,
     // Birth plan: newest edit wins
     birthPlan: localBpTime >= remoteBpTime ? local.birthPlan : remote.birthPlan,
+    // Reminder settings (e.g. med interval): newest edit wins, same as birth plan
+    reminderSettings: remote.reminderSettings && remoteRemTime > localRemTime
+      ? remote.reminderSettings
+      : local.reminderSettings,
     registryUrl: local.registryUrl || remote.registryUrl || "",
   };
 }

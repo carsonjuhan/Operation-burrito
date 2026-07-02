@@ -1,7 +1,9 @@
 // ── Feed / meds reminder timers ──────────────────────────────────────────────
-// Device-local settings (not synced) for the "next due" countdowns on the
-// newborn tracker. Each timer derives its due time from the last logged event
-// of that type, so logging an event automatically restarts the countdown.
+// Settings for the "next due" countdowns on the newborn tracker, synced across
+// devices via the AppStore (see hooks/useStore.ts). The localStorage helpers
+// below remain as the pre-sync fallback/local cache and for legacy migration.
+// Each timer derives its due time from the last logged event of that type, so
+// logging an event automatically restarts the countdown.
 
 export interface ReminderSettings {
   feedEnabled: boolean;
@@ -11,6 +13,9 @@ export interface ReminderSettings {
   medEnabled: boolean;
   medHours: number;
   soundEnabled: boolean;
+  // Set whenever these settings change; used to pick the newer copy when
+  // merging two devices' settings (e.g. medHours changed on one phone).
+  updatedAt?: string;
 }
 
 export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {

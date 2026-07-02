@@ -8,6 +8,7 @@ import {
 import { getPAT, getGistId, pushToGist, loadGist } from "@/lib/gistSync";
 import { mergeStores, mergeNewbornEvents } from "@/lib/storeMerge";
 import { loadNewbornData, saveNewbornData, NEWBORN_UPDATED_EVENT } from "@/lib/newbornTracker";
+import { DEFAULT_REMINDER_SETTINGS, loadReminderSettings, ReminderSettings } from "@/lib/reminderTimers";
 import { recordAction } from "@/lib/actionHistory";
 import { getStorageSize, getStoragePercent, isStorageWarning } from "@/lib/storageMonitor";
 import { setLastModifiedAt } from "@/lib/conflictDetection";
@@ -202,6 +203,12 @@ function loadStore(): AppStore {
     };
     const nb = migrateNewborn();
 
+    // Migrate reminder settings from their own localStorage key if not yet in store
+    const migrateReminderSettings = (): ReminderSettings => {
+      if (parsed.reminderSettings) return parsed.reminderSettings;
+      return loadReminderSettings();
+    };
+
     return {
       items: parsed.items ?? [],
       classes: parsed.classes ?? [],
@@ -219,6 +226,7 @@ function loadStore(): AppStore {
       hospitalChecklistSkipped: migrateList(parsed.hospitalChecklistSkipped, "hospital-checklist-skipped"),
       newbornEvents: nb.events,
       newbornBabyName: nb.name,
+      reminderSettings: migrateReminderSettings(),
     };
   } catch {
     return DEFAULT_STORE;
@@ -326,6 +334,7 @@ export interface CoreContextValue {
   registryUrl: string;
   updateRegistryUrl: (url: string) => void;
   updateChecklistState: (key: "checklistSkipped" | "checklistAlreadyHave" | "hospitalChecklistPacked" | "hospitalChecklistSkipped" | "postBirthChecked", ids: string[]) => void;
+  updateReminderSettings: (patch: Partial<ReminderSettings>) => void;
   loadFromExternal: (incoming: AppStore) => void;
 }
 
@@ -720,6 +729,18 @@ export function useStore() {
     update((s) => ({ ...s, registryUrl: url }));
   }, [update]);
 
+  const updateReminderSettings = useCallback((patch: Partial<ReminderSettings>) => {
+    update((s) => ({
+      ...s,
+      reminderSettings: {
+        ...DEFAULT_REMINDER_SETTINGS,
+        ...s.reminderSettings,
+        ...patch,
+        updatedAt: new Date().toISOString(),
+      },
+    }));
+  }, [update]);
+
   const updateChecklistState = useCallback((
     key: "checklistSkipped" | "checklistAlreadyHave" | "hospitalChecklistPacked" | "hospitalChecklistSkipped" | "postBirthChecked",
     ids: string[]
@@ -838,6 +859,7 @@ export function useStore() {
     registryUrl: store.registryUrl,
     updateRegistryUrl,
     updateChecklistState,
+    updateReminderSettings,
     loadFromExternal,
   }), [
     store, loaded, autoSyncing, storageInfo,
@@ -845,6 +867,7 @@ export function useStore() {
     setSyncErrorCallback, setSyncSuccessCallback,
     updateRegistryUrl,
     updateChecklistState,
+    updateReminderSettings,
     loadFromExternal,
   ]);
 
@@ -876,6 +899,7 @@ export function useStore() {
     addContraction, deleteContraction, clearContractions,
     updateRegistryUrl,
     updateChecklistState,
+    updateReminderSettings,
     loadFromExternal,
   };
 }

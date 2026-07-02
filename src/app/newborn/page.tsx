@@ -11,13 +11,11 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { getLastSynced, getPAT, getGistId } from "@/lib/gistSync";
 import { relativeTime } from "@/lib/conflictDetection";
 import {
-  loadReminderSettings,
-  saveReminderSettings,
+  DEFAULT_REMINDER_SETTINGS,
   feedAnchorMs,
   countFeedSessions,
   unlockAudio,
   playAlertSound,
-  type ReminderSettings,
 } from "@/lib/reminderTimers";
 import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, MedEvent, NewbornLogEvent, NewbornTrackerData } from "@/types";
 import {
@@ -492,23 +490,19 @@ export default function NewbornTrackerPage() {
   const [nameInput, setNameInput] = useState("");
   const [editingEvent, setEditingEvent] = useState<NewbornLogEvent | null>(null);
 
-  const { store } = useStoreContext();
+  const { store, updateReminderSettings } = useStoreContext();
   const [nightMode, setNightMode] = useState(false);
   const [syncedAgo, setSyncedAgo] = useState("");
-  const [reminders, setReminders] = useState<ReminderSettings>(() => loadReminderSettings());
+  // Synced across devices via the AppStore (see hooks/useStore.ts) so e.g.
+  // changing the med interval on one phone updates the other.
+  const reminders = store.reminderSettings ?? DEFAULT_REMINDER_SETTINGS;
   const [showReminderSettings, setShowReminderSettings] = useState(false);
   const { permission: notifPermission, requestPermission } = useNotifications();
   // Track which due-time we've already alerted for, so each cycle alerts once
   const alertedFeedRef = useRef<number>(0);
   const alertedMedRef = useRef<number>(0);
 
-  const updateReminders = useCallback((patch: Partial<ReminderSettings>) => {
-    setReminders(prev => {
-      const next = { ...prev, ...patch };
-      saveReminderSettings(next);
-      return next;
-    });
-  }, []);
+  const updateReminders = updateReminderSettings;
 
   useEffect(() => { setData(loadData()); }, []);
   useEffect(() => {
