@@ -95,6 +95,8 @@ export default function SettingsPage() {
   const [pullConflict, setPullConflict] = useState<ConflictInfo | null>(null);
   const [pushConflict, setPushConflict] = useState<ConflictInfo | null>(null);
 
+  const [editingGistId, setEditingGistId] = useState(false);
+
   // Import/export state
   const [importStatus, setImportStatus] = useState<"idle" | "confirm" | "success" | "error">("idle");
   const [importErrorMsg, setImportErrorMsg] = useState("");
@@ -287,6 +289,10 @@ export default function SettingsPage() {
     setGistId(trimmed);
     setGistIdState(trimmed);
     setGistIdInput("");
+    setEditingGistId(false);
+    listDeviceFiles(getPAT(), trimmed)
+      .then(setDeviceFiles)
+      .catch(() => setDeviceFiles(null));
 
     // Immediately pull from the entered Gist ID
     setPullStatus("loading");
@@ -455,6 +461,34 @@ export default function SettingsPage() {
         )}
       </div>
 
+      {/* Step 1b — Existing Gist ID (new device flow) */}
+      {connected && !gistId && (
+        <div className="card p-5 mb-4">
+          <h2 className="text-sm font-semibold text-stone-700 mb-1">Already have a Gist?</h2>
+          <p className="text-xs text-stone-400 mb-3">
+            If you pushed from another device, enter the Gist ID here to load that data —
+            otherwise Push below will create a new Gist.
+          </p>
+          <div className="flex gap-2">
+            <input
+              className="input flex-1 font-mono text-xs"
+              placeholder="e.g. a1b2c3d4e5f6..."
+              value={gistIdInput}
+              onChange={(e) => setGistIdInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSaveGistId()}
+            />
+            <button onClick={handleSaveGistId} className="btn-primary shrink-0" disabled={!gistIdInput.trim() || pullStatus === "loading"}>
+              {pullStatus === "loading" ? <><Loader2 size={16} className="animate-spin" /> Loading…</> : "Load & Pull"}
+            </button>
+          </div>
+          {pullStatus === "error" && errorMsg && (
+            <p className="text-xs text-red-500 flex items-center gap-1 mt-2">
+              <AlertCircle size={13} /> {errorMsg}
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Step 2 — Sync */}
       {connected && (
         <div className="card p-5 mb-4">
@@ -462,8 +496,40 @@ export default function SettingsPage() {
 
           {gistId && (
             <div className="mb-4 p-3 bg-stone-50 rounded-lg border border-stone-200">
-              <p className="text-xs text-stone-400 mb-1">Gist ID</p>
-              <p className="text-xs font-mono text-stone-600 break-all">{gistId}</p>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <p className="text-xs text-stone-400">Gist ID</p>
+                <button
+                  onClick={() => { setEditingGistId((v) => !v); setGistIdInput(""); }}
+                  className="text-xs text-sky-600 hover:underline"
+                >
+                  {editingGistId ? "Cancel" : "Change"}
+                </button>
+              </div>
+              {editingGistId ? (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      className="input flex-1 font-mono text-xs"
+                      placeholder="e.g. a1b2c3d4e5f6..."
+                      value={gistIdInput}
+                      onChange={(e) => setGistIdInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSaveGistId()}
+                    />
+                    <button
+                      onClick={handleSaveGistId}
+                      className="btn-primary shrink-0 text-xs"
+                      disabled={!gistIdInput.trim() || pullStatus === "loading"}
+                    >
+                      {pullStatus === "loading" ? <Loader2 size={14} className="animate-spin" /> : "Use this Gist"}
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-amber-600 flex items-center gap-1">
+                    <AlertTriangle size={12} /> Saving pulls data from the new Gist and replaces local data.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs font-mono text-stone-600 break-all">{gistId}</p>
+              )}
               <a
                 href={`https://gist.github.com/${gistId}`}
                 target="_blank"
@@ -794,28 +860,6 @@ export default function SettingsPage() {
         revertTo={revertTo}
         clearHistory={clearActionHistory}
       />
-
-      {/* Step 2b — Existing Gist ID (new device flow) */}
-      {connected && !gistId && (
-        <div className="card p-5">
-          <h2 className="text-sm font-semibold text-stone-700 mb-1">Already have a Gist?</h2>
-          <p className="text-xs text-stone-400 mb-3">
-            If you pushed from another device, enter the Gist ID to load that data.
-          </p>
-          <div className="flex gap-2">
-            <input
-              className="input flex-1 font-mono text-xs"
-              placeholder="e.g. a1b2c3d4e5f6..."
-              value={gistIdInput}
-              onChange={(e) => setGistIdInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSaveGistId()}
-            />
-            <button onClick={handleSaveGistId} className="btn-primary shrink-0" disabled={!gistIdInput.trim() || pullStatus === "loading"}>
-              {pullStatus === "loading" ? <><Loader2 size={16} className="animate-spin" /> Loading…</> : "Load & Pull"}
-            </button>
-          </div>
-        </div>
-      )}
 
       <p className="text-center text-[10px] text-stone-300 dark:text-stone-600 mt-8">
         Built {new Date(process.env.NEXT_PUBLIC_BUILD_TIME!).toLocaleString("en-CA", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
