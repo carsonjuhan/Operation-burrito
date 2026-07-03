@@ -741,6 +741,13 @@ export default function NewbornTrackerPage() {
     dirty: ev24.filter(e => e.type === "diaper" && ["dirty", "both"].includes((e as DiaperEvent).diaperType)).length,
     sleepH: sleepMinsInWindow(ev24.filter(e => e.type === "sleep") as SleepEvent[], cutoff24) / 60,
   };
+  const cutoffToday = new Date().setHours(0, 0, 0, 0);
+  const statsToday = {
+    feeds: countFeedSessions(todayEvents.filter(e => e.type === "feed").map(e => new Date((e as FeedEvent).timestamp).getTime())),
+    wet: todayEvents.filter(e => e.type === "diaper" && ["wet", "both"].includes((e as DiaperEvent).diaperType)).length,
+    dirty: todayEvents.filter(e => e.type === "diaper" && ["dirty", "both"].includes((e as DiaperEvent).diaperType)).length,
+    sleepH: sleepMinsInWindow(todayEvents.filter(e => e.type === "sleep") as SleepEvent[], cutoffToday) / 60,
+  };
   const oldest7d = ev7d.length ? new Date(getEventTime(ev7d[ev7d.length - 1])).getTime() : now;
   const trackedDays = Math.min(7, Math.max(1, (now - oldest7d) / (24 * 3600e3)));
   const stats7d = {
@@ -1428,6 +1435,21 @@ export default function NewbornTrackerPage() {
             <Stethoscope size={14} className="text-sky-500" />
             <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">For the Pediatrician</p>
           </div>
+          <p className="text-[10px] text-stone-400 mb-1">Today (since midnight)</p>
+          <div className="grid grid-cols-4 gap-2 mb-3">
+            {[
+              { label: "Feedings", v: String(statsToday.feeds) },
+              { label: "Wet", v: String(statsToday.wet) },
+              { label: "Dirty", v: String(statsToday.dirty) },
+              { label: "Sleep", v: `${statsToday.sleepH.toFixed(1)}h` },
+            ].map(({ label, v }) => (
+              <div key={label} className="text-center rounded-xl bg-stone-50 dark:bg-stone-800/60 py-2">
+                <p className="font-display text-xl text-stone-800 dark:text-stone-100 tabular-nums leading-tight">{v}</p>
+                <p className="text-[10px] text-stone-400">{label}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-stone-400 mb-1">Last 24 hours</p>
           <div className="grid grid-cols-4 gap-2 mb-2">
             {[
               { label: "Feedings", v24: String(stats24.feeds), v7: `${stats7d.feedsPerDay.toFixed(1)}/d` },
@@ -1437,7 +1459,7 @@ export default function NewbornTrackerPage() {
             ].map(({ label, v24, v7 }) => (
               <div key={label} className="text-center rounded-xl bg-stone-50 dark:bg-stone-800/60 py-2">
                 <p className="font-display text-xl text-stone-800 dark:text-stone-100 tabular-nums leading-tight">{v24}</p>
-                <p className="text-[10px] text-stone-400">{label} · 24h</p>
+                <p className="text-[10px] text-stone-400">{label}</p>
                 {v7 && <p className="text-[9px] text-stone-300 dark:text-stone-600">{v7} avg</p>}
               </div>
             ))}
