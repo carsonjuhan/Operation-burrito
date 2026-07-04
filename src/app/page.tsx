@@ -15,7 +15,11 @@ import { MilestoneTimeline, type MilestoneCompletionData } from "@/components/Mi
 
 function getDaysUntil(dateStr: string): number | null {
   if (!dateStr) return null;
-  const due = new Date(dateStr);
+  // Parse "YYYY-MM-DD" as local midnight, not UTC — new Date(dateStr) treats
+  // it as UTC, which rolls the date back a day in timezones behind UTC.
+  const [y, m, d] = dateStr.split("-").map(Number);
+  if (!y || !m || !d) return null;
+  const due = new Date(y, m - 1, d);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   due.setHours(0, 0, 0, 0);

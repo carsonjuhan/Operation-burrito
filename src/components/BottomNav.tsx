@@ -83,7 +83,7 @@ export function BottomNav() {
       <QuickLogSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
 
       <nav
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-t border-stone-200/60 dark:border-stone-700/60"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-t border-stone-200/60 dark:border-stone-700/60"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         aria-label="Bottom navigation"
       >

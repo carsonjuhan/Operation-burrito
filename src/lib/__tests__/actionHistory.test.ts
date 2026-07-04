@@ -6,6 +6,7 @@ import {
   clearHistory,
 } from "../actionHistory";
 import type { AppStore } from "@/types";
+import { DEFAULT_BIRTH_PLAN } from "@/hooks/useStore";
 
 // Minimal valid AppStore for testing
 function makeStore(overrides: Partial<AppStore> = {}): AppStore {
@@ -13,35 +14,13 @@ function makeStore(overrides: Partial<AppStore> = {}): AppStore {
     items: [],
     classes: [],
     materials: [],
-    birthPlan: {
-      updatedAt: "",
-      personalInfo: { legalName: "", preferredName: "", dueDate: "", currentMedications: "", allergies: "" },
-      labour: {
-        birthPartner: "", doula: "", otherSupportPeople: "", labourGoal: "", atmosphereNotes: "",
-        comfortMeasures: { walking: false, labourBall: false, tub: false, shower: false, heat: false, ice: false, massage: false, tens: false, other: "" },
-        pushingPreferences: { varietyOfPositions: false, helpWithPushing: false, selfDirected: false, other: "" },
-        painMedication: { onlyIfAsked: false, offerIfNotCoping: false, offerAsSoonAsPossible: false, nitrous: false, morphineFentanyl: false, epidural: false, other: "" },
-        photographyNotes: "", personalTouches: "", cordBloodBankDonation: false, cordBloodTissueBankingNotes: "", otherRequests: "",
-      },
-      afterBirth: {
-        skinToSkin: false, cordCuttingPerson: "", feedingPlan: "breastfeed", feedingNotes: "",
-        newbornTreatments: { antibioticEyeOintment: false, vitaminKInjection: false, other: "" },
-        placentaPreferences: "", circumcisionPreferences: "", visitorsPreference: "",
-      },
-      interventions: {
-        unexpectedEvents: { includeInAllDecisions: false, partnerIncluded: false, other: "" },
-        continuousMonitoring: { preferMobile: false, useShowerBath: false },
-        prolongedLabour: { tryNaturalMethods: false, offerMedication: false },
-        assistedBirthPreference: "", caesarianWishes: "",
-        specialCareForBaby: { skinToSkinIfPossible: false, helpExpressing: false, involvedInCare: false, other: "" },
-      },
-      notes: "",
-    },
+    birthPlan: DEFAULT_BIRTH_PLAN,
     notes: [],
     hospitalBag: [],
     appointments: [],
     contacts: [],
     contractions: [],
+    postBirthTasks: [],
     registryUrl: "",
     ...overrides,
   };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { BabyItem, ItemCategory, ItemPriority, ItemTiming, ChecklistItem } from "@/types";
 import { useChecklistData } from "@/hooks/useChecklistData";
@@ -153,7 +153,7 @@ export default function ItemsPage() {
   };
 
   // Get status for a checklist item
-  const getChecklistItemStatus = (item: ChecklistItem): "purchased" | "in-list" | "already-have" | "skipped" | "need" => {
+  const getChecklistItemStatus = useCallback((item: ChecklistItem): "purchased" | "in-list" | "already-have" | "skipped" | "need" => {
     if (skippedItems.has(item.id)) return "skipped";
     // Check if matched from inventory
     if (checklistData?.MATCHED_CHECKLIST_IDS.has(item.id)) return "already-have";
@@ -162,7 +162,7 @@ export default function ItemsPage() {
     const match = store.items.find((i) => i.name.toLowerCase() === item.name.toLowerCase());
     if (!match) return "need";
     return match.purchased ? "purchased" : "in-list";
-  };
+  }, [skippedItems, checklistData, alreadyHave, store.items]);
 
   // Merge checklist items with tracked items
   const mergedItems = useMemo((): MergedItemType[] => {
@@ -211,7 +211,7 @@ export default function ItemsPage() {
     }
 
     return items;
-  }, [store.items, viewMode, alreadyHave, skippedItems, showSkipped, checklistData]);
+  }, [store.items, viewMode, showSkipped, checklistData, getChecklistItemStatus]);
 
   const filtered = useMemo(() => {
     return mergedItems.filter((item) => {

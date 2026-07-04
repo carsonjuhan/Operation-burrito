@@ -132,7 +132,12 @@ export default function TimerPage() {
     [contractions]
   );
 
-  const recent = useMemo(() => sorted.slice(0, 10), [sorted]);
+  const [showAll, setShowAll] = useState(false);
+  const RECENT_PAGE_SIZE = 10;
+  const recent = useMemo(
+    () => (showAll ? sorted : sorted.slice(0, RECENT_PAGE_SIZE)),
+    [sorted, showAll]
+  );
 
   // Stats
   const last = sorted[0] ?? null;
@@ -279,7 +284,7 @@ export default function TimerPage() {
                 Recent Contractions
               </h2>
               <span className="badge bg-stone-100 text-stone-500">
-                last {recent.length}
+                {showAll ? `all ${recent.length}` : `last ${recent.length} of ${contractions.length}`}
               </span>
             </div>
             {/* Clear button */}
@@ -390,6 +395,17 @@ export default function TimerPage() {
               );
             })}
           </div>
+
+          {contractions.length > RECENT_PAGE_SIZE && (
+            <div className="flex justify-center py-3 border-t border-stone-50">
+              <button
+                onClick={() => setShowAll(v => !v)}
+                className="text-xs font-medium text-sage-600 hover:text-sage-700 transition-colors"
+              >
+                {showAll ? "Show fewer" : `Show all ${contractions.length}`}
+              </button>
+            </div>
+          )}
         </div>
       )}
 

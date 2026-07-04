@@ -108,6 +108,7 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
     appointments: dropTombstoned(mergeById(local.appointments, remote.appointments ?? []), deletedIds),
     contacts: dropTombstoned(mergeById(local.contacts, remote.contacts ?? []), deletedIds),
     hospitalBag: dropTombstoned(mergeById(local.hospitalBag, remote.hospitalBag ?? []), deletedIds),
+    postBirthTasks: dropTombstoned(mergeById(local.postBirthTasks ?? [], remote.postBirthTasks ?? []), deletedIds),
     deletedIds,
     // Newborn events: append-only union (tracker has its own delete semantics
     // via tombstones too — a deleted log event's id lands in deletedIds)
@@ -149,8 +150,10 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
       ...(local.postBirthChecked ?? []),
       ...(remote.postBirthChecked ?? []),
     ])),
-    // Contractions: transient, keep local
-    contractions: local.contractions,
+    // Contractions: union by id, minus tombstones — same as any other entity
+    // list (previously "local wins" here silently discarded remote contraction
+    // history on every pull).
+    contractions: dropTombstoned(mergeById(local.contractions ?? [], remote.contractions ?? []), deletedIds),
     // Birth plan: newest edit wins
     birthPlan: localBpTime >= remoteBpTime ? local.birthPlan : remote.birthPlan,
     // Reminder settings (e.g. med interval): newest edit wins, same as birth plan

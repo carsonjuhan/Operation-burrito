@@ -2,9 +2,9 @@
 
 ## Deployment Model
 
-Static export (`output: "export"`) deployed to GitHub Pages.
+Static export (`output: "export"`) deployed to **S3 + CloudFront** at **baby.juhan.me** via `./deploy.sh`.
 
-- Production base path: `/Operation-burrito`
+- `deploy.sh` builds the static export to `./out`, stamps a fresh `CACHE_VERSION` into `out/sw.js` (so browsers purge stale service-worker caches on each deploy), syncs `./out` to S3, and invalidates the CloudFront distribution
 - No server-side rendering or API routes
 - All pages must be client components (`"use client"`)
 - Images unoptimized (required for static export)
@@ -59,18 +59,27 @@ Next.js App Router with file-based routing. Each feature is a directory under `s
 | Route | Feature |
 |-------|---------|
 | `/` | Dashboard |
-| `/items` | Baby Items & Checklist |
-| `/budget` | Budget Analytics |
-| `/hospital-bag` | Hospital Bag |
-| `/birth-plan` | Birth Plan |
 | `/appointments` | Appointments |
-| `/contacts` | Contacts |
+| `/birth-plan` | Birth Plan |
+| `/budget` | Budget Analytics |
 | `/classes` | Classes |
+| `/contacts` | Contacts |
+| `/growth` | Growth Tracker (weight/length/head) |
+| `/guides` | Feeding & Sleeping Guides |
+| `/hospital-bag` | Hospital Bag |
+| `/items` | Baby Items & Checklist |
 | `/materials` | Materials |
+| `/milestones` | Development Milestones |
+| `/newborn` | Newborn Tracker (feed/sleep/diaper/med log) |
 | `/notes` | Notes |
-| `/timer` | Contraction Timer |
+| `/postbirth` | Postpartum Checklist |
+| `/recipes` | Postpartum Recipes |
 | `/search` | Global Search |
 | `/settings` | Settings |
+| `/sleep-training` | Sleep Training Log |
+| `/soothe` | Soothe Techniques |
+| `/symptoms` | Symptom Checker |
+| `/timer` | Contraction Timer |
 
 ## Styling
 

@@ -7,7 +7,7 @@ import {
   hasPrePullSnapshot,
   SNAPSHOT_KEY,
 } from "@/lib/syncValidation";
-import { DEFAULT_STORE } from "@/hooks/useStore";
+import { DEFAULT_STORE, DEFAULT_BIRTH_PLAN } from "@/hooks/useStore";
 import type { AppStore } from "@/types";
 
 // ── localStorage mock ─────────────────────────────────────────────────────
@@ -49,8 +49,10 @@ const validStore: AppStore = {
   classes: [],
   materials: [],
   birthPlan: {
+    ...DEFAULT_BIRTH_PLAN,
     updatedAt: "2026-01-01T00:00:00Z",
     personalInfo: {
+      ...DEFAULT_BIRTH_PLAN.personalInfo,
       legalName: "Jane",
       preferredName: "Jane",
       dueDate: "2026-06-01",
@@ -58,16 +60,19 @@ const validStore: AppStore = {
       allergies: "",
     },
     labour: {
+      ...DEFAULT_BIRTH_PLAN.labour,
       birthPartner: "John",
       doula: "",
       otherSupportPeople: "",
       labourGoal: "Natural",
       atmosphereNotes: "",
       comfortMeasures: {
+        ...DEFAULT_BIRTH_PLAN.labour.comfortMeasures,
         walking: false, labourBall: false, tub: false, shower: false,
         heat: false, ice: false, massage: false, tens: false, other: "",
       },
       pushingPreferences: {
+        ...DEFAULT_BIRTH_PLAN.labour.pushingPreferences,
         varietyOfPositions: false, helpWithPushing: false, selfDirected: false, other: "",
       },
       painMedication: {
@@ -81,16 +86,21 @@ const validStore: AppStore = {
       otherRequests: "",
     },
     afterBirth: {
+      ...DEFAULT_BIRTH_PLAN.afterBirth,
       skinToSkin: true,
       cordCuttingPerson: "John",
       feedingPlan: "breastfeed",
       feedingNotes: "",
-      newbornTreatments: { antibioticEyeOintment: false, vitaminKInjection: true, other: "" },
+      newbornTreatments: {
+        ...DEFAULT_BIRTH_PLAN.afterBirth.newbornTreatments,
+        antibioticEyeOintment: false, vitaminKInjection: true, other: "",
+      },
       placentaPreferences: "",
       circumcisionPreferences: "",
       visitorsPreference: "",
     },
     interventions: {
+      ...DEFAULT_BIRTH_PLAN.interventions,
       unexpectedEvents: { includeInAllDecisions: true, partnerIncluded: true, other: "" },
       continuousMonitoring: { preferMobile: false, useShowerBath: false },
       prolongedLabour: { tryNaturalMethods: true, offerMedication: false },
@@ -107,6 +117,7 @@ const validStore: AppStore = {
   appointments: [],
   contacts: [],
   contractions: [],
+  postBirthTasks: [],
   registryUrl: "https://amazon.ca/registry/123",
 };
 
@@ -164,6 +175,14 @@ describe("validateAppStore", () => {
     expect(result.store!.hospitalBag.length).toBeGreaterThan(0); // default bag items
     expect(result.warnings.length).toBeGreaterThan(0);
     expect(result.warnings.some((w) => w.includes("items"))).toBe(true);
+  });
+
+  it("fills missing postBirthTasks with an empty array instead of dropping the file", () => {
+    const partial = { birthPlan: validStore.birthPlan, registryUrl: "" };
+    const result = validateAppStore(partial);
+    expect(result.valid).toBe(true);
+    expect(result.store!.postBirthTasks).toEqual([]);
+    expect(result.warnings.some((w) => w.includes("postBirthTasks"))).toBe(true);
   });
 
   it("fills missing birthPlan with default", () => {

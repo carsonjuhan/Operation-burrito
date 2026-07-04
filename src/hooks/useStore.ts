@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   AppStore, BabyItem, BabyClass, Material, BirthPlan, Note,
-  BagItem, Appointment, Contact, Contraction,
+  BagItem, Appointment, Contact, Contraction, PostBirthTask,
 } from "@/types";
 import { getPAT, getGistId, pushToGist, loadGist } from "@/lib/gistSync";
 import { mergeStores, mergeNewbornEvents } from "@/lib/storeMerge";
@@ -132,6 +132,7 @@ export const DEFAULT_STORE: AppStore = {
   appointments: [],
   contacts: [],
   contractions: [],
+  postBirthTasks: [],
   registryUrl: "",
   checklistSkipped: [],
   checklistAlreadyHave: [],
@@ -219,6 +220,7 @@ function loadStore(): AppStore {
       appointments: parsed.appointments ?? [],
       contacts: parsed.contacts ?? [],
       contractions: parsed.contractions ?? [],
+      postBirthTasks: parsed.postBirthTasks ?? [],
       registryUrl: parsed.registryUrl ?? "",
       checklistSkipped: migrateList(parsed.checklistSkipped, "checklist-skipped"),
       checklistAlreadyHave: migrateList(parsed.checklistAlreadyHave, "checklist-already-have"),
@@ -330,6 +332,15 @@ export interface ContractionsContextValue {
   clearContractions: () => void;
 }
 
+export interface PostBirthTasksContextValue {
+  postBirthTasks: PostBirthTask[];
+  addPostBirthTask: (task: Omit<PostBirthTask, "id">) => void;
+  updatePostBirthTask: (id: string, changes: Partial<PostBirthTask>) => void;
+  deletePostBirthTask: (id: string) => void;
+  restorePostBirthTask: (task: PostBirthTask) => void;
+  setPostBirthTasks: (tasks: PostBirthTask[]) => void;
+}
+
 export interface CoreContextValue {
   store: AppStore;
   loaded: boolean;
@@ -390,6 +401,7 @@ export function useStore() {
 
   const TOMBSTONE_ARRAYS = useMemo(() => ([
     "items", "classes", "materials", "notes", "appointments", "contacts", "hospitalBag", "newbornEvents",
+    "contractions", "postBirthTasks",
   ] as const), []);
 
   const trackDeletes = useCallback((prev: AppStore, next: AppStore): AppStore => {
@@ -761,6 +773,30 @@ export function useStore() {
     update((s) => ({ ...s, contractions: [] }));
   }, [update]);
 
+  // ── Post-Birth Tasks ─────────────────────────────────────────────────────
+
+  const addPostBirthTask = useCallback((task: Omit<PostBirthTask, "id">) => {
+    update((s) => ({ ...s, postBirthTasks: [...s.postBirthTasks, { ...task, id: crypto.randomUUID() }] }), `Added task '${task.label}'`);
+  }, [update]);
+
+  const updatePostBirthTask = useCallback((id: string, changes: Partial<PostBirthTask>) => {
+    update((s) => ({ ...s, postBirthTasks: s.postBirthTasks.map((t) => (t.id === id ? { ...t, ...changes } : t)) }));
+  }, [update]);
+
+  const deletePostBirthTask = useCallback((id: string) => {
+    update((s) => ({ ...s, postBirthTasks: s.postBirthTasks.filter((t) => t.id !== id) }));
+  }, [update]);
+
+  const restorePostBirthTask = useCallback((task: PostBirthTask) => {
+    update((s) => ({ ...s, postBirthTasks: [...s.postBirthTasks, task] }));
+  }, [update]);
+
+  // Bulk replace — used to seed/migrate from the pre-store localStorage blob
+  // and to reset to the built-in default task list.
+  const setPostBirthTasks = useCallback((tasks: PostBirthTask[]) => {
+    update((s) => ({ ...s, postBirthTasks: tasks }));
+  }, [update]);
+
   // ── Registry URL ──────────────────────────────────────────────────────────
 
   const updateRegistryUrl = useCallback((url: string) => {
@@ -887,6 +923,11 @@ export function useStore() {
     addContraction, deleteContraction, clearContractions,
   }), [store.contractions, addContraction, deleteContraction, clearContractions]);
 
+  const postBirthTasksValue: PostBirthTasksContextValue = useMemo(() => ({
+    postBirthTasks: store.postBirthTasks,
+    addPostBirthTask, updatePostBirthTask, deletePostBirthTask, restorePostBirthTask, setPostBirthTasks,
+  }), [store.postBirthTasks, addPostBirthTask, updatePostBirthTask, deletePostBirthTask, restorePostBirthTask, setPostBirthTasks]);
+
   // Note: `store` is intentionally included — coreValue consumers need the full store.
   // The domain-specific contexts (itemsValue, classesValue, etc.) provide the perf wins.
   // `retrySyncNow` uses storeRef internally so it doesn't need `store` as a dep.
@@ -920,6 +961,7 @@ export function useStore() {
     appointmentsValue,
     contactsValue,
     contractionsValue,
+    postBirthTasksValue,
     coreValue,
 
     // Flat exports for backward compatibility (useStoreContext)
@@ -935,6 +977,7 @@ export function useStore() {
     addAppointment, updateAppointment, deleteAppointment, restoreAppointment,
     addContact, updateContact, deleteContact, restoreContact,
     addContraction, deleteContraction, clearContractions,
+    addPostBirthTask, updatePostBirthTask, deletePostBirthTask, restorePostBirthTask, setPostBirthTasks,
     updateRegistryUrl,
     updateChecklistState,
     updateReminderSettings,

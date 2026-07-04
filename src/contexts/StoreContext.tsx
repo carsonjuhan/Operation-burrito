@@ -12,6 +12,7 @@ import type {
   AppointmentsContextValue,
   ContactsContextValue,
   ContractionsContextValue,
+  PostBirthTasksContextValue,
   CoreContextValue,
 } from "@/hooks/useStore";
 
@@ -27,6 +28,7 @@ const HospitalBagContext = createContext<HospitalBagContextValue | null>(null);
 const AppointmentsContext = createContext<AppointmentsContextValue | null>(null);
 const ContactsContext = createContext<ContactsContextValue | null>(null);
 const ContractionsContext = createContext<ContractionsContextValue | null>(null);
+const PostBirthTasksContext = createContext<PostBirthTasksContextValue | null>(null);
 const CoreContext = createContext<CoreContextValue | null>(null);
 
 // ── Provider ──────────────────────────────────────────────────────────────
@@ -45,7 +47,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
                   <AppointmentsContext.Provider value={storeHook.appointmentsValue}>
                     <ContactsContext.Provider value={storeHook.contactsValue}>
                       <ContractionsContext.Provider value={storeHook.contractionsValue}>
-                        {children}
+                        <PostBirthTasksContext.Provider value={storeHook.postBirthTasksValue}>
+                          {children}
+                        </PostBirthTasksContext.Provider>
                       </ContractionsContext.Provider>
                     </ContactsContext.Provider>
                   </AppointmentsContext.Provider>
@@ -115,6 +119,12 @@ export function useContractionsContext(): ContractionsContextValue {
   return ctx;
 }
 
+export function usePostBirthTasksContext(): PostBirthTasksContextValue {
+  const ctx = useContext(PostBirthTasksContext);
+  if (!ctx) throw new Error("usePostBirthTasksContext must be used within StoreProvider");
+  return ctx;
+}
+
 export function useCoreContext(): CoreContextValue {
   const ctx = useContext(CoreContext);
   if (!ctx) throw new Error("useCoreContext must be used within StoreProvider");
@@ -137,6 +147,7 @@ export function useStoreContext() {
   const appointments = useAppointmentsContext();
   const contacts = useContactsContext();
   const contractions = useContractionsContext();
+  const postBirthTasks = usePostBirthTasksContext();
 
   return {
     ...core,
@@ -149,5 +160,6 @@ export function useStoreContext() {
     ...appointments,
     ...contacts,
     ...contractions,
+    ...postBirthTasks,
   };
 }

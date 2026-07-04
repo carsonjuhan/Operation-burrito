@@ -4,26 +4,19 @@ import { useState, useEffect, useCallback } from "react";
 import { CheckSquare, Plus, Trash2, X, ClipboardList, ExternalLink } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
+import { useStoreContext } from "@/contexts/StoreContext";
+import type { PostBirthTask, TaskCategory } from "@/types";
 
-const STORAGE_KEY = "postbirth_tasks";
-
-interface PostBirthTask {
-  id: string;
-  label: string;
-  category: TaskCategory;
-  done: boolean;
-  notes?: string;
-  link?: string;
-  dueLabel?: string;
-}
-
-type TaskCategory = "Admin" | "Medical" | "Family" | "Financial" | "Other";
+// Pre-store localStorage key this page used before tasks were wired into
+// the synced AppStore — migrated in once on first load if the store is empty.
+const LEGACY_STORAGE_KEY = "postbirth_tasks";
 
 const CATEGORY_COLORS: Record<TaskCategory, string> = {
   Admin: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   Medical: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
   Family: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
   Financial: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+  Legal: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
   Other: "bg-neutral-100 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300",
 };
 
@@ -44,32 +37,24 @@ const DEFAULT_TASKS: PostBirthTask[] = [
   { id: "pb14", label: "2-week well-baby check", category: "Medical", done: false, dueLabel: "2 weeks", notes: "Growth check with GP or paediatrician" },
   { id: "pb15", label: "1-month well-baby check", category: "Medical", done: false, dueLabel: "1 month" },
   { id: "pb16", label: "2-month immunisations", category: "Medical", done: false, dueLabel: "2 months", notes: "DTaP, IPV, Hib, PCV, Men-C-ACYW, Rotavirus" },
-] as PostBirthTask[];
+];
 
-type LegalCategory = "Legal";
-const ALL_CATEGORIES: (TaskCategory | LegalCategory)[] = ["Admin", "Medical", "Family", "Financial", "Other"];
 const CATEGORY_LIST: TaskCategory[] = ["Admin", "Medical", "Family", "Financial", "Other"];
 
-function uid() {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
-
-function load(): PostBirthTask[] {
-  if (typeof window === "undefined") return DEFAULT_TASKS;
+// One-time migration from the pre-store localStorage blob this page used to
+// own directly, run only if the synced store hasn't been seeded yet.
+function loadLegacyTasks(): PostBirthTask[] | null {
+  if (typeof window === "undefined") return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : DEFAULT_TASKS;
+    const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
   } catch {
-    return DEFAULT_TASKS;
+    return null;
   }
 }
 
-function save(tasks: PostBirthTask[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-}
-
 export default function PostBirthPage() {
-  const [tasks, setTasks] = useState<PostBirthTask[]>([]);
+  const { postBirthTasks: tasks, addPostBirthTask, updatePostBirthTask, deletePostBirthTask, setPostBirthTasks, loaded } = useStoreContext();
   const [showAdd, setShowAdd] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [filterCat, setFilterCat] = useState<TaskCategory | "All">("All");
@@ -80,48 +65,40 @@ export default function PostBirthPage() {
   const [newNotes, setNewNotes] = useState("");
   const [newDue, setNewDue] = useState("");
 
-  useEffect(() => { setTasks(load()); }, []);
+  useEffect(() => {
+    if (!loaded || tasks.length > 0) return;
+    const legacy = loadLegacyTasks();
+    setPostBirthTasks(legacy && legacy.length > 0 ? legacy : DEFAULT_TASKS);
+    // Only seed once, after the store has finished loading from localStorage.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded]);
 
   const toggle = useCallback((id: string) => {
-    setTasks(prev => {
-      const next = prev.map(t => t.id === id ? { ...t, done: !t.done } : t);
-      save(next);
-      return next;
-    });
-  }, []);
+    const t = tasks.find(t => t.id === id);
+    if (t) updatePostBirthTask(id, { done: !t.done });
+  }, [tasks, updatePostBirthTask]);
 
   const addTask = useCallback(() => {
     if (!newLabel.trim()) return;
-    const task: PostBirthTask = {
-      id: uid(),
+    addPostBirthTask({
       label: newLabel.trim(),
       category: newCat,
       done: false,
       notes: newNotes.trim() || undefined,
       dueLabel: newDue.trim() || undefined,
-    };
-    setTasks(prev => {
-      const next = [...prev, task];
-      save(next);
-      return next;
     });
     setNewLabel(""); setNewNotes(""); setNewDue(""); setNewCat("Other");
     setShowAdd(false);
-  }, [newLabel, newCat, newNotes, newDue]);
+  }, [newLabel, newCat, newNotes, newDue, addPostBirthTask]);
 
   const deleteTask = useCallback((id: string) => {
-    setTasks(prev => {
-      const next = prev.filter(t => t.id !== id);
-      save(next);
-      return next;
-    });
+    deletePostBirthTask(id);
     setDeleteId(null);
-  }, []);
+  }, [deletePostBirthTask]);
 
   const resetAll = useCallback(() => {
-    setTasks(DEFAULT_TASKS);
-    save(DEFAULT_TASKS);
-  }, []);
+    setPostBirthTasks(DEFAULT_TASKS);
+  }, [setPostBirthTasks]);
 
   const visibleTasks = filterCat === "All" ? tasks : tasks.filter(t => t.category === filterCat);
   const totalDone = tasks.filter(t => t.done).length;
@@ -140,7 +117,7 @@ export default function PostBirthPage() {
               <ClipboardList size={22} className="text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-100">Post-Birth Tasks</h1>
+              <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-100">New Parent To-Dos</h1>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
                 {totalDone} of {tasks.length} done · admin, medical &amp; more
               </p>

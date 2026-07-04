@@ -44,6 +44,50 @@ describe("mergeStores tombstones", () => {
   });
 });
 
+describe("mergeStores contractions", () => {
+  it("unions contractions by id instead of local-wins (regression: old code discarded remote entirely)", () => {
+    const local = makeStore({
+      contractions: [{ id: "c1", startTime: "2026-07-01T00:00:00Z", endTime: "2026-07-01T00:01:00Z", duration: 60, interval: 0 }],
+    });
+    const remote = makeStore({
+      contractions: [{ id: "c2", startTime: "2026-07-02T00:00:00Z", endTime: "2026-07-02T00:01:00Z", duration: 60, interval: 0 }],
+    });
+    const merged = mergeStores(local, remote);
+    expect(merged.contractions.map((c) => c.id).sort()).toEqual(["c1", "c2"]);
+  });
+
+  it("drops tombstoned contractions instead of resurrecting them from remote", () => {
+    const local = makeStore({ contractions: [], deletedIds: { c1: new Date().toISOString() } });
+    const remote = makeStore({
+      contractions: [{ id: "c1", startTime: "2026-07-01T00:00:00Z", endTime: "2026-07-01T00:01:00Z", duration: 60, interval: 0 }],
+    });
+    const merged = mergeStores(local, remote);
+    expect(merged.contractions.map((c) => c.id)).toEqual([]);
+  });
+});
+
+describe("mergeStores postBirthTasks", () => {
+  it("unions tasks by id", () => {
+    const local = makeStore({
+      postBirthTasks: [{ id: "t1", label: "Local task", category: "Admin", done: false }],
+    });
+    const remote = makeStore({
+      postBirthTasks: [{ id: "t2", label: "Remote task", category: "Medical", done: true }],
+    });
+    const merged = mergeStores(local, remote);
+    expect(merged.postBirthTasks.map((t) => t.id).sort()).toEqual(["t1", "t2"]);
+  });
+
+  it("drops tombstoned tasks instead of resurrecting them from remote", () => {
+    const local = makeStore({ postBirthTasks: [], deletedIds: { t1: new Date().toISOString() } });
+    const remote = makeStore({
+      postBirthTasks: [{ id: "t1", label: "Deleted elsewhere", category: "Admin", done: false }],
+    });
+    const merged = mergeStores(local, remote);
+    expect(merged.postBirthTasks.map((t) => t.id)).toEqual([]);
+  });
+});
+
 describe("mergeStores birth plan", () => {
   it("newest updatedAt wins", () => {
     const local = makeStore();

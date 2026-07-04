@@ -63,7 +63,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     heading: "Baby Care",
     items: [
-      { href: "/postbirth", label: "Post-Birth Tasks", icon: ClipboardList },
+      { href: "/postbirth", label: "New Parent To-Dos", icon: ClipboardList },
       { href: "/newborn", label: "Newborn Tracker", icon: Baby },
       { href: "/guides", label: "Guides", icon: BookOpen },
       { href: "/soothe", label: "Soothe Techniques", icon: Baby },
@@ -215,7 +215,7 @@ export function Sidebar() {
         </div>
         <button
           onClick={() => setOpen(false)}
-          className="md:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-stone-500 dark:text-stone-400"
+          className="lg:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-stone-500 dark:text-stone-400"
           aria-label="Close navigation menu"
           data-sidebar-close
         >
@@ -400,7 +400,7 @@ export function Sidebar() {
       {/* Mobile slim top bar — hides on scroll down, reveals on scroll up */}
       <header
         className={clsx(
-          "md:hidden fixed top-0 inset-x-0 z-40 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/60 dark:border-stone-700/60 transition-transform duration-200",
+          "lg:hidden fixed top-0 inset-x-0 z-40 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/60 dark:border-stone-700/60 transition-transform duration-200",
           !barVisible && "-translate-y-full"
         )}
         style={{ paddingTop: "env(safe-area-inset-top)" }}
@@ -438,7 +438,7 @@ export function Sidebar() {
       {/* Mobile overlay */}
       {open && (
         <div
-          className="md:hidden fixed inset-0 bg-black/30 z-40"
+          className="lg:hidden fixed inset-0 bg-black/30 z-40"
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
@@ -450,8 +450,8 @@ export function Sidebar() {
         id="sidebar-nav"
         className={clsx(
           "fixed left-0 top-0 h-screen w-64 bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800 flex flex-col z-50 transition-transform duration-200",
-          "md:translate-x-0",
-          open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          "lg:translate-x-0",
+          open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
         aria-label="Application navigation"
       >

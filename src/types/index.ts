@@ -331,6 +331,22 @@ export interface Contraction {
   interval: number;   // seconds since last contraction started
 }
 
+// ── New Parent To-Dos (formerly "Post-Birth Tasks") ────────────────────────
+// Not to be confused with the "Postpartum" ItemCategory above — that's
+// hospital-bag packing items, this is admin/medical/legal to-dos.
+
+export type TaskCategory = "Admin" | "Medical" | "Family" | "Financial" | "Legal" | "Other";
+
+export interface PostBirthTask {
+  id: string;
+  label: string;
+  category: TaskCategory;
+  done: boolean;
+  notes?: string;
+  link?: string;
+  dueLabel?: string;
+}
+
 // ── App Store (full persisted state) ──────────────────────────────────────
 
 export interface AppStore {
@@ -343,6 +359,7 @@ export interface AppStore {
   appointments: Appointment[];
   contacts: Contact[];
   contractions: Contraction[];
+  postBirthTasks: PostBirthTask[];
   registryUrl: string;
   lastModifiedAt?: string;
   // Checklist state (previously in separate localStorage keys)
@@ -504,6 +521,22 @@ export interface SleepTrainingData {
   startDate: string;   // ISO date string, when training began
   babyBirthDate?: string;
   nights: SleepTrainingNight[];
+}
+
+// ── Newborn Exercises ─────────────────────────────────────────────────────────
+
+export type ExerciseRoutine = "tummy-time" | "reading" | "high-contrast" | "grasp-reach";
+
+export interface ExerciseSession {
+  id: string;
+  routine: ExerciseRoutine;
+  date: string;        // YYYY-MM-DD
+  durationMin: number;
+  notes?: string;
+}
+
+export interface ExerciseTrackerData {
+  sessions: ExerciseSession[];
 }
 
 // ── Growth Tracker ───────────────────────────────────────────────────────────

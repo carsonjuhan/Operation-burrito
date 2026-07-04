@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Baby, Moon, Sun, X, ChevronDown, ChevronUp, Pencil, Check, Square, Stethoscope, LineChart, Pill, Bell, BellOff, Settings2 } from "lucide-react";
+import { Baby, Moon, Sun, X, ChevronDown, ChevronUp, Pencil, Check, Square, Stethoscope, LineChart, Pill, Bell, BellOff, Settings2, Dumbbell } from "lucide-react";
 import clsx from "clsx";
 import { PageTransition } from "@/components/PageTransition";
 import { SleepTrainingPanel } from "@/components/SleepTrainingPanel";
+import { NewbornExercisePanel } from "@/components/NewbornExercisePanel";
 import { useToast } from "@/contexts/ToastContext";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -558,7 +559,7 @@ export default function NewbornTrackerPage() {
   const { addToast } = useToast();
   const [data, setData] = useState<NewbornTrackerData>({ events: [], babyName: "Baby" });
   const [now, setNow] = useState(Date.now());
-  const [tab, setTab] = useState<"log" | "trends" | "sleep">("log");
+  const [tab, setTab] = useState<"log" | "trends" | "sleep" | "exercise">("log");
   const [showHistory, setShowHistory] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
@@ -645,8 +646,23 @@ export default function NewbornTrackerPage() {
 
   const getEventTime = (e: NewbornLogEvent) => e.type === "sleep" ? e.startTime : (e as FeedEvent | DiaperEvent).timestamp;
   const allEvents = [...data.events].sort((a, b) => new Date(getEventTime(b)).getTime() - new Date(getEventTime(a)).getTime());
-  const todayEvents = allEvents.filter(e => isToday(getEventTime(e)));
   const historyEvents = allEvents.filter(e => !isToday(getEventTime(e)));
+  // Synthesize a display-only in-progress feed event so nursing shows up in
+  // Today's Log immediately, matching how sleep's unfinished event already
+  // renders — never added to `data.events`/history, purely derived here.
+  const activeNursingEvent: FeedEvent | null = data.activeNursing
+    ? {
+        id: "__active-nursing__",
+        type: "feed",
+        timestamp: data.activeNursing.startTime,
+        feedType: data.activeNursing.feedType,
+        updatedAt: data.activeNursing.startTime,
+      }
+    : null;
+  const todayEvents = [
+    ...(activeNursingEvent && isToday(activeNursingEvent.timestamp) ? [activeNursingEvent] : []),
+    ...allEvents.filter(e => isToday(getEventTime(e))),
+  ];
 
   const lastFeed = allEvents.find(e => e.type === "feed") as FeedEvent | undefined;
   // Suggest alternating breast side based on the last nursing feed
@@ -1080,6 +1096,7 @@ export default function NewbornTrackerPage() {
           { id: "log", label: "Log", icon: Baby },
           { id: "trends", label: "Trends", icon: LineChart },
           { id: "sleep", label: "Sleep", icon: Moon },
+          { id: "exercise", label: "Exercise", icon: Dumbbell },
         ] as const).map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -1527,6 +1544,7 @@ export default function NewbornTrackerPage() {
       )}
 
       {tab === "sleep" && <SleepTrainingPanel showHeader={false} />}
+      {tab === "exercise" && <NewbornExercisePanel showHeader={false} />}
     </PageTransition>
   );
 }
@@ -1564,12 +1582,16 @@ function LogRow({
   );
 
   if (event.type === "feed") {
+    const isActiveNursing = event.id === "__active-nursing__";
     return (
       <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2.5">
           <span className="text-base leading-none">{FEED_ICON[event.feedType]}</span>
           <div>
-            <p className="text-xs font-medium text-stone-700 dark:text-stone-200">{FEED_LABELS[event.feedType]}</p>
+            <p className="text-xs font-medium text-stone-700 dark:text-stone-200">
+              {FEED_LABELS[event.feedType]}{" "}
+              {isActiveNursing && <span className="text-indigo-500 font-normal">(ongoing)</span>}
+            </p>
             <p className="text-[10px] text-stone-400">
               {formatTime(event.timestamp, showDate)}
               {event.durationMin ? ` · ${event.durationMin}min` : ""}
@@ -1577,7 +1599,7 @@ function LogRow({
             </p>
           </div>
         </div>
-        {actions}
+        {!isActiveNursing && actions}
       </div>
     );
   }

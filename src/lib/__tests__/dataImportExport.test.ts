@@ -127,7 +127,7 @@ describe("parseImportFile", () => {
     const file = makeFile(JSON.stringify(data), "future.json");
     const result = await parseImportFile(file);
     expect(result.valid).toBe(true);
-    expect((result.store as Record<string, unknown>).futureField).toBe("keep-me");
+    expect((result.store as unknown as Record<string, unknown>).futureField).toBe("keep-me");
   });
 
   it("handles .JSON uppercase extension", async () => {

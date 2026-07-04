@@ -72,6 +72,7 @@ export const DEFAULT_MOCK_STORE: AppStore = {
   appointments: [],
   contacts: [],
   contractions: [],
+  postBirthTasks: [],
   registryUrl: "",
 };
 

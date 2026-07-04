@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { DM_Serif_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/contexts/StoreContext";
 import { ToastProvider } from "@/contexts/ToastContext";
@@ -13,6 +14,20 @@ import { InstallBanner } from "@/components/InstallBanner";
 import { ReminderScheduler } from "@/components/ReminderScheduler";
 import { I18nProvider } from "@/contexts/I18nContext";
 import { BottomNav } from "@/components/BottomNav";
+
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-dm-serif-display",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   themeColor: "#4d6b52",
@@ -37,12 +52,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${dmSerifDisplay.variable} ${inter.variable}`}>
       <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem("theme");var d=t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme:dark)").matches);if(d)document.documentElement.classList.add("dark")}catch(e){}})()`,
@@ -67,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <Sidebar />
                   {/* On mobile: full width. On desktop: offset by sidebar width */}
                   {/* Mobile top padding clears the fixed slim top bar (3rem) + safe area */}
-                  <main id="main-content" className="flex-1 w-full md:ml-64 p-4 md:p-8 pb-28 md:pb-8 mesh-bg pt-[calc(env(safe-area-inset-top)+4rem)] md:pt-8">
+                  <main id="main-content" className="flex-1 w-full lg:ml-64 p-4 lg:p-8 pb-28 lg:pb-8 mesh-bg pt-[calc(env(safe-area-inset-top)+4rem)] lg:pt-8">
                     {children}
                   </main>
                 </div>
