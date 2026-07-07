@@ -18,7 +18,7 @@ import {
   unlockAudio,
   playAlertSound,
 } from "@/lib/reminderTimers";
-import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, MedEvent, NewbornLogEvent, NewbornTrackerData } from "@/types";
+import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, MedEvent, Medication, NewbornLogEvent, NewbornTrackerData } from "@/types";
 import {
   FEED_ICON,
   FEED_LABELS,
@@ -53,20 +53,6 @@ function clockStr(startIso: string, now: number): string {
   const m = Math.floor(secs / 60);
   const s = secs % 60;
   return `${m}:${String(s).padStart(2, "0")}`;
-}
-
-// Countdown label for a reminder timer: "in 1h 23m", "5m overdue", "due now"
-function dueLabel(dueAt: number, now: number): { text: string; overdue: boolean } {
-  const ms = dueAt - now;
-  const overdue = ms <= 0;
-  const totalMin = Math.floor(Math.abs(ms) / 60000);
-  const h = Math.floor(totalMin / 60);
-  const m = totalMin % 60;
-  const hm = h > 0 ? `${h}h ${m}m` : `${m}m`;
-  return {
-    text: overdue ? (totalMin === 0 ? "due now" : `${hm} overdue`) : `in ${hm}`,
-    overdue,
-  };
 }
 
 // Feed window status: before it opens, open, or overdue past the max.
@@ -359,10 +345,12 @@ function fromLocalInput(val: string): string {
 
 function EditModal({
   event,
+  medications,
   onSave,
   onClose,
 }: {
   event: NewbornLogEvent;
+  medications: Medication[];
   onSave: (updated: NewbornLogEvent) => void;
   onClose: () => void;
 }) {
@@ -381,6 +369,7 @@ function EditModal({
   const [diaperTime, setDiaperTime] = useState(event.type === "diaper" ? toLocalInput(event.timestamp) : "");
 
   // Med fields
+  const [medicationId, setMedicationId] = useState(event.type === "med" ? (event.medicationId ?? "") : "");
   const [medName, setMedName] = useState(event.type === "med" ? (event.medName ?? "") : "");
   const [medTime, setMedTime] = useState(event.type === "med" ? toLocalInput(event.timestamp) : "");
 
@@ -414,6 +403,7 @@ function EditModal({
     } else if (event.type === "med") {
       onSave({
         ...event,
+        medicationId: medicationId || undefined,
         medName: medName.trim() || undefined,
         timestamp: fromLocalInput(medTime),
         notes: notes.trim() || undefined,
@@ -521,8 +511,27 @@ function EditModal({
 
         {event.type === "med" && (
           <>
+            {medications.length > 0 && (
+              <div>
+                <label className={labelCls}>Medication</label>
+                <select
+                  value={medicationId}
+                  onChange={e => {
+                    setMedicationId(e.target.value);
+                    const match = medications.find(m => m.id === e.target.value);
+                    if (match) setMedName(match.name);
+                  }}
+                  className={inputCls}
+                >
+                  <option value="">Other / custom</option>
+                  {medications.map(m => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div>
-              <label className={labelCls}>Medication</label>
+              <label className={labelCls}>{medications.length > 0 ? "Custom label" : "Medication"}</label>
               <input type="text" placeholder="e.g. Vitamin D, Tylenol" value={medName} onChange={e => setMedName(e.target.value)} className={inputCls} />
             </div>
             <div>
@@ -567,17 +576,20 @@ export default function NewbornTrackerPage() {
   const [birthDateInput, setBirthDateInput] = useState("");
   const [editingEvent, setEditingEvent] = useState<NewbornLogEvent | null>(null);
 
-  const { store, updateReminderSettings } = useStoreContext();
+  const { store, updateReminderSettings, addMedication, updateMedication, deleteMedication } = useStoreContext();
   const [nightMode, setNightMode] = useState(false);
   const [syncedAgo, setSyncedAgo] = useState("");
   // Synced across devices via the AppStore (see hooks/useStore.ts) so e.g.
-  // changing the med interval on one phone updates the other.
+  // changing a med's interval on one phone updates the other.
   const reminders = store.reminderSettings ?? DEFAULT_REMINDER_SETTINGS;
   const [showReminderSettings, setShowReminderSettings] = useState(false);
+  const [newMedName, setNewMedName] = useState("");
+  const [newMedMin, setNewMedMin] = useState("4");
+  const [newMedMax, setNewMedMax] = useState("4");
   const { permission: notifPermission, requestPermission } = useNotifications();
   // Track which due-time we've already alerted for, so each cycle alerts once
   const alertedFeedRef = useRef<number>(0);
-  const alertedMedRef = useRef<number>(0);
+  const alertedMedRefs = useRef<Record<string, number>>({});
   const alertedNursingRef = useRef<number>(0);
   const alertedSleepRef = useRef<number>(0);
   // Two-tap confirm for starting sleep while nursing is active
@@ -669,7 +681,7 @@ export default function NewbornTrackerPage() {
   const suggestedSide: FeedType | null = suggestedNextSide(allEvents);
   const activeSleep = getActiveSleep(data.events);
   const lastEndedSleep = allEvents.find(e => e.type === "sleep" && !!(e as SleepEvent).endTime) as SleepEvent | undefined;
-  const lastMed = allEvents.find(e => e.type === "med") as MedEvent | undefined;
+  const medications = store.medications ?? [];
 
   // Threshold alerts for stuck nursing/sleep timers
   const nursingDueAt = nursingOverdueAt(data.activeNursing, reminders.nursingMaxMinutes);
@@ -685,14 +697,23 @@ export default function NewbornTrackerPage() {
     : null;
   const feedWindowStart = feedAnchor !== null ? feedAnchor + reminders.feedMinHours * 3600_000 : null;
   const feedWindowEnd = feedAnchor !== null ? feedAnchor + reminders.feedMaxHours * 3600_000 : null;
-  const medDueAt = reminders.medEnabled && lastMed
-    ? new Date(lastMed.timestamp).getTime() + reminders.medHours * 3600_000
-    : null;
+
+  // Each medication tracks its own dosing window from its own last dose (matched
+  // by medicationId), so e.g. a 6-8h vitamin and a 4h Tylenol run independently.
+  const medWindows = medications.map(med => {
+    const lastDose = allEvents.find(
+      e => e.type === "med" && (e as MedEvent).medicationId === med.id
+    ) as MedEvent | undefined;
+    const start = med.enabled && lastDose ? new Date(lastDose.timestamp).getTime() + med.minHours * 3600_000 : null;
+    const end = med.enabled && lastDose ? new Date(lastDose.timestamp).getTime() + med.maxHours * 3600_000 : null;
+    return { med, lastDose, start, end };
+  });
+  const anyMedWindowStart = medWindows.some(w => w.start !== null);
 
   // Fast tick while a sleep timer is running OR a reminder is active, so the
   // counter ticks live and we catch the due moment within a second.
   useEffect(() => {
-    if (!activeSleep && feedWindowStart === null && medDueAt === null && nursingDueAt === null && sleepDueAt === null) return;
+    if (!activeSleep && feedWindowStart === null && !anyMedWindowStart && nursingDueAt === null && sleepDueAt === null) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
     // `activeSleep` is a fresh object every render (derived via .find() over a
@@ -700,7 +721,7 @@ export default function NewbornTrackerPage() {
     // restart the interval every render. We only care about which sleep event
     // is active, so `activeSleep?.id` is the correct dependency.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSleep?.id, feedWindowStart, medDueAt, nursingDueAt, sleepDueAt]);
+  }, [activeSleep?.id, feedWindowStart, anyMedWindowStart, nursingDueAt, sleepDueAt]);
 
   // Fire the alert (sound + vibrate + notification) once when a timer comes due
   useEffect(() => {
@@ -717,9 +738,11 @@ export default function NewbornTrackerPage() {
       alertedFeedRef.current = feedWindowStart;
       fire("🍼 Feed window open");
     }
-    if (medDueAt !== null && now >= medDueAt && alertedMedRef.current !== medDueAt) {
-      alertedMedRef.current = medDueAt;
-      fire("💊 Meds due");
+    for (const w of medWindows) {
+      if (w.start !== null && now >= w.start && alertedMedRefs.current[w.med.id] !== w.start) {
+        alertedMedRefs.current[w.med.id] = w.start;
+        fire(`💊 ${w.med.name} due`);
+      }
     }
     if (nursingDueAt !== null && now >= nursingDueAt && alertedNursingRef.current !== nursingDueAt) {
       alertedNursingRef.current = nursingDueAt;
@@ -729,7 +752,10 @@ export default function NewbornTrackerPage() {
       alertedSleepRef.current = sleepDueAt;
       fire(`😴 Sleep over ${reminders.sleepMaxHours}h — time for a feed?`);
     }
-  }, [now, feedWindowStart, medDueAt, nursingDueAt, sleepDueAt, reminders.soundEnabled, reminders.nursingMaxMinutes, reminders.sleepMaxHours, notifPermission, addToast]);
+    // medWindows is a fresh array every render; its `.start` values are the
+    // actual dependency signal, captured via the per-medication alertedMedRefs map.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [now, feedWindowStart, medWindows, nursingDueAt, sleepDueAt, reminders.soundEnabled, reminders.nursingMaxMinutes, reminders.sleepMaxHours, notifPermission, addToast]);
 
   const todayFeedings = todayEvents.filter(e => e.type === "feed").length;
   const todayDiapers = todayEvents.filter(e => e.type === "diaper").length;
@@ -920,12 +946,12 @@ export default function NewbornTrackerPage() {
     addToast(`Logged ${diaperType} diaper`, "success", { label: "Undo", onClick: () => deleteEvent(res.event.id) });
   };
 
-  const logMed = () => {
+  const logMed = (med: Medication) => {
     unlockAudio(); // prime audio within this tap so the timer can beep later
-    const res = logMedAction(data, new Date().toISOString());
+    const res = logMedAction(data, new Date().toISOString(), med.id, med.name);
     update(() => res.data);
     vibrate();
-    addToast("Logged medication", "success", { label: "Undo", onClick: () => deleteEvent(res.event.id) });
+    addToast(`Logged ${med.name}`, "success", { label: "Undo", onClick: () => deleteEvent(res.event.id) });
   };
 
   const saveEditedEvent = useCallback((updated: NewbornLogEvent) => {
@@ -949,6 +975,7 @@ export default function NewbornTrackerPage() {
       {editingEvent && (
         <EditModal
           event={editingEvent}
+          medications={medications}
           onSave={saveEditedEvent}
           onClose={() => setEditingEvent(null)}
         />
@@ -1199,31 +1226,35 @@ export default function NewbornTrackerPage() {
           );
         })()}
 
-        {/* Meds — fixed interval from last dose */}
-        {(() => {
-          const d = medDueAt !== null ? dueLabel(medDueAt, now) : null;
-          return (
-            <div className="flex items-center justify-between py-1.5">
-              <div className="flex items-center gap-2.5">
-                <span className="text-base leading-none">💊</span>
-                <div>
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-200">Meds · every {reminders.medHours}h</p>
-                  <p className="text-[10px] text-stone-400">
-                    {!reminders.medEnabled ? "reminder off" : !lastMed ? "log a med to start" : "auto-resets from last dose"}
-                  </p>
+        {/* Meds — each medication tracks its own window from its own last dose */}
+        {medications.length === 0 ? (
+          <p className="text-[10px] text-stone-400 py-1.5">No medications set up yet — add one below.</p>
+        ) : (
+          medWindows.map(({ med, lastDose, start, end }) => {
+            const w = start !== null && end !== null ? feedWindowLabel(start, end, now) : null;
+            const toneCls = w?.tone === "overdue" ? "text-rose-500 dark:text-rose-400"
+              : w?.tone === "open" ? "text-amber-500 dark:text-amber-400"
+              : "text-sage-600 dark:text-sage-400";
+            return (
+              <div key={med.id} className="flex items-center justify-between py-1.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-base leading-none">💊</span>
+                  <div>
+                    <p className="text-xs font-medium text-stone-700 dark:text-stone-200">
+                      {med.name} · {med.minHours === med.maxHours ? `every ${med.minHours}h` : `${med.minHours}–${med.maxHours}h`}
+                    </p>
+                    <p className="text-[10px] text-stone-400">
+                      {!med.enabled ? "reminder off" : !lastDose ? "log a dose to start" : "auto-resets from last dose"}
+                    </p>
+                  </div>
                 </div>
+                {med.enabled && w && (
+                  <span className={clsx("text-sm font-semibold tabular-nums text-right", toneCls)}>{w.text}</span>
+                )}
               </div>
-              {reminders.medEnabled && d && (
-                <span className={clsx(
-                  "text-sm font-semibold tabular-nums",
-                  d.overdue ? "text-rose-500 dark:text-rose-400" : "text-sage-600 dark:text-sage-400"
-                )}>
-                  {d.text}
-                </span>
-              )}
-            </div>
-          );
-        })()}
+            );
+          })
+        )}
 
         {showReminderSettings && (
           <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-800 space-y-3">
@@ -1255,26 +1286,87 @@ export default function NewbornTrackerPage() {
                 <span className="text-[11px] text-stone-400">h</span>
               </div>
             </div>
-            {/* Meds: single interval */}
-            <div className="flex items-center justify-between gap-3">
-              <label className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-300">
+            {/* Medications: each with its own name + interval (fixed or a min-max window) */}
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-stone-600 dark:text-stone-300">Medications</p>
+              {medications.map(med => (
+                <div key={med.id} className="flex items-center gap-1.5">
+                  <input
+                    type="checkbox"
+                    checked={med.enabled}
+                    onChange={e => updateMedication(med.id, { enabled: e.target.checked })}
+                    className="accent-sage-500 shrink-0"
+                    aria-label={`${med.name} reminder enabled`}
+                  />
+                  <input
+                    type="text"
+                    value={med.name}
+                    onChange={e => updateMedication(med.id, { name: e.target.value })}
+                    className="w-0 flex-1 min-w-0 px-2 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200"
+                  />
+                  <span className="text-[11px] text-stone-400 shrink-0">every</span>
+                  <input
+                    type="number" min={0.5} max={24} step={0.5}
+                    value={med.minHours}
+                    onChange={e => {
+                      const v = Math.max(0.5, Number(e.target.value) || med.minHours);
+                      updateMedication(med.id, { minHours: v, maxHours: Math.max(v, med.maxHours) });
+                    }}
+                    className="w-12 px-1.5 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center shrink-0"
+                  />
+                  <span className="text-[11px] text-stone-400 shrink-0">–</span>
+                  <input
+                    type="number" min={med.minHours} max={24} step={0.5}
+                    value={med.maxHours}
+                    onChange={e => updateMedication(med.id, { maxHours: Math.max(med.minHours, Number(e.target.value) || med.maxHours) })}
+                    className="w-12 px-1.5 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center shrink-0"
+                  />
+                  <span className="text-[11px] text-stone-400 shrink-0">h</span>
+                  <button
+                    onClick={() => deleteMedication(med.id)}
+                    className="p-1 text-stone-400 hover:text-rose-500 shrink-0"
+                    aria-label={`Delete ${med.name}`}
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+              ))}
+              <div className="flex items-center gap-1.5 pt-0.5">
                 <input
-                  type="checkbox"
-                  checked={reminders.medEnabled}
-                  onChange={e => updateReminders({ medEnabled: e.target.checked })}
-                  className="accent-sage-500"
+                  type="text"
+                  placeholder="e.g. Tylenol"
+                  value={newMedName}
+                  onChange={e => setNewMedName(e.target.value)}
+                  className="w-0 flex-1 min-w-0 px-2 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200"
                 />
-                Meds reminder
-              </label>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] text-stone-400">every</span>
+                <span className="text-[11px] text-stone-400 shrink-0">every</span>
                 <input
-                  type="number" min={1} max={24} step={0.5}
-                  value={reminders.medHours}
-                  onChange={e => updateReminders({ medHours: Math.max(0.5, Number(e.target.value) || reminders.medHours) })}
-                  className="w-14 px-2 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center"
+                  type="number" min={0.5} max={24} step={0.5}
+                  value={newMedMin}
+                  onChange={e => setNewMedMin(e.target.value)}
+                  className="w-12 px-1.5 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center shrink-0"
                 />
-                <span className="text-[11px] text-stone-400">h</span>
+                <span className="text-[11px] text-stone-400 shrink-0">–</span>
+                <input
+                  type="number" min={0.5} max={24} step={0.5}
+                  value={newMedMax}
+                  onChange={e => setNewMedMax(e.target.value)}
+                  className="w-12 px-1.5 py-1 text-xs rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 text-center shrink-0"
+                />
+                <span className="text-[11px] text-stone-400 shrink-0">h</span>
+                <button
+                  onClick={() => {
+                    const name = newMedName.trim();
+                    if (!name) return;
+                    const minHours = Math.max(0.5, Number(newMedMin) || 4);
+                    const maxHours = Math.max(minHours, Number(newMedMax) || minHours);
+                    addMedication({ name, minHours, maxHours, enabled: true });
+                    setNewMedName(""); setNewMedMin("4"); setNewMedMax("4");
+                  }}
+                  className="px-2 py-1 text-xs font-medium rounded-md bg-sage-100 text-sage-700 hover:bg-sage-200 dark:bg-sage-900/40 dark:text-sage-300 shrink-0"
+                >
+                  Add
+                </button>
               </div>
             </div>
             {/* Nursing timer overdue warning */}
@@ -1402,12 +1494,29 @@ export default function NewbornTrackerPage() {
 
         <div className="mt-4">
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">💊 Medication</p>
-          <button
-            onClick={logMed}
-            className="w-full min-h-[56px] px-4 py-2 rounded-xl text-sm font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 active:bg-rose-200 dark:bg-rose-900/20 dark:text-rose-300 dark:hover:bg-rose-900/40 border border-rose-200 dark:border-rose-800 transition-colors select-none touch-manipulation"
-          >
-            <Pill size={15} className="inline mr-1.5 -mt-0.5" /> Log Medication
-          </button>
+          {medications.length === 0 ? (
+            <button
+              onClick={() => { setShowReminderSettings(true); setTab("log"); }}
+              className="w-full min-h-[56px] px-4 py-2 rounded-xl text-sm font-medium bg-stone-50 text-stone-500 hover:bg-stone-100 dark:bg-stone-800 dark:text-stone-400 border border-stone-200 dark:border-stone-700 transition-colors select-none touch-manipulation"
+            >
+              <Pill size={15} className="inline mr-1.5 -mt-0.5" /> Add a medication in reminder settings above
+            </button>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              {medications.map(med => (
+                <button
+                  key={med.id}
+                  onClick={() => logMed(med)}
+                  className={clsx(
+                    "min-h-[56px] px-3 py-2 rounded-xl text-sm font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 active:bg-rose-200 dark:bg-rose-900/20 dark:text-rose-300 dark:hover:bg-rose-900/40 border border-rose-200 dark:border-rose-800 transition-colors select-none touch-manipulation",
+                    medications.length % 2 === 1 && medications[medications.length - 1].id === med.id && "col-span-2"
+                  )}
+                >
+                  <Pill size={15} className="inline mr-1.5 -mt-0.5" /> {med.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

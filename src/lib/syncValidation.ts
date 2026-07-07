@@ -17,6 +17,7 @@ const ARRAY_FIELDS: (keyof AppStore)[] = [
   "contacts",
   "contractions",
   "postBirthTasks",
+  "medications",
 ];
 
 // ── Validation result ─────────────────────────────────────────────────────

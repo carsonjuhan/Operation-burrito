@@ -377,6 +377,7 @@ export interface AppStore {
   newbornActiveNursing?: { feedType: FeedType; startTime: string } | null;
   newbornActiveNursingUpdatedAt?: string;
   reminderSettings?: ReminderSettings;
+  medications?: Medication[];
   // Tombstones: id → deletedAt ISO. Lets deletes propagate across devices
   // instead of resurrecting on merge. Purged after 30 days.
   deletedIds?: Record<string, string>;
@@ -443,11 +444,26 @@ export interface MedEvent {
   type: "med";
   timestamp: string;
   medName?: string;
+  // Links this dose to a Medication entry so its own reminder interval can be
+  // computed. Absent on pre-migration events (single-medication era) — those
+  // display via medName only and don't drive any reminder countdown.
+  medicationId?: string;
   notes?: string;
   updatedAt?: string;
 }
 
 export type NewbornLogEvent = FeedEvent | SleepEvent | DiaperEvent | MedEvent;
+
+// A tracked medication with its own dosing interval (e.g. Tylenol every 4h,
+// vitamin D every 6-8h). `minHours`/`maxHours` mirror the feed window: for a
+// fixed-interval med they're equal.
+export interface Medication {
+  id: string;
+  name: string;
+  minHours: number;
+  maxHours: number;
+  enabled: boolean;
+}
 
 export interface NewbornTrackerData {
   events: NewbornLogEvent[];

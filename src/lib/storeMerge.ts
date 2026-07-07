@@ -109,6 +109,7 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
     contacts: dropTombstoned(mergeById(local.contacts, remote.contacts ?? []), deletedIds),
     hospitalBag: dropTombstoned(mergeById(local.hospitalBag, remote.hospitalBag ?? []), deletedIds),
     postBirthTasks: dropTombstoned(mergeById(local.postBirthTasks ?? [], remote.postBirthTasks ?? []), deletedIds),
+    medications: dropTombstoned(mergeById(local.medications ?? [], remote.medications ?? []), deletedIds),
     deletedIds,
     // Newborn events: append-only union (tracker has its own delete semantics
     // via tombstones too — a deleted log event's id lands in deletedIds)

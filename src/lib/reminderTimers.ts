@@ -10,6 +10,9 @@ export interface ReminderSettings {
   // Feeds use a window: the timer opens at min hours and is "overdue" past max.
   feedMinHours: number;
   feedMaxHours: number;
+  // Deprecated: superseded by the per-medication intervals in
+  // `AppStore.medications`. Kept only so pre-migration synced data can seed
+  // an initial medication entry on first load after upgrading (see useStore.ts).
   medEnabled: boolean;
   medHours: number;
   soundEnabled: boolean;

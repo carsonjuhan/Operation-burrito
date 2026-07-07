@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   AppStore, BabyItem, BabyClass, Material, BirthPlan, Note,
-  BagItem, Appointment, Contact, Contraction, PostBirthTask,
+  BagItem, Appointment, Contact, Contraction, PostBirthTask, Medication,
 } from "@/types";
 import { getPAT, getGistId, pushToGist, loadGist } from "@/lib/gistSync";
 import { mergeStores, mergeNewbornEvents } from "@/lib/storeMerge";
@@ -139,6 +139,7 @@ export const DEFAULT_STORE: AppStore = {
   hospitalChecklistPacked: [],
   hospitalChecklistSkipped: [],
   postBirthChecked: [],
+  medications: [],
 };
 
 // ── Persistence ────────────────────────────────────────────────────────────
@@ -210,6 +211,24 @@ function loadStore(): AppStore {
       return loadReminderSettings();
     };
 
+    // Migrate the single global med interval (pre-multi-medication era) into
+    // one Medication entry, so upgrading doesn't silently drop an existing
+    // reminder. Only runs once: triggered by the presence of legacy
+    // reminderSettings with no medications list saved yet.
+    const migrateMedications = (): Medication[] => {
+      if (parsed.medications) return parsed.medications;
+      if (parsed.reminderSettings) {
+        return [{
+          id: "legacy-med",
+          name: "Medication",
+          minHours: parsed.reminderSettings.medHours ?? DEFAULT_REMINDER_SETTINGS.medHours,
+          maxHours: parsed.reminderSettings.medHours ?? DEFAULT_REMINDER_SETTINGS.medHours,
+          enabled: parsed.reminderSettings.medEnabled ?? DEFAULT_REMINDER_SETTINGS.medEnabled,
+        }];
+      }
+      return [];
+    };
+
     return {
       items: parsed.items ?? [],
       classes: parsed.classes ?? [],
@@ -230,6 +249,7 @@ function loadStore(): AppStore {
       newbornBabyName: nb.name,
       newbornBabyBirthDate: nb.birthDate,
       reminderSettings: migrateReminderSettings(),
+      medications: migrateMedications(),
     };
   } catch {
     return DEFAULT_STORE;
@@ -355,6 +375,9 @@ export interface CoreContextValue {
   updateRegistryUrl: (url: string) => void;
   updateChecklistState: (key: "checklistSkipped" | "checklistAlreadyHave" | "hospitalChecklistPacked" | "hospitalChecklistSkipped" | "postBirthChecked", ids: string[]) => void;
   updateReminderSettings: (patch: Partial<ReminderSettings>) => void;
+  addMedication: (med: Omit<Medication, "id">) => void;
+  updateMedication: (id: string, changes: Partial<Medication>) => void;
+  deleteMedication: (id: string) => void;
   loadFromExternal: (incoming: AppStore) => void;
 }
 
@@ -401,7 +424,7 @@ export function useStore() {
 
   const TOMBSTONE_ARRAYS = useMemo(() => ([
     "items", "classes", "materials", "notes", "appointments", "contacts", "hospitalBag", "newbornEvents",
-    "contractions", "postBirthTasks",
+    "contractions", "postBirthTasks", "medications",
   ] as const), []);
 
   const trackDeletes = useCallback((prev: AppStore, next: AppStore): AppStore => {
@@ -815,6 +838,31 @@ export function useStore() {
     }));
   }, [update]);
 
+  // ── Medications ──────────────────────────────────────────────────────────
+
+  const addMedication = useCallback((med: Omit<Medication, "id">) => {
+    update((s) => ({
+      ...s,
+      medications: [...(s.medications ?? []), { ...med, id: crypto.randomUUID() }],
+    }), `Added medication '${med.name}'`);
+  }, [update]);
+
+  const updateMedication = useCallback((id: string, changes: Partial<Medication>) => {
+    const name = storeRef.current.medications?.find((m) => m.id === id)?.name ?? id;
+    update((s) => ({
+      ...s,
+      medications: (s.medications ?? []).map((m) => (m.id === id ? { ...m, ...changes } : m)),
+    }), `Updated medication '${name}'`);
+  }, [update]);
+
+  const deleteMedication = useCallback((id: string) => {
+    const name = storeRef.current.medications?.find((m) => m.id === id)?.name ?? id;
+    update((s) => ({
+      ...s,
+      medications: (s.medications ?? []).filter((m) => m.id !== id),
+    }), `Deleted medication '${name}'`);
+  }, [update]);
+
   const updateChecklistState = useCallback((
     key: "checklistSkipped" | "checklistAlreadyHave" | "hospitalChecklistPacked" | "hospitalChecklistSkipped" | "postBirthChecked",
     ids: string[]
@@ -939,6 +987,7 @@ export function useStore() {
     updateRegistryUrl,
     updateChecklistState,
     updateReminderSettings,
+    addMedication, updateMedication, deleteMedication,
     loadFromExternal,
   }), [
     store, loaded, autoSyncing, storageInfo,
@@ -947,6 +996,7 @@ export function useStore() {
     updateRegistryUrl,
     updateChecklistState,
     updateReminderSettings,
+    addMedication, updateMedication, deleteMedication,
     loadFromExternal,
   ]);
 
@@ -981,6 +1031,7 @@ export function useStore() {
     updateRegistryUrl,
     updateChecklistState,
     updateReminderSettings,
+    addMedication, updateMedication, deleteMedication,
     loadFromExternal,
   };
 }

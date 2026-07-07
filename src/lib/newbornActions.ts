@@ -225,15 +225,19 @@ export function logDiaper(
   return { data: { ...data, events: [...data.events, event] }, event };
 }
 
-/** Log a medication dose. */
+/** Log a dose of a specific medication. */
 export function logMed(
   data: NewbornTrackerData,
-  nowISO: string
+  nowISO: string,
+  medicationId?: string,
+  medName?: string
 ): { data: NewbornTrackerData; event: MedEvent } {
   const event: MedEvent = {
     id: makeId(nowISO),
     type: "med",
     timestamp: nowISO,
+    medicationId,
+    medName,
     updatedAt: nowISO,
   };
   return { data: { ...data, events: [...data.events, event] }, event };
