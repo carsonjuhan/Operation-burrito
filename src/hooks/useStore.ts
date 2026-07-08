@@ -224,6 +224,7 @@ function loadStore(): AppStore {
           minHours: parsed.reminderSettings.medHours ?? DEFAULT_REMINDER_SETTINGS.medHours,
           maxHours: parsed.reminderSettings.medHours ?? DEFAULT_REMINDER_SETTINGS.medHours,
           enabled: parsed.reminderSettings.medEnabled ?? DEFAULT_REMINDER_SETTINGS.medEnabled,
+          updatedAt: parsed.reminderSettings.updatedAt,
         }];
       }
       return [];
@@ -843,7 +844,7 @@ export function useStore() {
   const addMedication = useCallback((med: Omit<Medication, "id">) => {
     update((s) => ({
       ...s,
-      medications: [...(s.medications ?? []), { ...med, id: crypto.randomUUID() }],
+      medications: [...(s.medications ?? []), { ...med, id: crypto.randomUUID(), updatedAt: new Date().toISOString() }],
     }), `Added medication '${med.name}'`);
   }, [update]);
 
@@ -851,7 +852,7 @@ export function useStore() {
     const name = storeRef.current.medications?.find((m) => m.id === id)?.name ?? id;
     update((s) => ({
       ...s,
-      medications: (s.medications ?? []).map((m) => (m.id === id ? { ...m, ...changes } : m)),
+      medications: (s.medications ?? []).map((m) => (m.id === id ? { ...m, ...changes, updatedAt: new Date().toISOString() } : m)),
     }), `Updated medication '${name}'`);
   }, [update]);
 

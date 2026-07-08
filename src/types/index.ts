@@ -463,6 +463,9 @@ export interface Medication {
   minHours: number;
   maxHours: number;
   enabled: boolean;
+  // Set whenever this medication's fields change; used to pick the newer
+  // copy per-id when merging two devices (e.g. hours changed on one phone).
+  updatedAt?: string;
 }
 
 export interface NewbornTrackerData {

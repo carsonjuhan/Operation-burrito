@@ -1,4 +1,4 @@
-import type { AppStore, NewbornLogEvent } from "@/types";
+import type { AppStore, Medication, NewbornLogEvent } from "@/types";
 
 type WithId = { id: string };
 
@@ -44,6 +44,27 @@ export function mergeNewbornEvents(
     const tb = "timestamp" in b ? b.timestamp : "startTime" in b ? b.startTime : "";
     return new Date(tb).getTime() - new Date(ta).getTime();
   });
+}
+
+/**
+ * Merge medications by id: newest `updatedAt` wins per entry, so e.g.
+ * changing a medication's hours on one phone reliably propagates to the
+ * other instead of being silently kept-stale by whichever device merges
+ * last (unlike plain mergeById's blanket local-wins). Entries without
+ * `updatedAt` on either side (pre-migration data) fall back to local-wins.
+ */
+function mergeMedications(local: Medication[], remote: Medication[]): Medication[] {
+  const map = new Map<string, Medication>();
+  for (const m of remote) map.set(m.id, m);
+  for (const m of local) {
+    const existing = map.get(m.id);
+    if (existing && existing.updatedAt && m.updatedAt) {
+      map.set(m.id, new Date(m.updatedAt) >= new Date(existing.updatedAt) ? m : existing);
+    } else {
+      map.set(m.id, m);
+    }
+  }
+  return Array.from(map.values());
 }
 
 /**
@@ -109,7 +130,7 @@ export function mergeStores(local: AppStore, remote: AppStore): AppStore {
     contacts: dropTombstoned(mergeById(local.contacts, remote.contacts ?? []), deletedIds),
     hospitalBag: dropTombstoned(mergeById(local.hospitalBag, remote.hospitalBag ?? []), deletedIds),
     postBirthTasks: dropTombstoned(mergeById(local.postBirthTasks ?? [], remote.postBirthTasks ?? []), deletedIds),
-    medications: dropTombstoned(mergeById(local.medications ?? [], remote.medications ?? []), deletedIds),
+    medications: dropTombstoned(mergeMedications(local.medications ?? [], remote.medications ?? []), deletedIds),
     deletedIds,
     // Newborn events: append-only union (tracker has its own delete semantics
     // via tombstones too — a deleted log event's id lands in deletedIds)

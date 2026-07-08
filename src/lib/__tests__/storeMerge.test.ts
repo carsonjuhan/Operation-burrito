@@ -120,6 +120,30 @@ describe("mergeStores reminder settings", () => {
   });
 });
 
+describe("mergeStores medications", () => {
+  it("newest updatedAt wins per medication (e.g. hours changed on one phone)", () => {
+    const local = makeStore({
+      medications: [{ id: "m1", name: "Tylenol", minHours: 4, maxHours: 4, enabled: true, updatedAt: "2026-06-01T00:00:00Z" }],
+    });
+    const remote = makeStore({
+      medications: [{ id: "m1", name: "Tylenol", minHours: 6, maxHours: 6, enabled: true, updatedAt: "2026-06-10T00:00:00Z" }],
+    });
+    expect(mergeStores(local, remote).medications?.[0].maxHours).toBe(6);
+    expect(mergeStores(remote, local).medications?.[0].maxHours).toBe(6);
+  });
+
+  it("unions medications that only exist on one side", () => {
+    const local = makeStore({
+      medications: [{ id: "m1", name: "Tylenol", minHours: 4, maxHours: 4, enabled: true, updatedAt: "2026-06-01T00:00:00Z" }],
+    });
+    const remote = makeStore({
+      medications: [{ id: "m2", name: "Vitamin D", minHours: 6, maxHours: 8, enabled: true, updatedAt: "2026-06-01T00:00:00Z" }],
+    });
+    const merged = mergeStores(local, remote).medications ?? [];
+    expect(merged.map((m) => m.id).sort()).toEqual(["m1", "m2"]);
+  });
+});
+
 describe("mergeStores newborn tracker", () => {
   const feed = (id: string, ts: string): FeedEvent => ({ id, type: "feed", timestamp: ts, feedType: "bottle" });
 
