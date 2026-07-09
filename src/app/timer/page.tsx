@@ -5,6 +5,7 @@ import { useStoreContext } from "@/contexts/StoreContext";
 import { Contraction } from "@/types";
 import { Timer, StopCircle, PlayCircle, Trash2, AlertTriangle, Activity, X, Check } from "lucide-react";
 import clsx from "clsx";
+import { motion } from "motion/react";
 import { PageTransition } from "@/components/PageTransition";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -218,8 +219,9 @@ export default function TimerPage() {
 
         {/* Action button */}
         {phase === "idle" || phase === "between" ? (
-          <button
+          <motion.button
             onClick={handleStart}
+            whileTap={{ scale: 0.95 }}
             className={clsx(
               "inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-semibold transition-colors",
               "bg-sage-600 hover:bg-sage-700 text-white shadow-md"
@@ -227,10 +229,13 @@ export default function TimerPage() {
           >
             <PlayCircle size={24} />
             Start Contraction
-          </button>
+          </motion.button>
         ) : (
-          <button
+          <motion.button
             onClick={handleStop}
+            whileTap={{ scale: 0.95 }}
+            animate={{ scale: [1, 1.04, 1] }}
+            transition={{ scale: { duration: 1.4, repeat: Infinity, ease: "easeInOut" } }}
             className={clsx(
               "inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-semibold transition-colors",
               "bg-rose-600 hover:bg-rose-700 text-white shadow-md"
@@ -238,7 +243,7 @@ export default function TimerPage() {
           >
             <StopCircle size={24} />
             Stop Contraction
-          </button>
+          </motion.button>
         )}
 
         {/* Hint text */}

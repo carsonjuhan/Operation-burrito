@@ -323,6 +323,199 @@ function TimelineChart({ events }: { events: NewbornLogEvent[] }) {
   );
 }
 
+// ── Patterns: hour-of-day histograms, feed mix, week-over-week ────────────────
+
+function hourOfDay(iso: string): number {
+  return new Date(iso).getHours();
+}
+
+function fmtHour(h: number): string {
+  const period = h < 12 ? "am" : "pm";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}${period}`;
+}
+
+function HourHistogram({ events, kind, color }: { events: NewbornLogEvent[]; kind: "feed" | "sleep"; color: string }) {
+  const buckets = new Array(24).fill(0);
+  for (const e of events) {
+    if (kind === "feed" && e.type === "feed") buckets[hourOfDay(e.timestamp)]++;
+    else if (kind === "sleep" && e.type === "sleep") buckets[hourOfDay(e.startTime)]++;
+  }
+  const max = Math.max(...buckets, 1);
+  return (
+    <div>
+      <div className="flex items-end gap-[2px] h-14">
+        {buckets.map((v, h) => (
+          <div key={h} className="flex-1 h-full flex flex-col justify-end" title={`${fmtHour(h)}: ${v}`}>
+            <div
+              className={clsx("w-full rounded-t-sm min-h-[2px]", color)}
+              style={{ height: `${Math.max((v / max) * 100, v > 0 ? 4 : 0)}%` }}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between text-[8px] text-stone-300 dark:text-stone-600 mt-1 px-0.5">
+        <span>12a</span><span>6a</span><span>12p</span><span>6p</span><span>12a</span>
+      </div>
+    </div>
+  );
+}
+
+const FEED_TYPE_COLORS: Record<FeedType, string> = {
+  "breast-left": "bg-sage-400 dark:bg-sage-500",
+  "breast-right": "bg-teal-400 dark:bg-teal-500",
+  both: "bg-indigo-300 dark:bg-indigo-500/60",
+  bottle: "bg-amber-400 dark:bg-amber-500",
+  formula: "bg-rose-300 dark:bg-rose-500/60",
+};
+
+function FeedTypeMix({ events }: { events: NewbornLogEvent[] }) {
+  const totals: Partial<Record<FeedType, number>> = {};
+  let total = 0;
+  for (const e of events) {
+    if (e.type === "feed") {
+      totals[e.feedType] = (totals[e.feedType] ?? 0) + 1;
+      total++;
+    }
+  }
+  if (total === 0) return null;
+  const order: FeedType[] = ["breast-left", "breast-right", "both", "bottle", "formula"];
+  const present = order.filter(ft => totals[ft]);
+  return (
+    <div>
+      <div className="flex h-3 rounded-full overflow-hidden">
+        {present.map(ft => (
+          <div
+            key={ft}
+            className={FEED_TYPE_COLORS[ft]}
+            style={{ width: `${((totals[ft] ?? 0) / total) * 100}%` }}
+            title={`${FEED_LABELS[ft]}: ${totals[ft]}`}
+          />
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
+        {present.map(ft => (
+          <div key={ft} className="flex items-center gap-1">
+            <div className={clsx("w-2 h-2 rounded-sm", FEED_TYPE_COLORS[ft])} />
+            <span className="text-[9px] text-stone-400">
+              {FEED_LABELS[ft]} {Math.round(((totals[ft] ?? 0) / total) * 100)}%
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function eventTime(e: NewbornLogEvent): string {
+  return e.type === "sleep" ? e.startTime : e.timestamp;
+}
+
+function weekWindowStats(events: NewbornLogEvent[], startMs: number, endMs: number) {
+  const within = (e: NewbornLogEvent) => {
+    const t = new Date(eventTime(e)).getTime();
+    return t >= startMs && t < endMs;
+  };
+  const ev = events.filter(within);
+  const feeds = countFeedSessions(
+    ev.filter((e): e is FeedEvent => e.type === "feed").map(e => new Date(e.timestamp).getTime())
+  );
+  const wet = ev.filter(e => e.type === "diaper" && ["wet", "both"].includes(e.diaperType)).length;
+  const dirty = ev.filter(e => e.type === "diaper" && ["dirty", "both"].includes(e.diaperType)).length;
+  const sleepMins = ev.filter((e): e is SleepEvent => e.type === "sleep").reduce((acc, s) => {
+    const st = Math.max(new Date(s.startTime).getTime(), startMs);
+    const en = Math.min(s.endTime ? new Date(s.endTime).getTime() : Date.now(), endMs);
+    return en > st ? acc + (en - st) / 60000 : acc;
+  }, 0);
+  const days = Math.max((endMs - startMs) / (24 * 3600e3), 1);
+  return {
+    feedsPerDay: feeds / days,
+    sleepHPerDay: sleepMins / 60 / days,
+    wetPerDay: wet / days,
+    dirtyPerDay: dirty / days,
+  };
+}
+
+function PatternsPanel({ events }: { events: NewbornLogEvent[] }) {
+  if (events.length < 5) return null;
+  const now = Date.now();
+  const thisWeek = weekWindowStats(events, now - 7 * 24 * 3600e3, now);
+  const lastWeek = weekWindowStats(events, now - 14 * 24 * 3600e3, now - 7 * 24 * 3600e3);
+
+  const feedHourCounts = new Array(24).fill(0);
+  const sleepHourCounts = new Array(24).fill(0);
+  for (const e of events) {
+    if (e.type === "feed") feedHourCounts[hourOfDay(e.timestamp)]++;
+    if (e.type === "sleep") sleepHourCounts[hourOfDay(e.startTime)]++;
+  }
+  const busiestFeedHour = feedHourCounts.indexOf(Math.max(...feedHourCounts));
+  const busiestSleepHour = sleepHourCounts.indexOf(Math.max(...sleepHourCounts));
+
+  let longest: SleepEvent | null = null;
+  let longestMin = 0;
+  for (const e of events) {
+    if (e.type !== "sleep" || !e.endTime) continue;
+    const mins = (new Date(e.endTime).getTime() - new Date(e.startTime).getTime()) / 60000;
+    if (mins > longestMin) { longestMin = mins; longest = e; }
+  }
+
+  const rows: { label: string; a: number; b: number; suffix: string }[] = [
+    { label: "Feeds/day", a: thisWeek.feedsPerDay, b: lastWeek.feedsPerDay, suffix: "" },
+    { label: "Sleep h/day", a: thisWeek.sleepHPerDay, b: lastWeek.sleepHPerDay, suffix: "h" },
+    { label: "Wet/day", a: thisWeek.wetPerDay, b: lastWeek.wetPerDay, suffix: "" },
+    { label: "Dirty/day", a: thisWeek.dirtyPerDay, b: lastWeek.dirtyPerDay, suffix: "" },
+  ];
+
+  return (
+    <div className="card p-4 mb-4 space-y-4">
+      <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Patterns</p>
+
+      <div>
+        <p className="text-[10px] text-stone-400 mb-1.5">Feeds by hour of day</p>
+        <HourHistogram events={events} kind="feed" color="bg-sage-400 dark:bg-sage-500" />
+      </div>
+      <div>
+        <p className="text-[10px] text-stone-400 mb-1.5">Sleep starts by hour of day</p>
+        <HourHistogram events={events} kind="sleep" color="bg-indigo-300 dark:bg-indigo-500/60" />
+      </div>
+      <div>
+        <p className="text-[10px] text-stone-400 mb-1.5">Feed type mix</p>
+        <FeedTypeMix events={events} />
+      </div>
+
+      <div>
+        <p className="text-[10px] text-stone-400 mb-1.5">This week vs. prior week (daily average)</p>
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="text-stone-400 text-[10px]">
+              <th className="text-left font-medium py-1">Metric</th>
+              <th className="text-right font-medium py-1">Last 7d</th>
+              <th className="text-right font-medium py-1">Prior 7d</th>
+            </tr>
+          </thead>
+          <tbody className="text-stone-600 dark:text-stone-300">
+            {rows.map(r => (
+              <tr key={r.label} className="border-t border-stone-100 dark:border-stone-800">
+                <td className="py-1">{r.label}</td>
+                <td className="text-right tabular-nums">{r.a.toFixed(1)}{r.suffix}</td>
+                <td className="text-right tabular-nums text-stone-400">{r.b.toFixed(1)}{r.suffix}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="text-[11px] text-stone-500 dark:text-stone-400 space-y-1 pt-1 border-t border-stone-100 dark:border-stone-800">
+        <p>🤱 Busiest feeding hour: <b className="text-stone-700 dark:text-stone-200">{fmtHour(busiestFeedHour)}–{fmtHour((busiestFeedHour + 1) % 24)}</b> ({feedHourCounts[busiestFeedHour]} feeds logged)</p>
+        <p>😴 Most common sleep-start hour: <b className="text-stone-700 dark:text-stone-200">{fmtHour(busiestSleepHour)}</b> ({sleepHourCounts[busiestSleepHour]} sessions)</p>
+        {longest && (
+          <p>🏆 Longest sleep stretch: <b className="text-stone-700 dark:text-stone-200">{(longestMin / 60).toFixed(1)}h</b> starting {formatTime(longest.startTime, true)}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function formatTime(iso: string, includeDate = false): string {
   const d = new Date(iso);
   const timeStr = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -1621,6 +1814,8 @@ export default function NewbornTrackerPage() {
           <DailyTrendsChart events={allEvents} />
         </div>
       )}
+
+      <PatternsPanel events={allEvents} />
 
       {/* History chart + log */}
       {allEvents.length > 0 && (
