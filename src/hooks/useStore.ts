@@ -478,6 +478,44 @@ export function useStore() {
     }
   }, []);
 
+  const runAutoSync = useCallback(async (nextStore: AppStore) => {
+    const pat = getPAT();
+    const gistId = getGistId();
+    if (!pat || !gistId) return;
+    setAutoSyncing(true);
+    try {
+      // Fetch remote then merge before pushing — prevents 2-user overwrites.
+      // Merge against the freshest local state, not the debounce-time snapshot.
+      let storeToSync = storeRef.current ?? nextStore;
+      try {
+        const remote = await loadGist(pat, gistId);
+        storeToSync = mergeStores(storeToSync, remote);
+        // Persist merged result locally too
+        saveStore(storeToSync);
+        setStore(storeToSync);
+        storeRef.current = storeToSync;
+        // Partner's tracker events land in the local tracker store
+        writeNewbornToLocal(storeToSync);
+      } catch {
+        // Network or parse error on fetch — fall back to pushing local state
+      }
+      await pushToGist(pat, storeToSync);
+      // Success — reset failure state if there were prior failures
+      if (syncFailureRef.current.consecutiveFailures > 0) {
+        const newState = recordSyncSuccess();
+        syncFailureRef.current = newState;
+        setSyncFailureState(newState);
+        onSyncSuccessAfterFailureRef.current?.();
+      }
+    } catch (err) {
+      const newState = recordSyncFailure(syncFailureRef.current, err);
+      syncFailureRef.current = newState;
+      setSyncFailureState(newState);
+      onSyncErrorRef.current?.(newState);
+    }
+    setAutoSyncing(false);
+  }, [writeNewbornToLocal]);
+
   const triggerAutoSync = useCallback((nextStore: AppStore) => {
     const pat = getPAT();
     const gistId = getGistId();
@@ -485,41 +523,25 @@ export function useStore() {
     // Skip if auto-sync is paused due to repeated failures
     if (syncFailureRef.current.isPaused) return;
     if (autoSyncTimer.current) clearTimeout(autoSyncTimer.current);
-    autoSyncTimer.current = setTimeout(async () => {
-      setAutoSyncing(true);
-      try {
-        // Fetch remote then merge before pushing — prevents 2-user overwrites.
-        // Merge against the freshest local state, not the debounce-time snapshot.
-        let storeToSync = storeRef.current ?? nextStore;
-        try {
-          const remote = await loadGist(pat, gistId);
-          storeToSync = mergeStores(storeToSync, remote);
-          // Persist merged result locally too
-          saveStore(storeToSync);
-          setStore(storeToSync);
-          storeRef.current = storeToSync;
-          // Partner's tracker events land in the local tracker store
-          writeNewbornToLocal(storeToSync);
-        } catch {
-          // Network or parse error on fetch — fall back to pushing local state
-        }
-        await pushToGist(pat, storeToSync);
-        // Success — reset failure state if there were prior failures
-        if (syncFailureRef.current.consecutiveFailures > 0) {
-          const newState = recordSyncSuccess();
-          syncFailureRef.current = newState;
-          setSyncFailureState(newState);
-          onSyncSuccessAfterFailureRef.current?.();
-        }
-      } catch (err) {
-        const newState = recordSyncFailure(syncFailureRef.current, err);
-        syncFailureRef.current = newState;
-        setSyncFailureState(newState);
-        onSyncErrorRef.current?.(newState);
-      }
-      setAutoSyncing(false);
+    autoSyncTimer.current = setTimeout(() => {
+      autoSyncTimer.current = null;
+      runAutoSync(nextStore);
     }, 5000); // debounce 5 seconds
-  }, [writeNewbornToLocal]);
+  }, [runAutoSync]);
+
+  // Flush a pending debounced auto-sync immediately. On mobile the OS can
+  // suspend JS execution moments after backgrounding a tab, so waiting out the
+  // 5s debounce risks losing a local edit that was never pushed — the edit
+  // stays trapped on that device until another local edit re-triggers sync.
+  // Firing the pending sync right away (rather than the leftover setTimeout)
+  // gives it the best chance to complete before suspension.
+  const flushAutoSync = useCallback(() => {
+    if (!autoSyncTimer.current) return;
+    clearTimeout(autoSyncTimer.current);
+    autoSyncTimer.current = null;
+    if (syncFailureRef.current.isPaused) return;
+    runAutoSync(storeRef.current);
+  }, [runAutoSync]);
 
   const update = useCallback((updater: (prev: AppStore) => AppStore, description?: string) => {
     setStore((prev) => {
@@ -577,9 +599,16 @@ export function useStore() {
     if (!loaded) return;
     pullFromRemote();
     const onFocus = () => pullFromRemote();
-    const onVisible = () => { if (document.visibilityState === "visible") pullFromRemote(); };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") pullFromRemote();
+      else flushAutoSync();
+    };
+    // pagehide fires when the tab/app is actually closed (not just backgrounded),
+    // which visibilitychange doesn't reliably cover on every mobile browser.
+    const onPageHide = () => flushAutoSync();
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pagehide", onPageHide);
     // Background poll: focus/visibility events don't fire while the app sits
     // open and foregrounded, so an idle device never sees the other phone's
     // edits. Poll every 30s while visible (pullFromRemote is throttled to 8s
@@ -590,9 +619,10 @@ export function useStore() {
     return () => {
       window.removeEventListener("focus", onFocus);
       document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pagehide", onPageHide);
       clearInterval(poll);
     };
-  }, [loaded, pullFromRemote]);
+  }, [loaded, pullFromRemote, flushAutoSync]);
 
   // ── Newborn tracker mirror (localStorage → store) ────────────────────────
   // The tracker UI writes to its own localStorage key; mirror those writes
