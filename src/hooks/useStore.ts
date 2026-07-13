@@ -489,7 +489,11 @@ export function useStore() {
       let storeToSync = storeRef.current ?? nextStore;
       try {
         const remote = await loadGist(pat, gistId);
-        storeToSync = mergeStores(storeToSync, remote);
+        // Re-read storeRef.current: local edits (e.g. a newborn event logged
+        // mid-flight) may have landed while loadGist's network round-trip was
+        // pending. Merging the pre-await snapshot here would silently drop
+        // them when saveStore/writeNewbornToLocal persist storeToSync below.
+        storeToSync = mergeStores(storeRef.current ?? storeToSync, remote);
         // Persist merged result locally too
         saveStore(storeToSync);
         setStore(storeToSync);
