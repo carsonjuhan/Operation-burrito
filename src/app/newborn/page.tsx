@@ -89,6 +89,18 @@ function isToday(iso: string): boolean {
   return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
 }
 
+// Whether a [start, end] span overlaps today at all — used instead of isToday()
+// for durational events (sleep, finished feeds, active nursing) so a session
+// that crosses midnight still shows up in Today's Log on whichever side you're
+// currently looking from, rather than being pinned to its start day only.
+function spansToday(startIso: string, endIso: string): boolean {
+  const start = new Date(startIso).getTime();
+  const end = new Date(endIso).getTime();
+  const dayStart = new Date().setHours(0, 0, 0, 0);
+  const dayEnd = dayStart + 24 * 3600_000;
+  return start < dayEnd && end >= dayStart;
+}
+
 function dateKey(iso: string): string {
   const d = new Date(iso);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -851,7 +863,21 @@ export default function NewbornTrackerPage() {
 
   const getEventTime = (e: NewbornLogEvent) => e.type === "sleep" ? e.startTime : (e as FeedEvent | DiaperEvent).timestamp;
   const allEvents = [...data.events].sort((a, b) => new Date(getEventTime(b)).getTime() - new Date(getEventTime(a)).getTime());
-  const historyEvents = allEvents.filter(e => !isToday(getEventTime(e)));
+  // Durational events (sleep, finished feeds with a duration) are bucketed by
+  // whether their span overlaps today at all, not just their start time — a
+  // session that started before midnight and ended/is-ongoing after it should
+  // still show in Today's Log rather than disappear into yesterday's history.
+  const isEventToday = (e: NewbornLogEvent): boolean => {
+    if (e.type === "sleep") {
+      return spansToday(e.startTime, e.endTime ?? new Date(now).toISOString());
+    }
+    if (e.type === "feed" && e.durationMin) {
+      const end = new Date(e.timestamp).getTime() + e.durationMin * 60_000;
+      return spansToday(e.timestamp, new Date(end).toISOString());
+    }
+    return isToday(getEventTime(e));
+  };
+  const historyEvents = allEvents.filter(e => !isEventToday(e));
   // Synthesize a display-only in-progress feed event so nursing shows up in
   // Today's Log immediately, matching how sleep's unfinished event already
   // renders — never added to `data.events`/history, purely derived here.
@@ -865,8 +891,8 @@ export default function NewbornTrackerPage() {
       }
     : null;
   const todayEvents = [
-    ...(activeNursingEvent && isToday(activeNursingEvent.timestamp) ? [activeNursingEvent] : []),
-    ...allEvents.filter(e => isToday(getEventTime(e))),
+    ...(activeNursingEvent && spansToday(activeNursingEvent.timestamp, new Date(now).toISOString()) ? [activeNursingEvent] : []),
+    ...allEvents.filter(isEventToday),
   ];
 
   const lastFeed = allEvents.find(e => e.type === "feed") as FeedEvent | undefined;
