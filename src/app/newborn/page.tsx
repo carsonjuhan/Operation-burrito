@@ -19,6 +19,7 @@ import {
   playAlertSound,
 } from "@/lib/reminderTimers";
 import type { FeedType, DiaperType, FeedEvent, SleepEvent, DiaperEvent, MedEvent, Medication, NewbornLogEvent, NewbornTrackerData } from "@/types";
+import { mergeNewbornEvents } from "@/lib/storeMerge";
 import {
   FEED_ICON,
   FEED_LABELS,
@@ -853,13 +854,23 @@ export default function NewbornTrackerPage() {
     if (nightMode) document.documentElement.classList.add("dark");
   }, [nightMode]);
 
+  // Merge in the synced store's events before applying any local edit. `prev`
+  // (this component's React state) can go stale for hours if the tab was
+  // backgrounded/suspended and missed a NEWBORN_UPDATED_EVENT reload — writing
+  // straight off a stale `prev` would silently drop events that arrived via
+  // sync (e.g. the other parent's phone), and the store's tombstone tracking
+  // (trackDeletes in useStore.ts) would then treat those "missing" events as
+  // deletions and propagate the deletion to the Gist. `store.newbornEvents`
+  // is kept fresh by pullFromRemote independent of this page's own reloads,
+  // so folding it in here closes that gap.
   const update = useCallback((fn: (d: NewbornTrackerData) => NewbornTrackerData) => {
     setData(prev => {
-      const next = fn(prev);
+      const base = { ...prev, events: mergeNewbornEvents(prev.events, store.newbornEvents ?? []) };
+      const next = fn(base);
       saveData(next);
       return next;
     });
-  }, []);
+  }, [store.newbornEvents]);
 
   const getEventTime = (e: NewbornLogEvent) => e.type === "sleep" ? e.startTime : (e as FeedEvent | DiaperEvent).timestamp;
   const allEvents = [...data.events].sort((a, b) => new Date(getEventTime(b)).getTime() - new Date(getEventTime(a)).getTime());

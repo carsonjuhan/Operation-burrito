@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Moon, Square, X, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import { useToast } from "@/contexts/ToastContext";
-import type { DiaperType, FeedType, NewbornLogEvent, SleepEvent } from "@/types";
+import { useStoreContext } from "@/contexts/StoreContext";
+import type { DiaperType, FeedType, NewbornLogEvent, SleepEvent, NewbornTrackerData } from "@/types";
+import { mergeNewbornEvents } from "@/lib/storeMerge";
 import {
   FEED_ICON,
   FEED_LABELS,
   durationStr,
-  loadNewbornData,
+  loadNewbornData as loadNewbornDataRaw,
   saveNewbornData,
   vibrate,
   NEWBORN_UPDATED_EVENT,
@@ -41,6 +43,15 @@ function restoreSleepIn(events: NewbornLogEvent[], sleep: SleepEvent): NewbornLo
 
 export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { addToast } = useToast();
+  const { store } = useStoreContext();
+  // Fold the synced store's events in on every read so a device that missed
+  // a background pull (e.g. tab suspended) can't act on a stale local
+  // snapshot and have its write clobber events synced from another device —
+  // see the matching comment in app/newborn/page.tsx's `update`.
+  const loadNewbornData = useCallback((): NewbornTrackerData => {
+    const local = loadNewbornDataRaw();
+    return { ...local, events: mergeNewbornEvents(local.events, store.newbornEvents ?? []) };
+  }, [store.newbornEvents]);
   // Snapshot of tracker state, loaded fresh each time the sheet opens
   const [suggestedSide, setSuggestedSide] = useState<FeedType | null>(null);
   const [activeSleep, setActiveSleep] = useState<SleepEvent | null>(null);
