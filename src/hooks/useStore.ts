@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   AppStore, BabyItem, BabyClass, Material, BirthPlan, Note,
-  BagItem, Appointment, Contact, Contraction, PostBirthTask, Medication,
+  BagItem, Appointment, Contact, Contraction, PostBirthTask, Medication, NewbornLogEvent,
 } from "@/types";
 import { getPAT, getGistId, pushToGist, loadGist } from "@/lib/gistSync";
 import { mergeStores, mergeNewbornEvents } from "@/lib/storeMerge";
@@ -379,6 +379,8 @@ export interface CoreContextValue {
   addMedication: (med: Omit<Medication, "id">) => void;
   updateMedication: (id: string, changes: Partial<Medication>) => void;
   deleteMedication: (id: string) => void;
+  deleteNewbornEvent: (id: string) => void;
+  restoreNewbornEvent: (event: NewbornLogEvent) => void;
   loadFromExternal: (incoming: AppStore) => void;
 }
 
@@ -423,8 +425,15 @@ export function useStore() {
   // Diff ID-keyed arrays on every update: removed ids become tombstones so the
   // delete propagates on merge; re-added ids (undo) clear their tombstone.
 
+  // newbornEvents is deliberately excluded: it's written by a separate local
+  // tracker-page/localStorage bridge (see "Newborn tracker bridge" below)
+  // whose React state can go stale for hours if a tab is backgrounded. Diffing
+  // a stale write here would tombstone-and-delete everything that arrived via
+  // sync in the meantime. Newborn event deletion instead goes through the
+  // explicit deleteNewbornEvent/restoreNewbornEvent actions below, which
+  // tombstone exactly the one id being removed, anchored to the current store.
   const TOMBSTONE_ARRAYS = useMemo(() => ([
-    "items", "classes", "materials", "notes", "appointments", "contacts", "hospitalBag", "newbornEvents",
+    "items", "classes", "materials", "notes", "appointments", "contacts", "hospitalBag",
     "contractions", "postBirthTasks", "medications",
   ] as const), []);
 
@@ -636,14 +645,24 @@ export function useStore() {
     const mirror = () => {
       const d = loadNewbornData();
       const cur = storeRef.current;
-      const sameEvents = JSON.stringify(cur.newbornEvents ?? []) === JSON.stringify(d.events);
+      // Union merge, never a raw replace: the tracker page's local state can
+      // still lag the store (e.g. a pull landed after this component last
+      // reloaded) even with its own staleness guard. A raw `newbornEvents:
+      // d.events` here would make trackDeletes-equivalent logic elsewhere
+      // treat anything missing from a stale d.events as deleted. Actual
+      // deletions go through deleteNewbornEvent below instead, which is not
+      // sensitive to this component's staleness.
+      const events = mergeNewbornEvents(cur.newbornEvents ?? [], d.events).filter(
+        (e) => !(cur.deletedIds ?? {})[e.id]
+      );
+      const sameEvents = JSON.stringify(cur.newbornEvents ?? []) === JSON.stringify(events);
       const sameName = (cur.newbornBabyName ?? "Baby") === d.babyName;
       const sameBirthDate = (cur.newbornBabyBirthDate ?? undefined) === (d.babyBirthDate ?? undefined);
       const sameNursing = JSON.stringify(cur.newbornActiveNursing ?? null) === JSON.stringify(d.activeNursing ?? null);
       if (!sameEvents || !sameName || !sameBirthDate || !sameNursing) {
         update((s) => ({
           ...s,
-          newbornEvents: d.events,
+          newbornEvents: events,
           newbornBabyName: d.babyName,
           newbornBabyBirthDate: d.babyBirthDate,
           newbornBabyBirthDateUpdatedAt: d.babyBirthDateUpdatedAt ?? s.newbornBabyBirthDateUpdatedAt,
@@ -656,6 +675,27 @@ export function useStore() {
     window.addEventListener(NEWBORN_UPDATED_EVENT, mirror);
     return () => window.removeEventListener(NEWBORN_UPDATED_EVENT, mirror);
   }, [loaded, update]);
+
+  // Explicit newborn-event deletion: tombstones exactly the one id being
+  // removed, filtered against the current store (`s`, always the freshest
+  // in-memory state via setState) rather than any possibly-stale tracker-page
+  // snapshot. This is the only path that should ever remove a newborn event
+  // from sync — see the comment on TOMBSTONE_ARRAYS above.
+  const deleteNewbornEvent = useCallback((id: string) => {
+    update((s) => ({
+      ...s,
+      newbornEvents: (s.newbornEvents ?? []).filter((e) => e.id !== id),
+      deletedIds: { ...(s.deletedIds ?? {}), [id]: new Date().toISOString() },
+    }));
+  }, [update]);
+
+  const restoreNewbornEvent = useCallback((event: NewbornLogEvent) => {
+    update((s) => {
+      const deletedIds = { ...(s.deletedIds ?? {}) };
+      delete deletedIds[event.id];
+      return { ...s, newbornEvents: [...(s.newbornEvents ?? []), event], deletedIds };
+    });
+  }, [update]);
 
   // ── Items ────────────────────────────────────────────────────────────────
 
@@ -1023,6 +1063,7 @@ export function useStore() {
     updateChecklistState,
     updateReminderSettings,
     addMedication, updateMedication, deleteMedication,
+    deleteNewbornEvent, restoreNewbornEvent,
     loadFromExternal,
   }), [
     store, loaded, autoSyncing, storageInfo,
@@ -1032,6 +1073,7 @@ export function useStore() {
     updateChecklistState,
     updateReminderSettings,
     addMedication, updateMedication, deleteMedication,
+    deleteNewbornEvent, restoreNewbornEvent,
     loadFromExternal,
   ]);
 
@@ -1067,6 +1109,7 @@ export function useStore() {
     updateChecklistState,
     updateReminderSettings,
     addMedication, updateMedication, deleteMedication,
+    deleteNewbornEvent, restoreNewbornEvent,
     loadFromExternal,
   };
 }

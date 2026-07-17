@@ -782,7 +782,7 @@ export default function NewbornTrackerPage() {
   const [birthDateInput, setBirthDateInput] = useState("");
   const [editingEvent, setEditingEvent] = useState<NewbornLogEvent | null>(null);
 
-  const { store, updateReminderSettings, addMedication, updateMedication, deleteMedication } = useStoreContext();
+  const { store, updateReminderSettings, addMedication, updateMedication, deleteMedication, deleteNewbornEvent, restoreNewbornEvent } = useStoreContext();
   const [nightMode, setNightMode] = useState(false);
   const [syncedAgo, setSyncedAgo] = useState("");
   // Synced across devices via the AppStore (see hooks/useStore.ts) so e.g.
@@ -1039,9 +1039,13 @@ export default function NewbornTrackerPage() {
   })();
   const expectation = dayOfLife ? diaperExpectation(dayOfLife) : null;
 
+  // Deletion is always anchored to the store via deleteNewbornEvent (tombstones
+  // exactly this id against the current authoritative store state), not just
+  // the local tracker snapshot — see the matching comment in useStore.ts.
   const deleteEvent = useCallback((id: string) => {
     update(d => ({ ...d, events: d.events.filter(e => e.id !== id) }));
-  }, [update]);
+    deleteNewbornEvent(id);
+  }, [update, deleteNewbornEvent]);
 
   // Row deletes get an undo toast since there's no confirmation step
   const deleteEventWithUndo = useCallback((id: string) => {
@@ -1052,12 +1056,16 @@ export default function NewbornTrackerPage() {
     });
     if (removed) {
       const event = removed;
+      deleteNewbornEvent(id);
       addToast("Event deleted", "info", {
         label: "Undo",
-        onClick: () => update(d => ({ ...d, events: [...d.events, event] })),
+        onClick: () => {
+          update(d => ({ ...d, events: [...d.events, event] }));
+          restoreNewbornEvent(event);
+        },
       });
     }
-  }, [update, addToast]);
+  }, [update, addToast, deleteNewbornEvent, restoreNewbornEvent]);
 
   // Undo for a feed-that-ended-sleep: restores the sleep event's endTime and
   // removes the feed event that was logged (or cancels the nursing timer that
@@ -1071,7 +1079,8 @@ export default function NewbornTrackerPage() {
         .filter(e => e.id !== feedEventId)
         .map(e => e.id === ended.id ? { ...e, endTime: undefined, updatedAt: new Date().toISOString() } : e),
     }));
-  }, [update]);
+    if (feedEventId) deleteNewbornEvent(feedEventId);
+  }, [update, deleteNewbornEvent]);
 
   const notifySleepEndedByFeed = useCallback((ended: SleepEvent, feedEventId?: string) => {
     // No feed event id means a nursing timer was started rather than an instant feed

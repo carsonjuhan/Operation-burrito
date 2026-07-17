@@ -43,7 +43,7 @@ function restoreSleepIn(events: NewbornLogEvent[], sleep: SleepEvent): NewbornLo
 
 export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { addToast } = useToast();
-  const { store } = useStoreContext();
+  const { store, deleteNewbornEvent } = useStoreContext();
   // Fold the synced store's events in on every read so a device that missed
   // a background pull (e.g. tab suspended) can't act on a stale local
   // snapshot and have its write clobber events synced from another device —
@@ -135,6 +135,7 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
             ...d,
             events: restoreSleepIn(d.events.filter(e => e.id !== event.id), endedSleep),
           });
+          deleteNewbornEvent(event.id);
         },
       });
     } else {
@@ -143,6 +144,7 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
         onClick: () => {
           const d = loadNewbornData();
           saveNewbornData({ ...d, events: d.events.filter(e => e.id !== event.id) });
+          deleteNewbornEvent(event.id);
         },
       });
     }
@@ -166,6 +168,7 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
             nowISO()
           );
           saveNewbornData(restored);
+          deleteNewbornEvent(event.id);
         },
       });
     }
@@ -200,6 +203,7 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
       onClick: () => {
         const d = loadNewbornData();
         saveNewbornData({ ...d, events: d.events.filter(e => e.id !== event.id) });
+        deleteNewbornEvent(event.id);
       },
     });
     onClose();
@@ -250,6 +254,7 @@ export function QuickLogSheet({ open, onClose }: { open: boolean; onClose: () =>
       onClick: () => {
         const d = loadNewbornData();
         saveNewbornData({ ...d, events: d.events.filter(e => e.id !== event.id) });
+        deleteNewbornEvent(event.id);
       },
     });
     onClose();
