@@ -1210,7 +1210,7 @@ export default function NewbornTrackerPage() {
   };
 
   return (
-    <PageTransition className="max-w-2xl mx-auto pb-8">
+    <PageTransition className="max-w-2xl mx-auto">
       {editingEvent && (
         <EditModal
           event={editingEvent}
@@ -1305,55 +1305,110 @@ export default function NewbornTrackerPage() {
         "mb-5 rounded-2xl p-5 bg-gradient-to-br from-indigo-950 via-stone-900 to-stone-950 border text-white shadow-lg shadow-indigo-950/20",
         (nursingOverdue || sleepOverdue) ? "border-amber-500/60 ring-2 ring-amber-500/30" : "border-indigo-900/50"
       )}>
-        {data.activeNursing ? (
-          <>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">Nursing now · {FEED_LABELS[data.activeNursing.feedType]}</p>
-            <p className="font-display text-5xl leading-none tabular-nums">{clockStr(data.activeNursing.startTime, now)}</p>
-            {nursingOverdue && (
-              <p className="text-[11px] text-amber-300 mt-1.5 flex items-center gap-1">⚠️ Running long — forgot to end?</p>
-            )}
-            <div className="flex gap-2 mt-4">
+        {/* Header row: state label on the left, a compact corner action for
+            whichever timer is running on the right — leaves the shortcuts
+            below always visible instead of swapping them out. */}
+        <div className="flex items-start justify-between gap-3 mb-1">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold">
+            {data.activeNursing ? `Nursing now · ${FEED_LABELS[data.activeNursing.feedType]}` : activeSleep ? "😴 Sleeping now" : "Since last feed"}
+          </p>
+          {data.activeNursing ? (
+            <div className="flex items-center gap-1 shrink-0">
               <button
                 onClick={finishNursing}
-                className="flex-1 min-h-[48px] flex items-center justify-center gap-2 bg-sage-500 hover:bg-sage-600 active:bg-sage-700 text-white rounded-xl text-sm font-semibold transition-colors"
+                className="px-2.5 min-h-[32px] flex items-center gap-1 bg-sage-500 hover:bg-sage-600 active:bg-sage-700 text-white rounded-lg text-xs font-semibold transition-colors touch-manipulation"
               >
-                <Square size={13} fill="currentColor" /> Finish &amp; Log
+                <Square size={11} fill="currentColor" /> Finish
               </button>
               <button
                 onClick={cancelNursing}
-                className="px-4 min-h-[48px] text-indigo-300/70 hover:text-indigo-200 text-sm transition-colors"
+                className="p-1.5 min-h-[32px] text-indigo-300/70 hover:text-indigo-200 transition-colors touch-manipulation"
+                aria-label="Cancel nursing"
               >
-                Cancel
+                <X size={14} />
               </button>
             </div>
-          </>
-        ) : activeSleep ? (
-          <>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">😴 Sleeping now</p>
-            <p className="font-display text-5xl leading-none tabular-nums">{clockStr(activeSleep.startTime, now)}</p>
-            {sleepOverdue && (
-              <p className="text-[11px] text-amber-300 mt-1.5 flex items-center gap-1">⚠️ Running long — forgot to end?</p>
-            )}
-            <div className="flex gap-2 mt-4">
+          ) : activeSleep ? (
+            <button
+              onClick={toggleSleep}
+              className="shrink-0 px-2.5 min-h-[32px] flex items-center gap-1 bg-sage-500 hover:bg-sage-600 active:bg-sage-700 text-white rounded-lg text-xs font-semibold transition-colors touch-manipulation"
+            >
+              <Square size={11} fill="currentColor" /> End Sleep
+            </button>
+          ) : null}
+        </div>
+
+        <p className="font-display text-5xl leading-none tabular-nums">
+          {data.activeNursing
+            ? clockStr(data.activeNursing.startTime, now)
+            : activeSleep
+              ? clockStr(activeSleep.startTime, now)
+              : lastFeed ? durationStr(lastFeed.timestamp) : "—"}
+        </p>
+
+        {nursingOverdue || sleepOverdue ? (
+          <p className="text-[11px] text-amber-300 mt-1.5 flex items-center gap-1">⚠️ Running long — forgot to end?</p>
+        ) : !data.activeNursing && !activeSleep ? (
+          <p className="text-xs text-indigo-200/60 mt-2">
+            {lastFeed ? `${FEED_LABELS[lastFeed.feedType]} at ${formatTime(lastFeed.timestamp)}` : "No feeds logged yet"}
+          </p>
+        ) : null}
+
+        {/* One-handed shortcuts, inline in the hero so there's no separate
+            floating bar and they never disappear once a timer starts — same
+            actions as the Quick Log card below, just reachable without
+            scrolling past tabs/status/next-due first. */}
+        <div className="flex flex-wrap gap-1.5 mt-4 sm:hidden">
+          {!data.activeNursing && (
+            <>
               <button
-                onClick={toggleSleep}
-                className="flex-1 min-h-[48px] flex items-center justify-center gap-2 bg-sage-500 hover:bg-sage-600 active:bg-sage-700 text-white rounded-xl text-sm font-semibold transition-colors"
+                onClick={() => logFeed("breast-left")}
+                className={clsx(
+                  "flex-1 min-w-[56px] min-h-[48px] rounded-xl text-[11px] font-medium border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 text-white",
+                  "bg-white/10 hover:bg-white/15 active:bg-white/20 border-white/10",
+                  suggestedSide === "breast-left" && "ring-2 ring-sage-400 border-transparent"
+                )}
+                aria-label="Start left breast feed"
               >
-                <Square size={13} fill="currentColor" /> End Sleep
+                <span>🤱L</span>
               </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-indigo-300/80 font-semibold mb-1">Since last feed</p>
-            <p className="font-display text-5xl leading-none tabular-nums">
-              {lastFeed ? durationStr(lastFeed.timestamp) : "—"}
-            </p>
-            <p className="text-xs text-indigo-200/60 mt-2">
-              {lastFeed ? `${FEED_LABELS[lastFeed.feedType]} at ${formatTime(lastFeed.timestamp)}` : "No feeds logged yet"}
-            </p>
-          </>
-        )}
+              <button
+                onClick={() => logFeed("breast-right")}
+                className={clsx(
+                  "flex-1 min-w-[56px] min-h-[48px] rounded-xl text-[11px] font-medium border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 text-white",
+                  "bg-white/10 hover:bg-white/15 active:bg-white/20 border-white/10",
+                  suggestedSide === "breast-right" && "ring-2 ring-sage-400 border-transparent"
+                )}
+                aria-label="Start right breast feed"
+              >
+                <span>🤱R</span>
+              </button>
+            </>
+          )}
+          {!activeSleep && (
+            <button
+              onClick={toggleSleep}
+              className="flex-1 min-w-[56px] min-h-[48px] rounded-xl text-[11px] font-medium border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 text-white bg-white/10 hover:bg-white/15 active:bg-white/20 border-white/10"
+              aria-label="Start sleep"
+            >
+              <Moon size={15} />
+            </button>
+          )}
+          <button
+            onClick={() => logDiaper("wet")}
+            className="flex-1 min-w-[56px] min-h-[48px] rounded-xl text-[11px] font-medium border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 text-white bg-white/10 hover:bg-white/15 active:bg-white/20 border-white/10"
+            aria-label="Log wet diaper"
+          >
+            <span>💧</span>
+          </button>
+          <button
+            onClick={() => logDiaper("dirty")}
+            className="flex-1 min-w-[56px] min-h-[48px] rounded-xl text-[11px] font-medium border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 text-white bg-white/10 hover:bg-white/15 active:bg-white/20 border-white/10"
+            aria-label="Log dirty diaper"
+          >
+            <span>💩</span>
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
